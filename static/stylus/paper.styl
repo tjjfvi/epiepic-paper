@@ -287,6 +287,10 @@
 			max-width cardWidth
 			max-height cardHeight
 
+			border 1px solid transparent
+
+			transition border-color .2s
+
 			img
 				max-width 100%
 				max-height 100%
@@ -307,6 +311,9 @@
 
 			&.flipped img
 				transform rotate(180deg)
+
+			&.marked
+				border-color $white
 
 
 

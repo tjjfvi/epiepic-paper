@@ -62,15 +62,20 @@ module.exports = class {
 			self.moveFuncs[card.card().type === "CHAMPION" ? "play" : "supp"](oa, card);
 
 		self.moveFuncs.battle = (oa, card) => {
+			if(card.inBattle())
+				return card.inBattle(false);
 			let attacking = +self.game.turn() === +self.n();
+			if(attacking && self.game.phase() === "main") {
+				self.game.phase("battle-0");
+				self.p.waitingOn(true);
+				self.o.waitingOn(false);
+			}
 			if(self.game.phase() !== (attacking ? "battle-0" : "battle-2"))
 				return;
 			card.inBattle(!card.inBattle());
-			if(attacking)
-				self.moveFuncs.expend(oa, card);
-			else
-				self.moveFuncs.flip(oa, card);
 		};
+
+		self.moveFuncs.mark = (oa, card) => card.marked(!card.marked());
 
 		self.phaseName = ko.computed(() => self.started() ? {
 			start: "Start phase",
@@ -113,27 +118,45 @@ module.exports = class {
 				"battle-4": ["main", true, false, false],
 				end:        ["start", false, false, true],
 			}[phase];
+
 			change[1] ^= !self.game.turn();
 			if(self.game.turn())
 				[change[2], change[3]] = [change[3], change[2]];
+			[self.game.phase, self.game.initiative, self.game.p0.waitingOn, self.game.p1.waitingOn]
+				.map((o, i) => o(change[i]));
+
 			if(phase === "end") {
 				self.o.gold(true);
 				self.o.goldFaction("");
 				self.p.gold(true);
 				self.p.goldFaction("");
 				self.game.turn(!self.game.turn());
+			} else if(phase === "battle-0") {
+				let zone = self[(self.game.turn() ^ self.n() ? "o" : "p") + "Play"];
+				zone().filter(c => c.inBattle()).map(c => self.moveFuncs.expend(zone, c));
+			} else if(phase === "battle-2") {
+				let zone = self[(self.game.turn() ^ self.n() ? "p" : "o") + "Play"];
+				zone().filter(c => c.inBattle()).map(c => self.moveFuncs.flip(zone, c));
+			} else if(phase === "battle-4") {
+				[self.oPlay, self.pPlay].map(z => z().map(c => c.inBattle() ? self.moveFuncs.battle(z, c) : {}));
 			}
-			[self.game.phase, self.game.initiative, self.game.p0.waitingOn, self.game.p1.waitingOn]
-				.map((o, i) => o(change[i]));
 		}
 
 		self.cyclePhaseAlt = () => {
-			if(self.game.phase() !== "main")
-				return;
+			self.game.phase({
+				start: "end",
+				main: "start",
+				end: "main",
+				"battle-0": "main",
+				"battle-1": "battle-0",
+				"battle-2": "battle-1",
+				"battle-3": "battle-2",
+				"battle-4": "battle-3",
+			}[self.game.phase()]);
 
-			self.game.phase("battle-0");
-			self.game.p0.waitingOn(true ^ self.game.turn());
-			self.game.p1.waitingOn(false ^ self.game.turn());
+			self.game.initiative(!!self.n());
+			self.p.waitingOn(true);
+			self.o.waitingOn(false);
 		}
 
 		root.on("ws", ({ type, data }) => {
@@ -179,7 +202,7 @@ module.exports = class {
 									write: v => {
 										o(v);
 										if((self.vs[n] || (() => true))(v))
-											root.ws.s(n, c._id, v);
+											root.ws.s("move", n, c._id, v);
 									},
 								});
 							});
@@ -213,10 +236,8 @@ module.exports = class {
 					});
 				zone.unshift(c);
 			}
-			if(type === "battle")
-				self.cards[data[0]]._inBattle(data[1]);
-			if(~"state marked notes counters damage".split(" ").indexOf(type))
-				self.cards["_" + data[0]][type](data[1]);
+			if(~"inBattle state marked notes counters damage".split(" ").indexOf(type))
+				self.cards[data[0]]["_" + type](data[1]);
 			(wsObservables[type] || (() => {}))(data[0]);
 		});
 
@@ -242,7 +263,7 @@ module.exports = class {
 			template: `<!-- ko foreach: cards -->
 				<div class="card" data-bind="
 					click: () => $parent.clickMove($parent.cards, $data),
-					css: { battle: inBattle(), [state() || '']: true }
+					css: { battle: inBattle(), [state() || '']: true, marked }
 				">
 					<img class="_" src="/314x314.jpg"/>
 					<img data-bind="attr: { src: card() ? \`/images/\${card()._id}.jpg\` : '/images/back.jpg' }"/>

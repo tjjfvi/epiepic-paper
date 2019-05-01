@@ -73,7 +73,7 @@ function handle(ws, type, ...data){
 				ws.o.s(type, ...data);
 				break;
 			}
-			case "battle":
+			case "inBattle":
 			case "marked":
 			case "notes":
 			case "damage":
@@ -83,17 +83,18 @@ function handle(ws, type, ...data){
 				let c =
 					game.p0.zones.play.find(c => c._id.toString() === id) ||
 					game.p1.zones.play.find(c => c._id.toString() === id);
+				console.log(id, val, c);
 				if(!c) break;
 				if(!~({
 					state: ["prepared", "flipped", "expended"],
-					battle: [true, false],
+					inBattle: [true, false],
 					notes: [val === val.toString() ? val : NaN],
 					damage: [...Array(100)].map((_, i) => i),
 					counters: [...Array(100)].map((_, i) => i),
 					marked: [true, false],
 				}[type]).indexOf(val))
 					break;
-				c[type === "battle" ? "inBattle" : type] = val;
+				c[type] = val;
 				ws.o.s(type, ...data);
 			}
 		}

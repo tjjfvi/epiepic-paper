@@ -46,6 +46,7 @@ module.exports = class {
 			turn: isBool,
 			phase: p => ~phases.indexOf(p),
 			initiative: isBool,
+			waitingOn: isBool,
 		};
 
 
@@ -61,12 +62,34 @@ module.exports = class {
 			self.moveFuncs[card.card().type === "CHAMPION" ? "play" : "supp"](oa, card);
 
 		self.moveFuncs.battle = (oa, card) => {
+			let attacking = +self.game.turn() === +self.n();
+			if(self.game.phase() !== (attacking ? "battle-0" : "battle-2"))
+				return;
 			card.inBattle(!card.inBattle());
-			if(+self.game.turn() === +self.n())
+			if(attacking)
 				self.moveFuncs.expend(oa, card);
 			else
 				self.moveFuncs.flip(oa, card);
 		};
+
+		self.phaseName = ko.computed(() => self.started() ? {
+			start: "Start phase",
+			main: "Main phase",
+			"battle-0": "Declare Attackers",
+			"battle-1": "Attack Events",
+			"battle-2": "Declare Blockers",
+			"battle-3": "Block Events",
+			"battle-4": "Assign Damage",
+			end: "End phase",
+		}[self.game.phase()] : "");
+
+		self.hideInitiative = ko.computed(() => self.started() ? ~[
+			"start",
+			"battle-0",
+			"battle-2",
+			"battle-4",
+			"end",
+		].indexOf(self.game.phase()) : false);
 
 		"expend flip prepare".split(" ").map(n => self.moveFuncs[n] = (oa, card) => {
 			let ned = n === "flip" ? "flipped" : n + "ed";
@@ -78,6 +101,41 @@ module.exports = class {
 			n: self.n
 		};
 
+		self.cyclePhase = () => {
+			let phase = self.game.phase();
+			let change = {
+				start:      ["main", true, false, false],
+				main:       ["end", true, true, false],
+				"battle-0": ["battle-1", true, false, false],
+				"battle-1": ["battle-2", true, false, true],
+				"battle-2": ["battle-3", false, false, false],
+				"battle-3": ["battle-4", true, true, false],
+				"battle-4": ["main", true, false, false],
+				end:        ["start", false, false, true],
+			}[phase];
+			change[1] ^= !self.game.turn();
+			if(self.game.turn())
+				[change[2], change[3]] = [change[3], change[2]];
+			if(phase === "end") {
+				self.o.gold(true);
+				self.o.goldFaction("");
+				self.p.gold(true);
+				self.p.goldFaction("");
+				self.game.turn(!self.game.turn());
+			}
+			[self.game.phase, self.game.initiative, self.game.p0.waitingOn, self.game.p1.waitingOn]
+				.map((o, i) => o(change[i]));
+		}
+
+		self.cyclePhaseAlt = () => {
+			if(self.game.phase() !== "main")
+				return;
+
+			self.game.phase("battle-0");
+			self.game.p0.waitingOn(true ^ self.game.turn());
+			self.game.p1.waitingOn(false ^ self.game.turn());
+		}
+
 		root.on("ws", ({ type, data }) => {
 			if(type === "game") {
 				let [game] = data;
@@ -87,19 +145,26 @@ module.exports = class {
 				console.log(self.p, self.n());
 				let f = n => {
 					let o = ko.observable(n.split(".").reduce((o, p) => o[p], game));
-					console.log(n, o());
-					n.split(".").reduce((ob, p, i, a) => i === a.length - 1 ? ob[p] = o : ob[p], game);
-					wsObservables[n] = o;
-					o.subscribe(() => {
-						console.log(n, o());
-						console.log(self.vs[n.split(".").pop()](o()));
-						if(self.vs[n.split(".").pop()](o()))
-							root.ws.s("move", n, o());
+					let c = ko.computed({
+						read: o,
+						write: v => {
+							o(v);
+							if(self.vs[n.split(".").pop()](v))
+								root.ws.s("move", n, v);
+						},
 					});
+					n.split(".").reduce((ob, p, i, a) => i === a.length - 1 ? ob[p] = c : ob[p], game);
+					wsObservables[n] = o;
 					return o;
 				}
-				"p0.gold p0.goldFaction p1.gold p1.goldFaction p0.health p1.health turn phase initiative"
-					.split(" ").map(f);
+				`
+					p0.gold p0.goldFaction
+					p1.gold p1.goldFaction
+					p0.health p1.health
+					p0.waitingOn p1.waitingOn
+					turn phase initiative
+				`
+					.trim().split(/\s+/g).map(f);
 				self.oUser(game.o.user);
 				self.pUser(game.p.user);
 				"Deck Disc Play Supp Hand".split(" ").map(z => ["p", "o"].map(p =>
@@ -118,6 +183,7 @@ module.exports = class {
 									},
 								});
 							});
+						self.cards[c._id] = c;
 						return c;
 					}))
 				));
@@ -153,7 +219,6 @@ module.exports = class {
 				self.cards["_" + data[0]][type](data[1]);
 			(wsObservables[type] || (() => {}))(data[0]);
 		});
-		console.log("ko", ko);
 
 		ko.bindingHandlers.cards = {
 			init: (el, valAcc, allBinds, vm, bindCtx) => ko.bindingHandlers.component.init(

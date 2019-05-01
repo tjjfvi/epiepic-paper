@@ -61,8 +61,6 @@ app.ws("/ws", async (ws, req) => {
 		headers: { Cookie: `token=${token}` }
 	}).then(r => r.json()).catch(() => (ws.end(), null));
 
-	console.log(user);
-
 	if(!user) return;
 
 	ws.user = user;

@@ -22,7 +22,7 @@ let vs = {
 	turn: isBool,
 	phase: p => ~phases.indexOf(p),
 	initiative: isBool,
-	goldVal: v => ~"01GSEW".split("").indexOf(v),
+	waitingOn: isBool,
 };
 
 function handle(ws, type, ...data){
@@ -50,7 +50,6 @@ function handle(ws, type, ...data){
 				if(!/^p[01]\.(deck|disc|play|supp|hand)$/.test(zone))
 					break;
 				let dest = (game["p" + zone[1]] || {}).zones[zone.slice(3)];
-				console.log(id, zone, dest);
 				if(!dest) break;
 				let c;
 				let [, source] = [].concat(
@@ -100,7 +99,7 @@ function handle(ws, type, ...data){
 		}
 		let last = type.split(".").reverse()[0];
 		if(
-			~"p0.gold p0.goldFaction p1.gold p1.goldFaction p0.health p1.health turn phase initiative"
+			~"p0.waitingOn p1.waitingOn p0.gold p0.goldFaction p1.gold p1.goldFaction p0.health p1.health turn phase initiative"
 				.split(" ").indexOf(type) &&
 		vs[last] &&
 		vs[last](data[0])
@@ -124,7 +123,8 @@ function setup(ws1, ws2){
 			disc: [],
 			play: [],
 			hand: [],
-		}
+		},
+		waitingOn: ws === ws1,
 	});
 	let game = new Game({
 		p0: genP(ws1),

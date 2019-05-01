@@ -1,3 +1,4 @@
+
 .paper
 	cardHeight = 20vh
 	cardWidth = cardHeight / 1.395555555
@@ -43,6 +44,8 @@
 	
 	div
 		border 1px solid red
+	.il div
+		border none
 
 	.game
 		width 100vw
@@ -138,23 +141,11 @@
 			display flex
 			flex-direction column
 
-			.hdd
+			.hand
 				flex 0 0 auto
-				display flex
 
 				height cardHeight
-
-				.hand
-					flex 1 1 0
-
-				.deck
-				.disc
-					width cardWidth
-					flex 0 0 auto
-
-					> :not(:first-child)
-						display none
-
+					
 			.play
 				flex 1 0
 
@@ -165,6 +156,110 @@
 				&.o .card
 				& .card.battle
 					align-self flex-start
+
+
+
+		.right
+			width 2*cardWidth
+			
+			display flex
+			flex-direction column
+
+			.dd
+				display flex
+
+				.deck
+				.disc
+					width cardWidth
+					flex 0 0 auto
+
+					> :not(:first-child)
+						display none
+
+			.il
+				flex 1 0 auto
+				
+				display flex
+				
+				> div
+					flex 1 0 0
+
+				.i
+					display flex
+					flex-direction column
+
+					> .o
+					> .p
+						flex 0 0 auto
+						height 100px
+
+						display flex
+						justify-content space-around
+						align-items center
+
+						.initiative
+						.waiting
+							width 100px
+							height 75px
+
+							display flex
+							justify-content center
+							align-items center
+
+							cursor pointer
+
+							&:before
+								content ""
+								transition border-color .2s, background .2s
+
+						.initiative:before
+							border-radius 100%
+							border 5px solid $grey
+							width 50px
+							height 50px
+
+						.initiative.on:before
+							border-color $lightgrey
+							background $lightgrey
+
+						.initiative.hideInitiative
+							pointer-events none
+							
+							&:before
+								opacity: 0
+
+						.waiting:before
+							width 35px
+							height 35px
+							border 5px solid $grey
+							transform rotate(45deg)
+
+						.waiting.on:before
+							border-color $orange
+							background-color $orange
+
+						.waiting:not(.on)
+							animation none
+
+					.tp
+						flex 1 0
+
+						display flex
+						flex-direction column
+						justify-content center
+						align-items center
+
+						cursor pointer
+
+						span
+							color $white
+							font-size 35px
+							font-weight 100
+
+							&.phase
+								margin-top -5px
+								font-size 25px
+
 
 		.play
 		.hand

@@ -1,4 +1,3 @@
-
 require("jquery")($ => {
 
 	$("input").attr("data-lpignore", "true");
@@ -57,5 +56,13 @@ require("jquery")($ => {
 	}
 
 	ko.applyBindings(new ViewModel());
+
+	$("*").on("mouseover", e => setTimeout(() =>
+		$(e.target)
+			.parents()
+			.addBack()
+			.filter($(":hover"))
+			.addClass("hoverIntent")
+	, 1000)).on("mouseout", () => $(".hoverIntent:not(:hover)").removeClass("hoverIntent"));
 
 });

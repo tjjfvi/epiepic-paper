@@ -76,21 +76,48 @@
 					</div>
 				</div>
 				<div class="main">
-					<div class="hdd o">
-						<div class="hand o" data-bind="cards: oHand, clickMove: ''"></div>
+					<div class="hand o" data-bind="cards: oHand, clickMove: ''"></div>
+					<div class="play o" data-bind="cards: oPlay, clickMove: ''"></div>
+					<div class="play p" data-bind="cards: pPlay, clickMove: 'battle'"></div>
+					<div class="hand p" data-bind="cards: pHand, clickMove: 'playCard'"></div>
+				</div>
+				<div class="right">
+					<div class="dd o">
 						<div class="deck o" data-bind="cards: oDeck, clickMove: ''"></div>
 						<div class="disc o" data-bind="cards: oDisc, clickMove: 'hand'"></div>
 					</div>
-					<div class="play o" data-bind="cards: oPlay, clickMove: ''"></div>
-					<div class="play p" data-bind="cards: pPlay, clickMove: 'battle'"></div>
-					<div class="hdd p">
-						<div class="hand p" data-bind="cards: pHand, clickMove: 'playCard'"></div>
+					<div class="il">
+						<div class="i">
+							<div class="o">
+								<div class="initiative o" data-bind="
+									css: { on: +game.initiative() !== n(), hideInitiative },
+									click: () => game.initiative(!game.initiative()),
+								"></div>
+								<div class="waiting o" data-bind="
+									css: { on: o.waitingOn() },
+									click: () => (o.waitingOn(!o.waitingOn()), p.waitingOn(false)),
+								"></div>
+							</div>
+							<div class="tp" data-bind="event: { click: cyclePhase, contextmenu: cyclePhaseAlt }">
+								<span class="turn" data-bind="text: game.turn() ^ n() ? 'Their turn' : 'Your turn'"></span>
+								<span class="phase" data-bind="text: phaseName()"></span>
+							</div>
+							<div class="p">
+								<div class="initiative p" data-bind="
+									css: { on: +game.initiative() === n(), hideInitiative },
+									click: () => game.initiative(!game.initiative()),
+								"></div>
+								<div class= "waiting p" data-bind="
+									css: { on: p.waitingOn() },
+									click: () => (p.waitingOn(!p.waitingOn()), o.waitingOn(false)),
+								"></div>
+							</div>
+						</div>
+					</div>
+					<div class="dd p">	
 						<div class="deck p" data-bind="cards: pDeck, clickMove: 'hand'"></div>
 						<div class="disc p" data-bind="cards: pDisc, clickMove: 'hand'"></div>
 					</div>
-				</div>
-				<div class="cardOverlay>
-					
 				</div>
 			</div>
 		</div>

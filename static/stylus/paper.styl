@@ -1,0 +1,217 @@
+.paper
+	cardHeight = 20vh
+	cardWidth = cardHeight / 1.395555555
+
+	& input
+	& button
+		background-color $black
+		border 2px solid $grey
+		border-radius 7.5px
+		text-align center
+	
+		color $lightgrey
+		font-size 15px
+	
+		height 30px
+		width 200px
+	
+		padding 3px
+	
+		transition color .2s, border .2s
+		
+		&.wrong
+			border-color: $red
+	
+	& button
+		cursor pointer
+	
+		font-size 17.5px
+	
+		&:hover
+			color $white
+			border-color $lightgrey
+
+	& .chooseDeck
+		display flex
+		flex-direction column
+
+		& button
+			border-radius 0px 0px 10px 10px
+			border-top-width 0px
+		& input
+			border-radius 10px 10px 0px 0px
+	
+	div
+		border 1px solid red
+
+	.game
+		width 100vw
+		height 100vh
+		
+		display flex
+		
+		.supps
+			width cardWidth*1.5
+			flex 0 0 auto
+
+			display flex
+			flex-direction column
+			
+			> div
+				flex 1 0
+
+				display flex
+				flex-direction column
+
+				.supp
+					flex-grow 1
+
+				.user
+					height cardWidth*1.5
+					
+					display flex
+					flex-direction column
+					align-items center
+					justify-content center
+
+					.avatarGroup
+						position relative
+						
+						display flex
+						justify-content center
+						
+						width 178px
+						max-width cardWidth
+
+						.gold
+						.health
+							position absolute
+							bottom 0px
+
+							width 50px
+							height 50px
+							max-width cardWidth*(50/178)
+							max-height cardWidth*(50/178)
+
+							border 2px solid transparent
+							border-radius 100%
+							background $black
+
+							display flex
+							justify-content center
+							align-items center
+
+							font-size 25px
+
+						.health
+							right 0px
+
+							border-color $green
+							color $green
+
+							font Roboto
+
+						.gold
+							cursor pointer
+
+							left 0px
+
+							border-color $yellow
+							color $yellow
+
+							transition border-color .2s, color .2s
+							
+							&[g="0"]
+								border-color $grey
+								color $grey
+							&:before
+								content attr(g)
+						.avatar
+							border-radius 100%
+
+					.username
+						color $white
+
+		.main
+			flex 1 1 0
+
+			display flex
+			flex-direction column
+
+			.hdd
+				flex 0 0 auto
+				display flex
+
+				height cardHeight
+
+				.hand
+					flex 1 1 0
+
+				.deck
+				.disc
+					width cardWidth
+					flex 0 0 auto
+
+					> :not(:first-child)
+						display none
+
+			.play
+				flex 1 0
+
+				& .card
+				&.o .card.battle
+					align-self flex-end
+
+				&.o .card
+				& .card.battle
+					align-self flex-start
+
+		.play
+		.hand
+		.deck
+		.disc
+		.supp
+			display flex
+			flex-direction row-reverse
+			justify-content center
+			align-items center
+
+			&.o
+				flex-direction row
+
+
+		.card
+			flex 0 1 auto
+
+			position relative
+
+			display flex
+			justify-content center
+			align-items center
+
+			max-width cardWidth
+			max-height cardHeight
+
+			img
+				max-width 100%
+				max-height 100%
+
+			img._
+				display none
+
+			&.expended
+				max-width cardHeight
+
+				._
+					display block
+					opacity 0
+
+				img:not(._)
+					position absolute
+					transform rotate(-90deg)
+
+			&.flipped img
+				transform rotate(180deg)
+
+
+

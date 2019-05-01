@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<title>Epic Paper Sim</title>
+
+		<link rel="stylesheet" href="bundle.css">
+		<script src="bundle.js"></script>
+	</head>
+	<body style="display: none;" data-bind="visible: true">
+
+		<a class="login" href="/login" data-bind="visible: !user()">Login (via Discord)</a>
+
+		<div class="intro" data-bind="visible: status() === 'waiting' && user(), with: intro">
+			<div class="join">
+				<h1>Join an existing game</h1>
+				<!-- ko foreach: games -->
+				<div class="game" data-bind="css: { pswd: pswdReq }">
+					<span>
+						<span data-bind="text: name || '[unnamed]'">T6</span>
+					</span>
+					<div>
+						<input type="password" data-lpignore="true" placeholder="Password" data-bind="value: pswd, css: { wrong }"/>
+						<button data-bind="click: join">Join</button>
+					</div>
+				</div>
+				<!-- /ko -->
+			</div>
+
+			<div class="host" data-bind="with: host">
+				<h1>Host a new game</h1>
+				<label>
+					<span>Password <i>(optional)</i></span>
+					<input type="password" data-lpignore="true" data-bind="value: pswd"/>
+				</label>
+				<button data-bind="click: host">Host</button>
+			</div>
+
+		</div>
+
+		<div class="waiting" data-bind="visible: status() === 'hosting'">
+			Waiting for someone to join...
+		</div>
+
+		<div class="paper" data-bind="with: paper, visible: status() === 'playing'">
+			<div class="chooseDeck" data-bind="visible: !deckChoice.done(), with: deckChoice">
+				<input placeholder="Deck ID" data-bind="value: deckId, css: { wrong }"/>
+				<button data-bind="click: submitDeck">Submit</button>
+			</div>	
+			<div class="waiting" data-bind="visible: deckChoice.done() && !started()">
+				Waiting for the other player...
+			</div>
+			<div class="game" data-bind="if: started(), visible: started()">
+				<div class="supps">
+					<div>
+						<div class="user o" data-bind="user: oUser">
+							<div class="avatarGroup">
+								<div class="gold" data-bind="attr: { g: +o.gold() }, click: () => o.gold(!o.gold())"></div>
+								<img class="avatar" data-bind="attr: { src: `/api/user:${oUser()._id}/avatar` }"/>
+								<input class="health" data-bind="textInput: o.health, css: { wrong: !vs.health(o.health()) }"/>
+							</div>
+							<span class="username" data-bind="text: `@${oUser().username}#${oUser().discriminator}`"></span>
+						</div>
+						<div class="supp o" data-bind="cards: oSupp, clickMove: 'disc'"></div>
+					</div>
+					<div>
+						<div class="supp p" data-bind="cards: pSupp, clickMove: 'disc'"></div>
+						<div class="user p" data-bind="if: pUser">
+							<div class="avatarGroup">
+								<div class="gold" data-bind="attr: { g: +p.gold() }, click: () => p.gold(!p.gold())"></div>
+								<img class="avatar" data-bind="attr: { src: `/api/user:${pUser()._id}/avatar` }"/>
+								<input class="health" data-bind="textInput: p.health, css: { wrong: !vs.health(p.health()) }"/>
+							</div>
+							<span class="username" data-bind="text: `@${pUser().username}#${pUser().discriminator}`"></span>
+						</div>
+					</div>
+				</div>
+				<div class="main">
+					<div class="hdd o">
+						<div class="hand o" data-bind="cards: oHand, clickMove: ''"></div>
+						<div class="deck o" data-bind="cards: oDeck, clickMove: ''"></div>
+						<div class="disc o" data-bind="cards: oDisc, clickMove: 'hand'"></div>
+					</div>
+					<div class="play o" data-bind="cards: oPlay, clickMove: ''"></div>
+					<div class="play p" data-bind="cards: pPlay, clickMove: 'battle'"></div>
+					<div class="hdd p">
+						<div class="hand p" data-bind="cards: pHand, clickMove: 'playCard'"></div>
+						<div class="deck p" data-bind="cards: pDeck, clickMove: 'hand'"></div>
+						<div class="disc p" data-bind="cards: pDisc, clickMove: 'hand'"></div>
+					</div>
+				</div>
+				<div class="cardOverlay>
+					
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>

@@ -59,6 +59,9 @@ module.exports = class {
 			root.ws.s("move", "move", card._id, `p${self.n()}.${n.toLowerCase()}`);
 			oa.remove(card);
 			self["p" + n].unshift(card);
+			card.damage(0);
+			card.counters(0);
+			card.state("");
 		});
 
 		self.moveFuncs.playCard = (oa, card) =>
@@ -316,6 +319,8 @@ module.exports = class {
 					func: () => self.moveFuncs[n](cards, c),
 				}));
 				this.click = c => () => {
+					if($("input:focus").length)
+						return;
 					if(c.clickTimeout) {
 						clearTimeout(c.clickTimeout);
 						delete c.clickTimeout;
@@ -330,12 +335,14 @@ module.exports = class {
 			},
 			template: `<!-- ko foreach: cards -->
 				<div class="card" data-bind="
-					click: $parent.click($data),
 					css: { battle: inBattle(), marked, expended: state() === 'expended', flipped: state() === 'flipped' },
+					click: $parent.click($data),
 					rightClick: $parent.rightClick($data),
 				">
 					<img class="_" src="/314x314.jpg"/>
 					<img data-bind="attr: { src: card() ? \`/images/\${card()._id}.jpg\` : '/images/back.jpg' }"/>
+					<input class="damage" data-bind="textInput: damage, css: { show: damage }"/>
+					<input class="counters" data-bind="textInput: counters, css: { show: counters }"/>
 				</div>
 			<!-- /ko -->`,
 		});

@@ -23,6 +23,7 @@ let vs = {
 	phase: p => ~phases.indexOf(p),
 	initiative: isBool,
 	waitingOn: isBool,
+	nnInt: n => !isNaN(+n) && +n === Math.floor(+n) && +n >= 0,
 };
 
 function handle(ws, type, ...data){
@@ -91,14 +92,13 @@ function handle(ws, type, ...data){
 				let c =
 					game.p0.zones.play.find(c => c._id.toString() === id) ||
 					game.p1.zones.play.find(c => c._id.toString() === id);
-				console.log(id, val, c);
 				if(!c) break;
 				if(!~({
 					state: ["prepared", "flipped", "expended"],
 					inBattle: [true, false],
 					notes: [val === val.toString() ? val : NaN],
-					damage: [...Array(100)].map((_, i) => i),
-					counters: [...Array(100)].map((_, i) => i),
+					damage: [vs.nnInt(val) ? val : NaN],
+					counters: [vs.nnInt(val) ? val : NaN],
 					marked: [true, false],
 				}[type]).indexOf(val))
 					break;

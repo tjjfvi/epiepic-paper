@@ -306,6 +306,42 @@
 			img._
 				display none
 
+			.counters
+			.damage
+				position absolute
+
+				width 40px
+				height 40px
+
+				border 2px solid $blue
+				border-radius 100%
+				
+				font-size 25px
+				color $blue
+
+				pointer-events none
+				opacity 0
+
+				transition opacity .2s
+
+				^[-2] .play .card.hoverIntent
+					.counters
+					.damage
+						pointer-events auto
+						opacity 1
+				&.show
+				&:focus
+					pointer-events auto
+					opacity 1
+
+			.counters
+				bottom calc(50% - 45px)
+
+			.damage
+				top calc(50% - 45px)
+				border-color $red
+				color $red
+
 			&.expended
 				max-width cardHeight
 

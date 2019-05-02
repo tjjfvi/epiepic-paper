@@ -42,11 +42,6 @@
 		& input
 			border-radius 10px 10px 0px 0px
 	
-	div
-		border 1px solid red
-	.il div
-		border none
-
 	.game
 		width 100vw
 		height 100vh
@@ -54,7 +49,7 @@
 		display flex
 		
 		.supps
-			width cardWidth*1.5
+			width cardWidth*2
 			flex 0 0 auto
 
 			display flex
@@ -70,7 +65,7 @@
 					flex-grow 1
 
 				.user
-					height cardWidth*1.5
+					height cardHeight
 					
 					display flex
 					flex-direction column
@@ -131,6 +126,8 @@
 								content attr(g)
 						.avatar
 							border-radius 100%
+							width 128px
+							height 128px
 
 					.username
 						color $white
@@ -167,6 +164,11 @@
 
 			.dd
 				display flex
+				
+				min-height cardHeight
+				max-height cardHeight
+
+				flex 0 0
 
 				.deck
 				.disc
@@ -191,11 +193,15 @@
 					> .o
 					> .p
 						flex 0 0 auto
-						height 100px
+						height 200px
 
 						display flex
+						flex-direction column
 						justify-content space-around
 						align-items center
+
+						&.o
+							flex-direction column-reverse
 
 						.initiative
 						.waiting
@@ -219,8 +225,8 @@
 							height 50px
 
 						.initiative.on:before
-							border-color $lightgrey
-							background $lightgrey
+							border-color $blue
+							background $blue
 
 						.initiative.hideInitiative
 							pointer-events none
@@ -235,8 +241,8 @@
 							transform rotate(45deg)
 
 						.waiting.on:before
-							border-color $orange
-							background-color $orange
+							border-color $yellow
+							background-color $yellow
 
 						.waiting:not(.on)
 							animation none
@@ -315,5 +321,15 @@
 			&.marked
 				border-color $white
 
+		.hand
+		.user
+		.dd
+			border 0px solid grey
+
+			&.o
+				border-bottom-width 2px
+
+			&.p
+				border-top-width 2px
 
 

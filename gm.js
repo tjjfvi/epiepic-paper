@@ -44,6 +44,14 @@ function handle(ws, type, ...data){
 				ws.s(...ws.o.s("game", obj));
 				break;
 			}
+			case "unreveal":
+			case "reveal": {
+				let [id] = data;
+				let c = game["p" + ws.n].zones.hand.find(c => c._id.toString() === id);
+				if(c)
+					ws.o.s("identity", id, type === "reveal" ? c.card : null);
+				break;
+			}
 			case "move":
 			case "banish": {
 				let [id, zone] = data;
@@ -143,7 +151,9 @@ function setup(ws1, ws2){
 	ws1.p1 = ws2;
 	ws2.p1 = ws2;
 	ws1.s("n", 0);
+	ws1.n = 0;
 	ws2.s("n", 1);
+	ws2.n = 1;
 }
 
 module.exports = { setup, handle };

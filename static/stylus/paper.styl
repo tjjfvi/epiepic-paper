@@ -332,4 +332,28 @@
 			&.p
 				border-top-width 2px
 
+	.rightClick
+		position absolute
+		
+		display flex
+		flex-direction column
+
+	.rightClick span
+		background $black
+		color $white
+
+		border 1px solid $grey
+
+		padding 5px
+
+		cursor pointer
+
+		transition background .2s
+
+		&:hover
+			background $darkgrey
+
+		&:not(:first-child)
+			border-top none
+
 

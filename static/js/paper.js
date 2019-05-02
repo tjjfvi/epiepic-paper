@@ -2,7 +2,7 @@ module.exports = class {
 
 	constructor(root){
 		let self = this;
-		const { ko } = root.globals;
+		const { ko, $ } = root.globals;
 
 		const phases = [
 			"start",
@@ -14,6 +14,8 @@ module.exports = class {
 			"battle-4",
 			"end",
 		];
+
+		self.rightClick = ko.observable([]);
 
 		self.deckChoice = new function(){
 			this.done = ko.observable(false);
@@ -76,6 +78,31 @@ module.exports = class {
 		};
 
 		self.moveFuncs.mark = (oa, card) => card.marked(!card.marked());
+
+		self.moveFuncs.banish = (oa, card) => {
+			root.ws.s("move", "banish", card._id, `p${self.n()}.deck`);
+			self.pDeck.push(card);
+			oa.remove(card);
+		}
+
+		self.moveFuncs.reveal = (oa, card) =>
+			root.ws.s("move", "reveal", card._id);
+
+		self.moveFuncs.unbanish = oa =>
+			self.moveFuncs.supp(oa, oa()[oa().length - 1]);
+
+		self.moveFuncs.unreveal = (oa, card) =>
+			root.ws.s("move", "unreveal", card._id);
+
+		self.moveFuncs.unrevealO = (oa, card) =>
+			card.card(null);
+
+		self.moveFuncNames = {
+			disc: "Discard",
+			supp: "Supplemental",
+			deck: "Top of Deck",
+			unrevealO: "Unreveal",
+		};
 
 		self.phaseName = ko.computed(() => self.started() ? {
 			start: "Start phase",
@@ -216,7 +243,7 @@ module.exports = class {
 				let [id, identity] = data;
 				self.cards[id].card(identity);
 			}
-			if(type === "move") {
+			if(type === "move" || type === "banish") {
 				let [id, zoneName] = data;
 				let c, zone;
 				"Deck Disc Play Hand Supp"
@@ -234,7 +261,11 @@ module.exports = class {
 						if(c) z.remove(c);
 						return !!c;
 					});
-				zone.unshift(c);
+				if(type === "banish")
+					zone.push(c);
+				else
+					zone.unshift(c);
+
 			}
 			if(~"inBattle state marked notes counters damage".split(" ").indexOf(type))
 				self.cards[data[0]]["_" + type](data[1]);
@@ -246,24 +277,49 @@ module.exports = class {
 				el,
 				ko.computed(() => ({
 					name: "cards",
-					params: { cards: valAcc(), clickMove: allBinds.get("clickMove") },
+					params: { ...allBinds(), cards: valAcc() },
 				})),
 				allBinds,
 				vm,
 				bindCtx,
 			),
-		};
+		}
+
+		ko.bindingHandlers.rightClick = {
+			init: (el, valAcc) => {
+				$(el).on("contextmenu", e => {
+					let items = ko.unwrap(valAcc());
+					let y = e.originalEvent.clientY;
+					let height = 30 * items.length + 1;
+					let vh = $("body").height()
+					self.rightClick(items);
+					$(".rightClick").offset({
+						left: e.originalEvent.clientX + 1,
+						top: Math.min(y, vh - height),
+					});
+					return false;
+				});
+			},
+		}
+
+		$("*").on("click contextmenu", () => self.rightClick([]));
 
 		ko.components.register("cards", {
-			viewModel: function({ cards, clickMove }){
+			viewModel: function({ cards, main = "", alt = main }){
+				if(!alt.includes("mark"))
+					alt = "mark " + alt;
 				this.cards = cards;
-				this.clickMove = self.moveFuncs[clickMove];
-				console.log(this.cards === self.oDeck, self.oDeck);
+				this.main = self.moveFuncs[main];
+				this.rightClick = c => alt.trim().split(/\s+/g).map(n => ({
+					name: self.moveFuncNames[n] || (n[0].toUpperCase() + n.slice(1)).split(/(?=[A-Z][a-z]+)/g).join(" "),
+					func: () => self.moveFuncs[n](cards, c),
+				}));
 			},
 			template: `<!-- ko foreach: cards -->
 				<div class="card" data-bind="
-					click: () => $parent.clickMove($parent.cards, $data),
-					css: { battle: inBattle(), [state() || '']: true, marked }
+					click: () => $parent.main($parent.cards, $data),
+					css: { battle: inBattle(), marked, expended: state() === 'expended', flipped: state() === 'flipped' },
+					rightClick: $parent.rightClick($data),
 				">
 					<img class="_" src="/314x314.jpg"/>
 					<img data-bind="attr: { src: card() ? \`/images/\${card()._id}.jpg\` : '/images/back.jpg' }"/>

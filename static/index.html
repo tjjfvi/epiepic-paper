@@ -61,10 +61,10 @@
 							</div>
 							<span class="username" data-bind="text: `@${oUser().username}#${oUser().discriminator}`"></span>
 						</div>
-						<div class="supp o" data-bind="cards: oSupp, clickMove: 'disc'"></div>
+						<div class="supp o" data-bind="cards: oSupp, main: 'mark'"></div>
 					</div>
 					<div>
-						<div class="supp p" data-bind="cards: pSupp, clickMove: 'disc'"></div>
+						<div class="supp p" data-bind="cards: pSupp, main: 'disc', alt: 'disc play hand banis'"></div>
 						<div class="user p" data-bind="if: pUser">
 							<div class="avatarGroup">
 								<div class="gold" data-bind="attr: { g: +p.gold() }, click: () => p.gold(!p.gold())"></div>
@@ -76,15 +76,15 @@
 					</div>
 				</div>
 				<div class="main">
-					<div class="hand o" data-bind="cards: oHand, clickMove: 'mark'"></div>
-					<div class="play o" data-bind="cards: oPlay, clickMove: 'mark'"></div>
-					<div class="play p" data-bind="cards: pPlay, clickMove: 'battle'"></div>
-					<div class="hand p" data-bind="cards: pHand, clickMove: 'playCard'"></div>
+					<div class="hand o" data-bind="cards: oHand, main: 'mark', alt: 'unrevealO'"></div>
+					<div class="play o" data-bind="cards: oPlay, main: 'mark'"></div>
+					<div class="play p" data-bind="cards: pPlay, main: 'battle', alt: 'prepare expend flip disc hand supp banish'"></div>
+					<div class="hand p" data-bind="cards: pHand, main: 'playCard', alt: 'playCard reveal unreveal disc deck banish'"></div>
 				</div>
 				<div class="right">
 					<div class="dd o">
-						<div class="deck o" data-bind="cards: oDeck, clickMove: 'mark'"></div>
-						<div class="disc o" data-bind="cards: oDisc, clickMove: 'hand'"></div>
+						<div class="deck o" data-bind="cards: oDeck, main: 'mark'"></div>
+						<div class="disc o" data-bind="cards: oDisc, main: 'hand'"></div>
 					</div>
 					<div class="il">
 						<div class="i">
@@ -115,9 +115,12 @@
 						</div>
 					</div>
 					<div class="dd p">	
-						<div class="deck p" data-bind="cards: pDeck, clickMove: 'hand'"></div>
-						<div class="disc p" data-bind="cards: pDisc, clickMove: 'hand'"></div>
+						<div class="deck p" data-bind="cards: pDeck, main: 'hand', alt: 'hand supp unbanish'"></div>
+						<div class="disc p" data-bind="cards: pDisc, main: 'hand', alt: 'hand playCard banish'"></div>
 					</div>
+				</div>
+				<div class="rightClick" data-bind="foreach: rightClick()">
+					<span data-bind="click: func, text: name"></span>
 				</div>
 			</div>
 		</div>

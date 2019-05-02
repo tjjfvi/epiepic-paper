@@ -1,4 +1,3 @@
-
 module.exports = class {
 
 	constructor(root){
@@ -6,6 +5,7 @@ module.exports = class {
 		const self = this;
 
 		self.games = ko.observable([]);
+		self.reconnectGames = ko.observable([]);
 
 		self.host = {
 			name: ko.computed(() => {
@@ -22,6 +22,13 @@ module.exports = class {
 		root.on("ws", ({ type, data }) => {
 			if(type === "games")
 				self.games(data[0].map(g => new Game(g)));
+			if(type === "reconnectGames")
+				self.reconnectGames(data[0].map(g => ({
+					...g,
+					reconnect: () => {
+						root.ws.s("reconnect", g._id);
+					}
+				})));
 		})
 
 		class Game {

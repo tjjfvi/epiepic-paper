@@ -248,13 +248,20 @@ module.exports = class {
 			return c;
 		}
 
+		self.concede = {
+			name: "Concede",
+			func: () => {
+				root.ws.s("move", "concede");
+				history.go(0);
+			},
+		};
+
 		root.on("ws", ({ type, data }) => {
 			if(type === "game") {
 				let [game] = data;
 				self.game = game;
 				self.p = game.p = game["p" + self.n()];
 				self.o = game.o = game["p" + +!self.n()];
-				console.log(self.p, self.n());
 				let f = n => {
 					let o = ko.observable(n.split(".").reduce((o, p) => o[p], game));
 					let c = ko.computed({
@@ -320,6 +327,9 @@ module.exports = class {
 			}
 			if(~"inBattle state marked notes counters damage".split(" ").indexOf(type))
 				self.cards[data[0]]["_" + type](data[1]);
+			if(type === "won") {
+				root.status("won");
+			}
 			(wsObservables[type] || (() => {}))(data[0]);
 		});
 
@@ -355,34 +365,36 @@ module.exports = class {
 
 		$("*").on("click contextmenu", () => self.rightClick([]));
 
-		ko.components.register("cards", {
-			viewModel: function({ cards, main = "", alt = main }){
-				if(!alt.includes("mark"))
-					alt = "mark " + alt;
-				this.cards = cards;
-				this.main = self.moveFuncs[main];
-				this.rightClick = c => alt.trim().split(/\s+/g).map(n => ({
-					name: self.moveFuncNames[n] || (n[0].toUpperCase() + n.slice(1)).split(/(?=[A-Z][a-z]+)/g).join(" "),
-					func: () => self.moveFuncs[n](cards, c),
-				}));
-				this.click = c => c.click || (c.click = self.double(
-					() => this.main(cards, c),
-					() => c.card() && !$("input:focus").length && self.cardPopup(c),
-				));
-			},
-			template: `<!-- ko foreach: cards -->
-				<div class="card" data-bind="
-					css: { battle: inBattle(), marked, expended: state() === 'expended', flipped: state() === 'flipped' },
-					click: $parent.click($data),
-					rightClick: $parent.rightClick($data),
-				">
-					<img class="_" src="/314x314.jpg"/>
-					<img data-bind="attr: { src }"/>
-					<input class="damage" data-bind="textInput: damage, css: { show: damage }"/>
-					<input class="counters" data-bind="textInput: counters, css: { show: counters }"/>
-				</div>
-			<!-- /ko -->`,
-		});
+		try {
+			ko.components.register("cards", {
+				viewModel: function({ cards, main = "", alt = main }){
+					if(!alt.includes("mark"))
+						alt = "mark " + alt;
+					this.cards = cards;
+					this.main = self.moveFuncs[main];
+					this.rightClick = c => alt.trim().split(/\s+/g).map(n => ({
+						name: self.moveFuncNames[n] || (n[0].toUpperCase() + n.slice(1)).split(/(?=[A-Z][a-z]+)/g).join(" "),
+						func: () => self.moveFuncs[n](cards, c),
+					}));
+					this.click = c => c.click || (c.click = self.double(
+						() => this.main(cards, c),
+						() => c.card() && !$("input:focus").length && self.cardPopup(c),
+					));
+				},
+				template: `<!-- ko foreach: cards -->
+					<div class="card" data-bind="
+						css: { battle: inBattle(), marked, expended: state() === 'expended', flipped: state() === 'flipped' },
+						click: $parent.click($data),
+						rightClick: $parent.rightClick($data),
+					">
+						<img class="_" src="/314x314.jpg"/>
+						<img data-bind="attr: { src }"/>
+						<input class="damage" data-bind="textInput: damage, css: { show: damage }"/>
+						<input class="counters" data-bind="textInput: counters, css: { show: counters }"/>
+					</div>
+				<!-- /ko -->`,
+			});
+		} catch (e) {}
 
 		self.draw = self.double(() => self.moveFuncs.hand(self.pDeck, self.pDeck()[0]), () => {});
 

@@ -49,6 +49,8 @@ require("jquery")($ => {
 					}
 				})
 
+				ws.addEventListener("close", () => history.go(0));
+
 				return ws;
 			}
 		}

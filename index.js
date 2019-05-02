@@ -11,6 +11,7 @@ const { promisify } = require("util");
 const fetch = require("node-fetch");
 
 const gm = require("./gm");
+const Game = require("./Game");
 
 const b = browserify({
 	entries: [__dirname + "/static/js/index.js"],
@@ -48,6 +49,7 @@ app.get("/bundle.css", async (req, res) => {
 let wss = {
 	waiting: [],
 	hosting: [],
+	reconnecting: {},
 	byId:    {},
 }
 
@@ -59,11 +61,20 @@ app.ws("/ws", async (ws, req) => {
 
 	let user = await fetch(`${API_BASE_URL}api/user/current`, {
 		headers: { Cookie: `token=${token}` }
-	}).then(r => r.json()).catch(() => (ws.end(), null));
+	}).then(r => r.json()).catch(() => (ws.close(), null));
 
 	if(!user) return;
 
 	ws.user = user;
+
+	ws.reconnectGames = Game.find({ $or: [{ "p0.user._id": user._id }, { "p1.user._id": user._id }] }).then(games => {
+		ws.s("reconnectGames", games.map(game => {
+			let oUser = game.p0.user._id === user._id ? game.p1.user : game.p0.user;
+			let oConnected = !!wss.reconnecting[game];
+			return { oUser, oConnected, _id: game._id };
+		}))
+		return games;
+	});
 
 	ws.s = function(...data){
 		if(this.readyState !== 1)
@@ -82,7 +93,7 @@ app.ws("/ws", async (ws, req) => {
 
 	setInterval(() => ws.s("ping"), 1000);
 
-	ws.on("message", message => {
+	ws.on("message", async message => {
 		let type, data;
 		try {
 			[type, ...data] = JSON.parse(message);
@@ -144,6 +155,37 @@ app.ws("/ws", async (ws, req) => {
 				ws.status = "hosting";
 
 				sendStatus(ws);
+
+				break;
+			}
+			case "reconnect": {
+				if(ws.status !== "waiting")
+					return;
+
+				let [id] = data;
+
+				let games = await ws.reconnectGames;
+				console.log(games);
+				let game = games.find(g => g._id.toString() === id);
+
+				if(!game)
+					return;
+
+				let ws2 = wss.reconnecting[id];
+
+				if(ws2 === ws)
+					return;
+
+				if(ws2) {
+					ws.status = ws2.status = "playing";
+					sendStatus(ws, ws2);
+					return gm.reconnect(ws, wss.reconnecting[id], game);
+				}
+
+				ws.status = "reconnectWait";
+				sendStatus(ws);
+
+				wss.reconnecting[id] = ws;
 
 				break;
 			}

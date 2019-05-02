@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 let cSchema = new mongoose.Schema({
 	card: {},
 	marked: Boolean,
+	public: Boolean,
 });
 
 let pSchema = new mongoose.Schema({
@@ -19,6 +20,7 @@ let pSchema = new mongoose.Schema({
 			inBattle: Boolean,
 			state: { type: String, enum: ["prepared", "flipped", "expended"] },
 			marked: Boolean,
+			public: Boolean,
 		}],
 		disc: [cSchema],
 	},

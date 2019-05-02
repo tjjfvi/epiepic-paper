@@ -14,10 +14,20 @@
 		<div class="intro" data-bind="visible: status() === 'waiting' && user(), with: intro">
 			<div class="join">
 				<h1>Join an existing game</h1>
+				<!-- ko foreach: reconnectGames -->
+				<div class="game" data-bind="css: { oConnected }">
+					<span>
+						<span data-bind="text: `@${oUser.username}#${oUser.discriminator}`"></span>
+					</span>
+					<div>
+						<button data-bind="click: reconnect">Reconnect</button>
+					</div>
+				</div>
+				<!-- /ko -->
 				<!-- ko foreach: games -->
 				<div class="game" data-bind="css: { pswd: pswdReq }">
 					<span>
-						<span data-bind="text: name || '[unnamed]'">T6</span>
+						<span data-bind="text: name || '[unnamed]'"></span>
 					</span>
 					<div>
 						<input type="password" data-lpignore="true" placeholder="Password" data-bind="value: pswd, css: { wrong }"/>
@@ -35,15 +45,22 @@
 				</label>
 				<button data-bind="click: host">Host</button>
 			</div>
-
 		</div>
 
 		<div class="waiting" data-bind="visible: status() === 'hosting'">
 			Waiting for someone to join...
 		</div>
 
+		<div class="waiting" data-bind="visible: status() === 'reconnectWait'">
+			Waiting for opponent to reconnect...
+		</div>
+
+		<div class="waiting" data-bind="visible: status() === 'won'" style="animation: none">
+			You won!
+		</div>
+
 		<div class="paper" data-bind="with: paper, visible: status() === 'playing'">
-			<div class="chooseDeck" data-bind="visible: !deckChoice.done(), with: deckChoice">
+			<div class="chooseDeck" data-bind="visible: !deckChoice.done() && !started(), with: deckChoice">
 				<input placeholder="Deck ID" data-bind="value: deckId, css: { wrong }"/>
 				<button data-bind="click: submitDeck">Submit</button>
 			</div>	
@@ -68,7 +85,7 @@
 						<div class="user p" data-bind="if: pUser">
 							<div class="avatarGroup">
 								<div class="gold" data-bind="attr: { g: +p.gold() }, click: () => p.gold(!p.gold())"></div>
-								<img class="avatar" data-bind="attr: { src: `/api/user:${pUser()._id}/avatar` }"/>
+								<img class="avatar" data-bind="attr: { src: `/api/user:${pUser()._id}/avatar` }, rightClick: [concede]"/>
 								<input class="health" data-bind="textInput: p.health, css: { wrong: !vs.health(p.health()) }"/>
 							</div>
 							<span class="username" data-bind="text: `@${pUser().username}#${pUser().discriminator}`"></span>

@@ -72,6 +72,7 @@ module.exports = class {
 			card.damage(0);
 			card.counters(0);
 			card.state("");
+			delete card.click;
 		});
 
 		self.moveFuncs.playCard = (oa, card) =>
@@ -337,10 +338,10 @@ module.exports = class {
 					name: self.moveFuncNames[n] || (n[0].toUpperCase() + n.slice(1)).split(/(?=[A-Z][a-z]+)/g).join(" "),
 					func: () => self.moveFuncs[n](cards, c),
 				}));
-				this.click = c => self.double(
+				this.click = c => c.click || (c.click = self.double(
 					() => this.main(cards, c),
 					() => c.card() && !$("input:focus").length && self.cardPopup(c),
-				);
+				));
 			},
 			template: `<!-- ko foreach: cards -->
 				<div class="card" data-bind="

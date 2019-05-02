@@ -375,7 +375,7 @@ module.exports = class {
 			return f;
 		};
 
-		self.draw = self.double(() => self.moveFuncs.hand(self.oDeck, self.oDeck()[0]), () => {});
+		self.draw = self.double(() => self.moveFuncs.hand(self.pDeck, self.pDeck()[0]), () => {});
 
 	}
 

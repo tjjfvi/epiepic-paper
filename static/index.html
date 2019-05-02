@@ -122,6 +122,13 @@
 				<div class="rightClick" data-bind="foreach: rightClick()">
 					<span data-bind="click: func, text: name"></span>
 				</div>
+				<div class="popup cardPopup" data-bind="
+					css:{ hide: !cardPopup() },
+					click: () => cardPopup(null),
+					with: cardPopup,
+				">
+					<img data-bind="attr: { src: `/images/${card() ? card()._id : 'back'}.jpg` }"/>
+				</div>
 			</div>
 		</div>
 

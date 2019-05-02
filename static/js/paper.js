@@ -16,6 +16,7 @@ module.exports = class {
 		];
 
 		self.rightClick = ko.observable([]);
+		self.cardPopup = ko.observable(null);
 
 		self.deckChoice = new function(){
 			this.done = ko.observable(false);
@@ -314,10 +315,22 @@ module.exports = class {
 					name: self.moveFuncNames[n] || (n[0].toUpperCase() + n.slice(1)).split(/(?=[A-Z][a-z]+)/g).join(" "),
 					func: () => self.moveFuncs[n](cards, c),
 				}));
+				this.click = c => () => {
+					if(c.clickTimeout) {
+						clearTimeout(c.clickTimeout);
+						delete c.clickTimeout;
+						return this.main(cards, c);
+					}
+					c.clickTimeout = setTimeout(() => {
+						delete c.clickTimeout;
+						if(c.card())
+							self.cardPopup(c);
+					}, 250);
+				}
 			},
 			template: `<!-- ko foreach: cards -->
 				<div class="card" data-bind="
-					click: () => $parent.main($parent.cards, $data),
+					click: $parent.click($data),
 					css: { battle: inBattle(), marked, expended: state() === 'expended', flipped: state() === 'flipped' },
 					rightClick: $parent.rightClick($data),
 				">

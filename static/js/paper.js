@@ -39,6 +39,16 @@ module.exports = class {
 			self["o" + n] = ko.observableArray([]);
 		});
 
+		self.tokens = ko.observable([]);
+
+		fetch(`/api/card/.json`).then(r => r.json()).then(cs => self.tokens(cs
+			.filter(c => c.packCode === "tokens")
+			.map(c => ({
+				name: c.name,
+				func: () => root.ws.s("move", "token", c._id),
+			}))
+		));
+
 		self.cards = {};
 
 		let isBool = b => ~[true, false].indexOf(b);
@@ -190,6 +200,26 @@ module.exports = class {
 			self.o.waitingOn(false);
 		}
 
+		self.newCard = c => {
+			c.card = ko.observable(c.card);
+			"inBattle state marked notes counters damage"
+				.split(" ")
+				.map(n => {
+					let o = c["_" + n] = ko.observable(c[n]);
+					c[n] = ko.computed({
+						read: o,
+						write: v => {
+							o(v);
+							if((self.vs[n] || (() => true))(v))
+								root.ws.s("move", n, c._id, v);
+						},
+					});
+				});
+			c.src = ko.computed(() => `/images/${c.card() ? c.card()._id : "back"}.jpg`);
+			self.cards[c._id] = c;
+			return c;
+		}
+
 		root.on("ws", ({ type, data }) => {
 			if(type === "game") {
 				let [game] = data;
@@ -222,25 +252,7 @@ module.exports = class {
 				self.oUser(game.o.user);
 				self.pUser(game.p.user);
 				"Deck Disc Play Supp Hand".split(" ").map(z => ["p", "o"].map(p =>
-					self[p + z](game[p].zones[z.toLowerCase()].map(c => {
-						c.card = ko.observable(c.card);
-						"inBattle state marked notes counters damage"
-							.split(" ")
-							.map(n => {
-								let o = c["_" + n] = ko.observable(c[n]);
-								c[n] = ko.computed({
-									read: o,
-									write: v => {
-										o(v);
-										if((self.vs[n] || (() => true))(v))
-											root.ws.s("move", n, c._id, v);
-									},
-								});
-							});
-						c.src = ko.computed(() => `/images/${c.card() ? c.card()._id : "back"}.jpg`);
-						self.cards[c._id] = c;
-						return c;
-					}))
+					self[p + z](game[p].zones[z.toLowerCase()].map(self.newCard))
 				));
 				self.started(true);
 			}
@@ -248,7 +260,7 @@ module.exports = class {
 				let [id, identity] = data;
 				self.cards[id].card(identity);
 			}
-			if(type === "move" || type === "banish") {
+			if(type === "delete" || type === "move" || type === "banish") {
 				let [id, zoneName] = data;
 				let c, zone;
 				"Deck Disc Play Hand Supp"
@@ -256,6 +268,8 @@ module.exports = class {
 					.flatMap(a => ["o" + a, "p" + a])
 					.map(n => [n, self[n]])
 					.map(([n, z]) => {
+						if(type === "delete")
+							return z;
 						console.log(n, z);
 						if((self.n() ^ (n[0] === "p") ^ zoneName[1]) && n.slice(1).toLowerCase() === zoneName.slice(3))
 							zone = z;
@@ -268,9 +282,13 @@ module.exports = class {
 					});
 				if(type === "banish")
 					zone.push(c);
-				else
+				else if(type === "move")
 					zone.unshift(c);
 
+			}
+			if(type === "token") {
+				let [p, c] = data;
+				self[(p[1] ^ self.n() ? "o" : "p") + "Play"].push(self.newCard(c));
 			}
 			if(~"inBattle state marked notes counters damage".split(" ").indexOf(type))
 				self.cards[data[0]]["_" + type](data[1]);

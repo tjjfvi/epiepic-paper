@@ -1,3 +1,4 @@
+const fetch = require("node-fetch");
 const mongoose = require("mongoose");
 mongoose.connect(process.env.DB_URL, { useNewUrlParser: true });
 
@@ -71,6 +72,10 @@ function handle(ws, type, ...data){
 					return true;
 				}) || [];
 				if(!source) break;
+				if(c.card.packCode === "tokens" && !zone.endsWith(".play")){
+					ws.s(...ws.o.s("delete", id));
+					break;
+				}
 				if(type !== "banish" || !zone.endsWith(".deck"))
 					dest.unshift(c);
 				else
@@ -80,6 +85,19 @@ function handle(ws, type, ...data){
 				else if(!zone.endsWith(".deck"))
 					ws.s(...ws.o.s("identity", id, c.card));
 				ws.o.s(type, ...data);
+				break;
+			}
+			case "token": {
+				let [cardId] = data;
+				let c = await fetch(process.env.API_BASE_URL + `api/card:${cardId}/`)
+					.then(r => r.json())
+					.catch(() => {});
+				console.log(cardId, c);
+				if(!c)
+					break;
+				let id = new mongoose.Types.ObjectId();
+				game["p" + ws.n].zones.play.unshift({ _id: id, card: c });
+				ws.s(...ws.o.s("token", "p" + ws.n, { _id: id, card: c }));
 				break;
 			}
 			case "inBattle":

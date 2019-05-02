@@ -78,7 +78,12 @@
 				<div class="main">
 					<div class="hand o" data-bind="cards: oHand, main: 'mark', alt: 'unrevealO'"></div>
 					<div class="play o" data-bind="cards: oPlay, main: 'mark'"></div>
-					<div class="play p" data-bind="cards: pPlay, main: 'battle', alt: 'prepare expend flip disc hand supp banish'"></div>
+					<div class="play p" data-bind="
+						cards: pPlay,
+						main: 'battle',
+						alt: 'prepare expend flip disc hand supp banish',
+						rightClick: tokens(),
+					"></div>
 					<div class="hand p" data-bind="cards: pHand, main: 'playCard', alt: 'playCard reveal unreveal disc deck banish'"></div>
 				</div>
 				<div class="right">

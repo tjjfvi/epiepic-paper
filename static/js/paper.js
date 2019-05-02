@@ -18,10 +18,28 @@ module.exports = class {
 		self.rightClick = ko.observable([]);
 		self.cardPopup = ko.observable(null);
 
+		let clickTarget;
+		let clickTimeout;
+		self.double = (a, b) => {
+			let f = () => {
+				clearTimeout(clickTimeout);
+				if(clickTimeout && clickTarget === f) {
+					clickTimeout = null;
+					return a();
+				}
+				clickTarget = f;
+				clickTimeout = setTimeout(() => {
+					clickTimeout = null;
+					b();
+				}, 250);
+			};
+			return f;
+		};
+
 		self.deckChoice = new function(){
 			this.done = ko.observable(false);
 			this.wrong = ko.observable(false);
-			this.deckId = ko.observable("");
+			this.deckId = ko.observable("5cb5cb9e3782ae2887272c28");
 			this.submitDeck = () => {
 				fetch(`/api/deck:${this.deckId()}/`)
 					.then(r => r.json()).then(d => d.cards)
@@ -61,7 +79,6 @@ module.exports = class {
 			initiative: isBool,
 			waitingOn: isBool,
 		};
-
 
 		self.moveFuncs = { "": () => {} };
 
@@ -200,6 +217,16 @@ module.exports = class {
 			self.p.waitingOn(true);
 			self.o.waitingOn(false);
 		}
+
+		self.tpClick = self.double(self.cyclePhase, () =>
+			self.hideInitiative() ?
+				self.p.waitingOn() ?
+					(self.p.waitingOn(false), self.o.waitingOn(true)) :
+					self.o.waitingOn() ?
+						(self.p.waitingOn(true), self.o.waitingOn(false)) :
+						null :
+				self.game.initiative(!self.game.initiative())
+		);
 
 		self.newCard = c => {
 			c.card = ko.observable(c.card);
@@ -356,24 +383,6 @@ module.exports = class {
 				</div>
 			<!-- /ko -->`,
 		});
-
-		let clickTarget;
-		let clickTimeout;
-		self.double = (a, b) => {
-			let f = () => {
-				clearTimeout(clickTimeout);
-				if(clickTimeout && clickTarget === f) {
-					clickTimeout = null;
-					return a();
-				}
-				clickTarget = f;
-				clickTimeout = setTimeout(() => {
-					clickTimeout = null;
-					b();
-				}, 250);
-			};
-			return f;
-		};
 
 		self.draw = self.double(() => self.moveFuncs.hand(self.pDeck, self.pDeck()[0]), () => {});
 

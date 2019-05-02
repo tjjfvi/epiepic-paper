@@ -108,7 +108,7 @@
 									click: () => (o.waitingOn(!o.waitingOn()), p.waitingOn(false)),
 								"></div>
 							</div>
-							<div class="tp" data-bind="event: { click: cyclePhase, contextmenu: cyclePhaseAlt }">
+							<div class="tp" data-bind="event: { click: tpClick, contextmenu: cyclePhaseAlt }">
 								<span class="turn" data-bind="text: game.turn() ^ n() ? 'Their turn' : 'Your turn'"></span>
 								<span class="phase" data-bind="text: phaseName()"></span>
 							</div>

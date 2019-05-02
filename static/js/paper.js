@@ -237,6 +237,7 @@ module.exports = class {
 									},
 								});
 							});
+						c.src = ko.computed(() => `/images/${c.card() ? c.card()._id : "back"}.jpg`);
 						self.cards[c._id] = c;
 						return c;
 					}))
@@ -318,20 +319,10 @@ module.exports = class {
 					name: self.moveFuncNames[n] || (n[0].toUpperCase() + n.slice(1)).split(/(?=[A-Z][a-z]+)/g).join(" "),
 					func: () => self.moveFuncs[n](cards, c),
 				}));
-				this.click = c => () => {
-					if($("input:focus").length)
-						return;
-					if(c.clickTimeout) {
-						clearTimeout(c.clickTimeout);
-						delete c.clickTimeout;
-						return this.main(cards, c);
-					}
-					c.clickTimeout = setTimeout(() => {
-						delete c.clickTimeout;
-						if(c.card())
-							self.cardPopup(c);
-					}, 250);
-				}
+				this.click = c => self.double(
+					() => this.main(cards, c),
+					() => c.card() && !$("input:focus").length && self.cardPopup(c),
+				);
 			},
 			template: `<!-- ko foreach: cards -->
 				<div class="card" data-bind="
@@ -340,12 +331,33 @@ module.exports = class {
 					rightClick: $parent.rightClick($data),
 				">
 					<img class="_" src="/314x314.jpg"/>
-					<img data-bind="attr: { src: card() ? \`/images/\${card()._id}.jpg\` : '/images/back.jpg' }"/>
+					<img data-bind="attr: { src }"/>
 					<input class="damage" data-bind="textInput: damage, css: { show: damage }"/>
 					<input class="counters" data-bind="textInput: counters, css: { show: counters }"/>
 				</div>
 			<!-- /ko -->`,
 		});
+
+		let clickTarget;
+		let clickTimeout;
+		self.double = (a, b) => {
+			let f = () => {
+				clearTimeout(clickTimeout);
+				if(clickTimeout && clickTarget === f) {
+					clickTimeout = null;
+					return a();
+				}
+				clickTarget = f;
+				clickTimeout = setTimeout(() => {
+					clickTimeout = null;
+					b();
+				}, 250);
+			};
+			return f;
+		};
+
+		self.draw = self.double(() => self.moveFuncs.hand(self.oDeck, self.oDeck()[0]), () => {});
+
 	}
 
 }

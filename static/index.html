@@ -83,8 +83,13 @@
 				</div>
 				<div class="right">
 					<div class="dd o">
-						<div class="deck o" data-bind="cards: oDeck, main: 'mark'"></div>
-						<div class="disc o" data-bind="cards: oDisc, main: 'hand'"></div>
+						<img class="deck o" data-bind="attr: { src: (oDeck()[0]||{}).src }"/>
+						<div class="disc o" data-bind="
+							cards: oDisc,
+							main: 'hand',
+							alt: 'hand playCard banish',
+							css: { ['n' + Math.ceil(Math.sqrt(oDisc().length))]: true },
+						"></div>
 					</div>
 					<div class="il">
 						<div class="i">
@@ -115,19 +120,24 @@
 						</div>
 					</div>
 					<div class="dd p">	
-						<div class="deck p" data-bind="cards: pDeck, main: 'hand', alt: 'hand supp unbanish'"></div>
-						<div class="disc p" data-bind="cards: pDisc, main: 'hand', alt: 'hand playCard banish'"></div>
+						<img class="deck o" data-bind="click: draw, attr: { src: (pDeck()[0]||{}).src }"/>
+						<div class="disc p" data-bind="
+							cards: pDisc,
+							main: 'hand',
+							alt: 'hand playCard banish',
+							css: { ['n' + Math.ceil(Math.sqrt(pDisc().length))]: true },
+						"></div>
 					</div>
 				</div>
 				<div class="rightClick" data-bind="foreach: rightClick()">
 					<span data-bind="click: func, text: name"></span>
 				</div>
 				<div class="popup cardPopup" data-bind="
-					css:{ hide: !cardPopup() },
+					css: { hide: !cardPopup() },
 					click: () => cardPopup(null),
 					with: cardPopup,
 				">
-					<img data-bind="attr: { src: `/images/${card() ? card()._id : 'back'}.jpg` }"/>
+					<img data-bind="attr: { src }"/>
 				</div>
 			</div>
 		</div>

@@ -3,6 +3,9 @@
 	cardHeight = 20vh
 	cardWidth = cardHeight / 1.395555555
 
+	img:not([src])
+		opacity 0
+
 	& input
 	& button
 		background-color $black
@@ -175,9 +178,6 @@
 					width cardWidth
 					flex 0 0 auto
 
-					> :not(:first-child)
-						display none
-
 			.il
 				flex 1 0 auto
 				
@@ -267,9 +267,9 @@
 								font-size 25px
 
 
+
 		.play
 		.hand
-		.deck
 		.disc
 		.supp
 			display flex
@@ -280,6 +280,16 @@
 			&.o
 				flex-direction row
 
+		.disc
+			align-content center
+			flex-wrap wrap
+
+			for num in 1 2 3 4 5 6 7 8 9 10
+				&.n{num} .card
+					max-width (cardWidth/num)
+
+		.deck
+			cursor pointer
 
 		.card
 			flex 0 1 auto

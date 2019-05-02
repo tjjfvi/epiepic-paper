@@ -18,6 +18,12 @@ $purple    = #8e44ad
 	&:focus
 		outline 0
 
+	&:not(input)
+		-moz-user-select none
+		-webkit-user-select none
+		-ms-user-select none
+		user-select none
+
 body, html
 	background-color $black
 	margin 0

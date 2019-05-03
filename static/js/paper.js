@@ -374,6 +374,9 @@ module.exports = class {
 						if(c) z.remove(c);
 						return !!c;
 					});
+				c.counters(0);
+				c.damage(0);
+				c.state("prepared");
 				if(type === "banish")
 					zone.push(c);
 				else if(type === "move")

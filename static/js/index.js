@@ -65,7 +65,7 @@ require("jquery")($ => {
 			.addBack()
 			.filter($(":hover"))
 			.addClass("hoverIntent")
-	, 500)).on("mouseout", () => $(".hoverIntent:not(:hover)").removeClass("hoverIntent"));
+	, 200)).on("mouseout", () => $(".hoverIntent:not(:hover)").removeClass("hoverIntent"));
 
 	$("*").on("contextmenu", () => false);
 

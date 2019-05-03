@@ -65,6 +65,6 @@ require("jquery")($ => {
 			.addBack()
 			.filter($(":hover"))
 			.addClass("hoverIntent")
-	, 1000)).on("mouseout", () => $(".hoverIntent:not(:hover)").removeClass("hoverIntent"));
+	, 500)).on("mouseout", () => $(".hoverIntent:not(:hover)").removeClass("hoverIntent"));
 
 });

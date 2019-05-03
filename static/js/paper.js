@@ -392,36 +392,34 @@ module.exports = class {
 
 		$("*").on("click contextmenu", () => self.rightClick([]));
 
-		try {
-			ko.components.register("cards", {
-				viewModel: function({ cards, main = "", alt = main }){
-					if(!alt.includes("mark"))
-						alt = "mark " + alt;
-					this.cards = cards;
-					this.main = self.moveFuncs[main];
-					this.rightClick = c => alt.trim().split(/\s+/g).map(n => ({
-						name: self.moveFuncNames[n] || (n[0].toUpperCase() + n.slice(1)).split(/(?=[A-Z][a-z]+)/g).join(" "),
-						func: () => self.moveFuncs[n](cards, c),
-					}));
-					this.click = c => c.click || (c.click = self.double(
-						() => this.main(cards, c),
-						() => c.card() && !$("input:focus").length && self.cardPopup(c),
-					));
-				},
-				template: `<!-- ko foreach: cards -->
-					<div class="card" data-bind="
-						css: { battle: inBattle(), marked, expended: state() === 'expended', flipped: state() === 'flipped' },
-						click: $parent.click($data),
-						rightClick: $parent.rightClick($data),
-					">
-						<img class="_" src="/314x314.jpg"/>
-						<img data-bind="attr: { src }"/>
-						<input class="damage" data-bind="value: damage, css: { show: damage }"/>
-						<input class="counters" data-bind="value: counters, css: { show: counters }"/>
-					</div>
-				<!-- /ko -->`,
-			});
-		} catch (e) {}
+		ko.components.register("cards", {
+			viewModel: function({ cards, main = "", alt = main }){
+				if(!alt.includes("mark"))
+					alt = "mark " + alt;
+				this.cards = cards;
+				this.main = self.moveFuncs[main];
+				this.rightClick = c => alt.trim().split(/\s+/g).map(n => ({
+					name: self.moveFuncNames[n] || (n[0].toUpperCase() + n.slice(1)).split(/(?=[A-Z][a-z]+)/g).join(" "),
+					func: () => self.moveFuncs[n](cards, c),
+				}));
+				this.click = c => c.click || (c.click = self.double(
+					() => this.main(cards, c),
+					() => c.card() && !$("input:focus").length && self.cardPopup(c),
+				));
+			},
+			template: `<!-- ko foreach: cards -->
+				<div class="card" data-bind="
+					css: { battle: inBattle(), marked, expended: state() === 'expended', flipped: state() === 'flipped' },
+					click: $parent.click($data),
+					rightClick: $parent.rightClick($data),
+				">
+					<img class="_" src="/314x314.jpg"/>
+					<img data-bind="attr: { src }"/>
+					<input class="damage" data-bind="value: damage, css: { show: damage }"/>
+					<input class="counters" data-bind="value: counters, css: { show: counters }"/>
+				</div>
+			<!-- /ko -->`,
+		});
 
 		self.draw = self.double(() => self.moveFuncs.hand(self.pDeck, self.pDeck()[0]), () => {});
 

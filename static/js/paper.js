@@ -130,6 +130,7 @@ module.exports = class {
 			card.card(null);
 
 		self.moveFuncNames = {
+			play: "In-Play",
 			disc: "Discard",
 			supp: "Supplemental",
 			deck: "Top of Deck",

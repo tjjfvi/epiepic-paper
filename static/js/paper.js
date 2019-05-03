@@ -428,7 +428,7 @@ module.exports = class {
 					func: () => self.moveFuncs[n](cards, c),
 				}));
 				this.click = c => c.click || (c.click = self.double(
-					() => this.main(cards, c),
+					() => (!self.hideInitiative() || main !== "playCard") && this.main(cards, c),
 					() => c.card() && !$("input:focus").length && self.cardPopup(c),
 				));
 				this.inc = self.inc;

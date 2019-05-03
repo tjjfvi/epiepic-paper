@@ -65,7 +65,7 @@
 
 		<div class="paper" data-bind="with: paper, visible: status() === 'playing'">
 			<div class="chooseDeck" data-bind="visible: !deckChoice.done() && !started(), with: deckChoice">
-				<input placeholder="Deck ID" data-bind="value: deckId, css: { wrong }"/>
+				<textarea placeholder="Deck ID or Deck List" data-bind="value: input, css: { wrong }"></textarea>
 				<button data-bind="click: submitDeck">Submit</button>
 			</div>	
 			<div class="waiting" data-bind="visible: deckChoice.done() && !started()">

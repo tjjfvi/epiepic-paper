@@ -39,13 +39,23 @@ module.exports = class {
 		self.deckChoice = new function(){
 			this.done = ko.observable(false);
 			this.wrong = ko.observable(false);
-			this.deckId = ko.observable("");
+			this.input = ko.observable("");
 			this.submitDeck = () => {
-				fetch(`/api/deck:${this.deckId()}/`)
-					.then(r => r.json()).then(d => d.cards)
-					.then(cards => root.ws.s("move", "deck", cards))
-					.then(() => this.done(true))
-					.catch(() => this.wrong(true))
+				if(/^[0-9a-f]+$/.test(this.input()))
+					fetch(`/api/deck:${this.input()}/`)
+						.then(r => r.json()).then(d => d.cards)
+						.then(cards => root.ws.s("move", "deck", cards))
+						.then(() => this.done(true))
+						.catch(() => this.wrong(true))
+				else
+					fetch(`/api/deck/parseList`, {
+						method: "POST",
+						body: this.input(),
+					})
+						.then(r => r.json())
+						.then(cards => root.ws.s("move", "deck", cards))
+						.then(() => this.done(true))
+						.catch(() => this.wrong(true))
 			};
 		}();
 		self.started = ko.observable(false);

@@ -212,7 +212,11 @@ app.ws("/ws", async (ws, req) => {
 })
 
 app.get("/login", (req, res) => res.redirect(API_BASE_URL + "api/discord/login?redirect=" + encodeURIComponent(BASE_URL)))
-app.use("/api", (req, res) => res.redirect(API_BASE_URL + "api" + req.path));
+app.use("/api", (req, res) =>
+	req.pipe(require("request")(API_BASE_URL + "api" + req.url, { headers: req.headers }).on("response", r => {
+		res.set(r.headers)
+	})).pipe(res)
+);
 app.use("/images", (req, res) => res.redirect(API_BASE_URL + "images" + req.path));
 
 const port = process.env.PORT || 22563;

@@ -16,6 +16,7 @@
     "express-ws": "^4.0.0",
     "mongoose": "^5.5.4",
     "node-fetch": "^2.4.1",
+    "request": "^2.88.0",
     "stylus": "^0.54.5",
     "watchify": "^3.11.1"
   },

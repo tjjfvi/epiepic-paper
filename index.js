@@ -17,7 +17,7 @@ const b = browserify({
 	entries: [__dirname + "/static/js/index.js"],
 	cache: {},
 	packageCache: {},
-	debug: true,
+	debug: !!process.env.DEBUG,
 	plugin: [watchify],
 })
 
@@ -179,7 +179,7 @@ app.ws("/ws", async (ws, req) => {
 				if(ws2) {
 					ws.status = ws2.status = "playing";
 					sendStatus(ws, ws2);
-					return gm.reconnect(ws, wss.reconnecting[id], game);
+					return gm.reconnect(ws, ws2, game);
 				}
 
 				ws.status = "reconnectWait";

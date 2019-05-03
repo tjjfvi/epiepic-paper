@@ -128,7 +128,6 @@ function handle(ws, type, ...data){
 				ws.o.s(type, ...data);
 			}
 			case "concede": {
-				ws.o.send("win");
 				game.remove();
 				break;
 			}
@@ -184,7 +183,7 @@ function setup(ws1, ws2){
 }
 
 function reconnect(ws1, ws2, game){
-	if(ws1.user._id !== game.p0._id)
+	if(ws1.user._id !== game.p0.user._id)
 		[ws2, ws1] = [ws1, ws2];
 	ws1.game = game;
 	ws2.game = game;

@@ -129,9 +129,20 @@
 									click: () => (o.waitingOn(!o.waitingOn()), p.waitingOn(false)),
 								"></div>
 							</div>
-							<div class="tp" data-bind="event: { click: tpClick, contextmenu: cyclePhaseAlt }">
-								<span class="turn" data-bind="text: game.turn() ^ n() ? 'Their turn' : 'Your turn'"></span>
-								<span class="phase" data-bind="text: phaseName()"></span>
+							<div class="atp">
+								<div class="arrow" data-bind="
+									attr: { class: 'arrow ' + ((
+									hideInitiative() ?
+										o.waitingOn() :
+										game.initiative() ^ n()
+									) ? 'd' : 'u') },
+									click: toggleInitWait,
+								"></div>
+								<div class="tp" data-bind="event: { contextmenu: cyclePhaseAlt }">
+									<span class="turn" data-bind="text: game.turn() ^ n() ? 'Their turn' : 'Your turn'"></span>
+									<span class="phase" data-bind="text: phaseName()"></span>
+								</div>
+								<div class="arrow r" data-bind="click: cyclePhase"></div>
 							</div>
 							<div class="p">
 								<div class="initiative p" data-bind="

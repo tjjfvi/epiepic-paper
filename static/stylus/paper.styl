@@ -247,24 +247,62 @@
 						.waiting:not(.on)
 							animation none
 
-					.tp
+					.atp
 						flex 1 0
 
 						display flex
-						flex-direction column
-						justify-content center
+						justify-content space-evenly
 						align-items center
 
-						cursor pointer
+						.tp
+							width 155px
+							flex 0 0 auto
 
-						span
-							color $white
-							font-size 35px
-							font-weight 100
+							display flex
+							flex-direction column
+							align-items center
+							justify-content center
 
-							&.phase
-								margin-top -5px
-								font-size 25px
+							span
+								color $white
+								font-size 35px
+								font-weight 100
+	
+								&.phase
+									margin-top -5px
+									font-size 20px
+						.arrow
+							display inline-block
+							width 30px
+							height 30px
+							flex 0 0 auto
+							
+							border 5px solid $grey
+
+							transform rotate(45deg)
+
+							cursor pointer
+
+							transition border-color .2s
+
+							&:hover
+								border-color $white
+							
+							&.r
+								border-left-color transparent
+								border-bottom-color transparent
+
+								margin-left -(15px * math(2, 'sqrt')/2)
+								margin-right (15px * math(2, 'sqrt')/2)
+
+							&.u
+								border-bottom-color transparent
+								border-right-color transparent
+
+							&.d
+								border-top-color transparent
+								border-left-color transparent
+
 
 
 

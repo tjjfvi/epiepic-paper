@@ -218,7 +218,7 @@ module.exports = class {
 			self.o.waitingOn(false);
 		}
 
-		self.tpClick = self.double(self.cyclePhase, () =>
+		self.toggleInitWait = () => {
 			self.hideInitiative() ?
 				self.p.waitingOn() ?
 					(self.p.waitingOn(false), self.o.waitingOn(true)) :
@@ -226,7 +226,7 @@ module.exports = class {
 						(self.p.waitingOn(true), self.o.waitingOn(false)) :
 						null :
 				self.game.initiative(!self.game.initiative())
-		);
+		};
 
 		self.newCard = c => {
 			c.card = ko.observable(c.card);

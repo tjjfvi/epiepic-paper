@@ -67,4 +67,6 @@ require("jquery")($ => {
 			.addClass("hoverIntent")
 	, 500)).on("mouseout", () => $(".hoverIntent:not(:hover)").removeClass("hoverIntent"));
 
+	$("*").on("contextmenu", () => false);
+
 });

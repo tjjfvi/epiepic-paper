@@ -152,6 +152,8 @@ module.exports = class {
 		self.moveFuncs.unrevealO = (oa, card) =>
 			card.card(null);
 
+		self.moveFuncs.break = self.moveFuncs.disc;
+
 		self.moveFuncNames = {
 			play: "In-Play",
 			disc: "Discard",

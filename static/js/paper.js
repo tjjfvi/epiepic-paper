@@ -416,8 +416,8 @@ module.exports = class {
 					">
 						<img class="_" src="/314x314.jpg"/>
 						<img data-bind="attr: { src }"/>
-						<input class="damage" data-bind="textInput: damage, css: { show: damage }"/>
-						<input class="counters" data-bind="textInput: counters, css: { show: counters }"/>
+						<input class="damage" data-bind="value: damage, css: { show: damage }"/>
+						<input class="counters" data-bind="value: counters, css: { show: counters }"/>
 					</div>
 				<!-- /ko -->`,
 			});

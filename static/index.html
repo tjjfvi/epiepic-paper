@@ -78,7 +78,7 @@
 							<div class="avatarGroup">
 								<div class="gold" data-bind="attr: { g: +o.gold() }, click: () => o.gold(!o.gold())"></div>
 								<img class="avatar" data-bind="attr: { src: `/api/user:${oUser()._id}/avatar` }"/>
-								<input class="health" data-bind="textInput: o.health, css: { wrong: !vs.health(o.health()) }"/>
+								<input class="health" data-bind="value: o.health, css: { wrong: !vs.health(o.health()) }"/>
 							</div>
 							<span class="username" data-bind="text: `@${oUser().username}#${oUser().discriminator}`"></span>
 						</div>
@@ -90,7 +90,7 @@
 							<div class="avatarGroup">
 								<div class="gold" data-bind="attr: { g: +p.gold() }, click: () => p.gold(!p.gold())"></div>
 								<img class="avatar" data-bind="attr: { src: `/api/user:${pUser()._id}/avatar` }, rightClick: [concede]"/>
-								<input class="health" data-bind="textInput: p.health, css: { wrong: !vs.health(p.health()) }"/>
+								<input class="health" data-bind="value: p.health, css: { wrong: !vs.health(p.health()) }"/>
 							</div>
 							<span class="username" data-bind="text: `@${pUser().username}#${pUser().discriminator}`"></span>
 						</div>

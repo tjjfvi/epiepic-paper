@@ -93,15 +93,15 @@ function handle(ws, type, ...data){
 			}
 			case "token": {
 				let [cardId] = data;
-				let c = await fetch(process.env.API_BASE_URL + `api/card:${cardId}/`)
+				let card = await fetch(process.env.API_BASE_URL + `api/card:${cardId}/`)
 					.then(r => r.json())
 					.catch(() => {});
-				console.log(cardId, c);
-				if(!c)
+				if(!card)
 					break;
-				let id = new mongoose.Types.ObjectId();
-				game["p" + ws.n].zones.play.unshift({ _id: id, card: c });
-				ws.s(...ws.o.s("token", "p" + ws.n, { _id: id, card: c }));
+				let _id = new mongoose.Types.ObjectId();
+				let c = { _id, card, damage: 0, counters: 0 };
+				game["p" + ws.n].zones.play.unshift(c);
+				ws.s(...ws.o.s("token", "p" + ws.n, c));
 				break;
 			}
 			case "inBattle":

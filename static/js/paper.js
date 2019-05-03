@@ -67,6 +67,9 @@ module.exports = class {
 			}))
 		));
 
+		self.inc = o => (_, e) => (o(+o() + 1), e.stopPropagation());
+		self.dec = (o, m) => (_, e) => (o(Math.max(+o() - 1, m ? 0 : -Infinity)), e.stopPropagation());
+
 		self.cards = {};
 
 		let isBool = b => ~[true, false].indexOf(b);
@@ -406,6 +409,8 @@ module.exports = class {
 					() => this.main(cards, c),
 					() => c.card() && !$("input:focus").length && self.cardPopup(c),
 				));
+				this.inc = self.inc;
+				this.dec = self.dec;
 			},
 			template: `<!-- ko foreach: cards -->
 				<div class="card" data-bind="
@@ -415,8 +420,16 @@ module.exports = class {
 				">
 					<img class="_" src="/314x314.jpg"/>
 					<img data-bind="attr: { src }"/>
-					<input class="damage" data-bind="value: damage, css: { show: damage }"/>
-					<input class="counters" data-bind="value: counters, css: { show: counters }"/>
+					<div class="damage number badge" data-bind="css: { show: +damage() }">
+						<span class="a" data-bind="click: $parent.inc(damage)">+</span>
+						<input data-bind="value: damage, css: { show: damage }"/>
+						<span class="a" data-bind="click: $parent.dec(damage, true)">–</span>
+					</div>
+					<div class="counters number badge" data-bind="css: { show: +counters() }">
+						<span class="a" data-bind="click: $parent.inc(counters)">+</span>
+						<input data-bind="value: counters"/>
+						<span class="a" data-bind="click: $parent.dec(counters, true)">–</span>
+					</div>
 				</div>
 			<!-- /ko -->`,
 		});

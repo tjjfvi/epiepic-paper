@@ -44,6 +44,46 @@
 			border-top-width 0px
 		& input
 			border-radius 10px 10px 0px 0px
+
+	.badge
+		display flex
+		flex-direction column
+		align-items center
+		justify-content center
+
+		width 40px
+		height 40px
+
+		border 2px solid $grey
+		border-radius 40px
+
+		color $grey
+		font-size 25px
+
+		overflow hidden
+
+		background-color $black
+
+		&.number
+			transition height .2s, bottom .2s, opacity .2s
+
+			input
+				width 40px
+				height 25px
+
+				flex 0 0 auto
+
+				color inherit
+				font-size inherit
+
+				border none
+
+			.a
+				cursor pointer
+
+			&.hoverIntent
+				height 100px
+			
 	
 	.game
 		width 100vw
@@ -89,28 +129,14 @@
 							position absolute
 							bottom 0px
 
-							width 50px
-							height 50px
-							max-width cardWidth*(50/178)
-							max-height cardWidth*(50/178)
-
-							border 2px solid transparent
-							border-radius 100%
-							background $black
-
-							display flex
-							justify-content center
-							align-items center
-
-							font-size 25px
-
 						.health
 							right 0px
 
 							border-color $green
 							color $green
 
-							font Roboto
+							&.hoverIntent
+								bottom -30px
 
 						.gold
 							cursor pointer
@@ -127,6 +153,7 @@
 								color $grey
 							&:before
 								content attr(g)
+
 						.avatar
 							border-radius 100%
 							width 128px
@@ -360,19 +387,10 @@
 			.damage
 				position absolute
 
-				width 40px
-				height 40px
-
-				border 2px solid $blue
-				border-radius 100%
-				
-				font-size 25px
-				color $blue
-
 				pointer-events none
 				opacity 0
 
-				transition opacity .2s
+				transform translate(0, -50%);
 
 				^[-2] .play .card.hoverIntent
 					.counters
@@ -385,10 +403,12 @@
 					opacity 1
 
 			.counters
-				bottom calc(50% - 45px)
+				top calc(50% + 35px)
+				border-color $blue
+				color $blue
 
 			.damage
-				top calc(50% - 45px)
+				top calc(50% - 35px)
 				border-color $red
 				color $red
 

@@ -76,9 +76,13 @@
 					<div>
 						<div class="user o" data-bind="user: oUser">
 							<div class="avatarGroup">
-								<div class="gold" data-bind="attr: { g: +o.gold() }, click: () => o.gold(!o.gold())"></div>
+								<div class="gold badge" data-bind="attr: { g: +o.gold() }, click: () => o.gold(!o.gold())"></div>
 								<img class="avatar" data-bind="attr: { src: `/api/user:${oUser()._id}/avatar` }"/>
-								<input class="health" data-bind="value: o.health, css: { wrong: !vs.health(o.health()) }"/>
+								<div class="health number badge">
+									<span class="a" data-bind="click: inc(o.health)">+</span>
+									<input data-bind="value: o.health, css: { wrong: !vs.health(o.health()) }"/>
+									<span class="a" data-bind="click: dec(o.health)">–</span>
+								</div>
 							</div>
 							<span class="username" data-bind="text: `@${oUser().username}#${oUser().discriminator}`"></span>
 						</div>
@@ -88,9 +92,13 @@
 						<div class="supp p" data-bind="cards: pSupp, main: 'disc', alt: 'disc play hand banish'"></div>
 						<div class="user p" data-bind="if: pUser">
 							<div class="avatarGroup">
-								<div class="gold" data-bind="attr: { g: +p.gold() }, click: () => p.gold(!p.gold())"></div>
+								<div class="gold badge" data-bind="attr: { g: +p.gold() }, click: () => p.gold(!p.gold())"></div>
 								<img class="avatar" data-bind="attr: { src: `/api/user:${pUser()._id}/avatar` }, rightClick: [concede]"/>
-								<input class="health" data-bind="value: p.health, css: { wrong: !vs.health(p.health()) }"/>
+								<div class="health number badge">
+									<span class="a" data-bind="click: inc(p.health)">+</span>
+									<input data-bind="value: p.health, css: { wrong: !vs.health(p.health()) }"/>
+									<span class="a" data-bind="click: dec(p.health)">–</span>
+								</div>
 							</div>
 							<span class="username" data-bind="text: `@${pUser().username}#${pUser().discriminator}`"></span>
 						</div>

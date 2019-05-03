@@ -7,12 +7,12 @@ module.exports = class {
 		const phases = [
 			"start",
 			"main",
+			"end",
 			"battle-0",
 			"battle-1",
 			"battle-2",
 			"battle-3",
 			"battle-4",
-			"end",
 		];
 
 		self.rightClick = ko.observable([]);
@@ -136,16 +136,18 @@ module.exports = class {
 			unrevealO: "Unreveal",
 		};
 
-		self.phaseName = ko.computed(() => self.started() ? {
-			start: "Start phase",
-			main: "Main phase",
+		self.phaseNames = {
+			start: "Start Phase",
+			main: "Main Phase",
+			end: "End Phase",
 			"battle-0": "Declare Attackers",
 			"battle-1": "Attack Events",
 			"battle-2": "Declare Blockers",
 			"battle-3": "Block Events",
 			"battle-4": "Assign Damage",
-			end: "End phase",
-		}[self.game.phase()] : "");
+		}
+
+		self.phaseName = ko.computed(() => self.started() ? self.phaseNames[self.game.phase()] : "");
 
 		self.hideInitiative = ko.computed(() => self.started() ? ~[
 			"start",
@@ -164,6 +166,22 @@ module.exports = class {
 		let wsObservables = {
 			n: self.n
 		};
+
+		self.phaseRightClick = [{
+			name: "Previous phase",
+			func: () => self.cyclePhaseAlt()
+		}, {
+			name: "Next turn",
+			func: () => (self.game.phase("end"), self.cyclePhase())
+		}, ...phases.map(p => ({
+			name: self.phaseNames[p],
+			func: () => {
+				self.game.phase(p);
+				self.game.initiative(!!self.n());
+				self.o.waitingOn(false);
+				self.p.waitingOn(true);
+			},
+		}))];
 
 		self.cyclePhase = () => {
 			let phase = self.game.phase();
@@ -216,6 +234,9 @@ module.exports = class {
 			self.game.initiative(!!self.n());
 			self.p.waitingOn(true);
 			self.o.waitingOn(false);
+
+			if(self.game.phase() === "end")
+				self.game.turn(!self.game.turn());
 		}
 
 		self.toggleInitWait = () => {

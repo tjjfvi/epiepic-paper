@@ -138,7 +138,7 @@
 									) ? 'd' : 'u') },
 									click: toggleInitWait,
 								"></div>
-								<div class="tp" data-bind="event: { contextmenu: cyclePhaseAlt }">
+								<div class="tp" data-bind="rightClick: phaseRightClick">
 									<span class="turn" data-bind="text: game.turn() ^ n() ? 'Their turn' : 'Your turn'"></span>
 									<span class="phase" data-bind="text: phaseName()"></span>
 								</div>

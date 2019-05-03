@@ -76,7 +76,11 @@
 					<div>
 						<div class="user o" data-bind="user: oUser">
 							<div class="avatarGroup">
-								<div class="gold badge" data-bind="attr: { g: +o.gold() }, click: () => o.gold(!o.gold())"></div>
+								<div class="gold badge" data-bind="
+									attr: { 'data-g': +o.gold(), 'data-f': o.goldFaction()[0] },
+									click: () => (o.gold(!o.gold()), o.goldFaction('')),
+									rightClick: goldRightClick(o),
+								"></div>
 								<img class="avatar" data-bind="attr: { src: `/api/user:${oUser()._id}/avatar` }"/>
 								<div class="health number badge">
 									<span class="a" data-bind="click: inc(o.health)">+</span>
@@ -92,7 +96,11 @@
 						<div class="supp p" data-bind="cards: pSupp, main: 'disc', alt: 'disc play hand banish'"></div>
 						<div class="user p" data-bind="if: pUser">
 							<div class="avatarGroup">
-								<div class="gold badge" data-bind="attr: { g: +p.gold() }, click: () => p.gold(!p.gold())"></div>
+								<div class="gold badge" data-bind="
+									attr: { 'data-g': +p.gold(), 'data-f': p.goldFaction()[0] },
+									click: () => (p.gold(!p.gold()), p.goldFaction('')),
+									rightClick: goldRightClick(p),
+								"></div>
 								<img class="avatar" data-bind="attr: { src: `/api/user:${pUser()._id}/avatar` }, rightClick: [concede]"/>
 								<div class="health number badge">
 									<span class="a" data-bind="click: inc(p.health)">+</span>

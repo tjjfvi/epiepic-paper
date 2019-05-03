@@ -96,10 +96,15 @@ module.exports = class {
 		});
 
 		self.moveFuncs.playCard = (oa, card) => {
-			if(!card.card().cost || self.p.gold())
-				self.moveFuncs[card.card().type === "CHAMPION" ? "play" : "supp"](oa, card);
-			if(card.card().cost)
-				self.p.gold(false);
+			if(card.card().cost && !(self.p.gold() && (
+				!self.p.goldFaction() ||
+					self.p.goldFaction() === card.card().factionCode.toUpperCase()
+			))) return
+			self.moveFuncs[card.card().type === "CHAMPION" ? "play" : "supp"](oa, card);
+			if(!card.card().cost)
+				return;
+			self.p.gold(false);
+			self.p.goldFaction(false);
 		}
 
 
@@ -171,6 +176,13 @@ module.exports = class {
 			card.state(ned);
 		});
 
+		self.goldRightClick = p => [{
+			name: "No alignment",
+			func: () => p.goldFaction(""),
+		}, ...["Good", "Sage", "Evil", "Wild"].map(a => ({
+			name: a,
+			func: () => (p.gold(true), p.goldFaction(a.toUpperCase())),
+		}))];
 
 		let wsObservables = {
 			n: self.n

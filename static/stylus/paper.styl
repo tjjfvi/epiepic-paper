@@ -227,11 +227,13 @@
 						.initiative.on:before
 							border-color $blue
 							background $blue
+							animation pulse 3s infinite
 
 						.initiative.hideInitiative
 							pointer-events none
 							
 							&:before
+								animation none
 								opacity: 0
 
 						.waiting:before

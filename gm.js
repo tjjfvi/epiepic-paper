@@ -111,7 +111,9 @@ function handle(ws, type, ...data){
 			case "counters":
 			case "state": {
 				let [id, val] = data;
-				let c =
+				let c = type === "marked" ?
+					[].concat(..."play deck disc supp hand".split(" ").map(n => [...game.p0.zones[n], ...game.p1.zones[n]]))
+						.find(c => c._id.toString() === id) :
 					game.p0.zones.play.find(c => c._id.toString() === id) ||
 					game.p1.zones.play.find(c => c._id.toString() === id);
 				if(!c) break;

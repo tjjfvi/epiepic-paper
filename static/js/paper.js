@@ -92,8 +92,13 @@ module.exports = class {
 			delete card.click;
 		});
 
-		self.moveFuncs.playCard = (oa, card) =>
-			self.moveFuncs[card.card().type === "CHAMPION" ? "play" : "supp"](oa, card);
+		self.moveFuncs.playCard = (oa, card) => {
+			if(!card.card().cost || self.p.gold())
+				self.moveFuncs[card.card().type === "CHAMPION" ? "play" : "supp"](oa, card);
+			if(card.card().cost)
+				self.p.gold(false);
+		}
+
 
 		self.moveFuncs.battle = (oa, card) => {
 			if(card.inBattle())

@@ -55,6 +55,10 @@
 			Waiting for opponent to reconnect...
 		</div>
 
+		<div class="waiting" data-bind="visible: status() === 'disconnected'">
+			Disconnected; refresh to reconnect.
+		</div>
+
 		<div class="waiting" data-bind="visible: status() === 'won'" style="animation: none">
 			You won!
 		</div>

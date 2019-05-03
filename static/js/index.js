@@ -49,7 +49,7 @@ require("jquery")($ => {
 					}
 				})
 
-				ws.addEventListener("close", () => history.go(0));
+				ws.addEventListener("close", () => self.user() && self.status("disconnected"));
 
 				return ws;
 			}

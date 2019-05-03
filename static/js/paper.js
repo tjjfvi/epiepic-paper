@@ -39,7 +39,7 @@ module.exports = class {
 		self.deckChoice = new function(){
 			this.done = ko.observable(false);
 			this.wrong = ko.observable(false);
-			this.deckId = ko.observable("5cb5cb9e3782ae2887272c28");
+			this.deckId = ko.observable("");
 			this.submitDeck = () => {
 				fetch(`/api/deck:${this.deckId()}/`)
 					.then(r => r.json()).then(d => d.cards)

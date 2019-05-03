@@ -126,6 +126,7 @@ function handle(ws, type, ...data){
 					break;
 				c[type] = val;
 				ws.o.s(type, ...data);
+				break;
 			}
 			case "concede": {
 				game.remove();

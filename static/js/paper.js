@@ -235,21 +235,25 @@ module.exports = class {
 			[self.game.phase, self.game.initiative, self.game.p0.waitingOn, self.game.p1.waitingOn]
 				.map((o, i) => o(change[i]));
 
-			if(phase === "end") {
+			if(phase === "start")
+				self[(self.game.turn() ^ self.n() ? "o" : "p") + "Play"]()
+					.filter(c => c.state() !== "prepared")
+					.map(c => c.state("prepared"));
+			else if(phase === "end") {
 				self.o.gold(true);
 				self.o.goldFaction("");
 				self.p.gold(true);
 				self.p.goldFaction("");
 				self.game.turn(!self.game.turn());
+				[...self.oPlay(), ...self.pPlay()].filter(c => c.damage()).map(c => c.damage(0));
 			} else if(phase === "battle-0") {
 				let zone = self[(self.game.turn() ^ self.n() ? "o" : "p") + "Play"];
 				zone().filter(c => c.inBattle()).map(c => self.moveFuncs.expend(zone, c));
 			} else if(phase === "battle-2") {
 				let zone = self[(self.game.turn() ^ self.n() ? "p" : "o") + "Play"];
 				zone().filter(c => c.inBattle()).map(c => self.moveFuncs.flip(zone, c));
-			} else if(phase === "battle-4") {
+			} else if(phase === "battle-4")
 				[self.oPlay, self.pPlay].map(z => z().map(c => c.inBattle() ? self.moveFuncs.battle(z, c) : {}));
-			}
 		}
 
 		self.cyclePhaseAlt = () => {

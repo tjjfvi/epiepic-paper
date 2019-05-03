@@ -15,7 +15,7 @@ let pSchema = new mongoose.Schema({
 		play: [{
 			card: {},
 			damage: Number,
-			tokens: Number,
+			counters: Number,
 			notes: String,
 			inBattle: Boolean,
 			state: { type: String, enum: ["prepared", "flipped", "expended"] },

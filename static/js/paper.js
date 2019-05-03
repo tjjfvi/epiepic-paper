@@ -101,7 +101,8 @@ module.exports = class {
 			self["p" + n].unshift(card);
 			card.damage(0);
 			card.counters(0);
-			card.state("");
+			card.state("prepared");
+			card.marked(false);
 			delete card.click;
 		});
 

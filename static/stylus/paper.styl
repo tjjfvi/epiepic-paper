@@ -96,6 +96,38 @@
 		height 100vh
 		
 		display flex
+
+		.log
+			border-left 5px solid $grey
+			width 20px
+			height 100vh
+
+			flex 0 0 auto
+
+			overflow hidden
+
+			transition width .5s
+
+			> div
+				width calc(30vw - 5px)
+				height 100vh
+				
+				background $black
+				color $white
+
+				padding-left 20px
+
+				display flex
+				flex-direction column
+				justify-content flex-start
+				
+				overflow hidden auto
+
+			.you
+				opacity .5
+
+			&.hoverIntent
+				width 30vw
 		
 		.supps
 			width cardWidth*2

@@ -186,6 +186,63 @@
 						"></div>
 					</div>
 				</div>
+				<div class="log"><div><!-- ko foreach: log -->
+					<!-- ko with: { ...$data, ...$parent.logHelpers } -->
+					<!-- ko if: type === "move" -->
+					<div data-bind="attr: pClass(($data.source || dest)[1])">
+						<b data-bind="text: cardName(card)"></b> 
+						to
+						<span data-bind="text: zoneNameAnti(dest, ($data.source || dest)[1])"></span>
+						<span data-bind="text: $data.source ? 'from ' + zoneName(source) : ''"></span>
+					</div>
+					<!-- /ko -->
+					<!-- ko if: type === "delete" -->
+					<div data-bind="attr: pClass(p)">
+						Removed <b data-bind="text: cardName(card)"></b>
+					</div>
+					<!-- /ko -->
+					<!-- ko if: type === 'banish' -->
+					<div data-bind="attr: pClass(dest[1])">
+						Banished <b data-bind="text: cardName(card)"></b>
+					</div>
+					<!-- /ko -->
+					<!-- ko if: type === 'set' && prop === 'phase' -->
+					<div data-bind="attr: pClass(p)">
+						<i style="font-size: 75%" data-bind="text: '🡒 ' + phaseName(val)"></i>
+					</div>
+					<!-- /ko -->
+					<!-- ko if: type === 'set' && prop === 'turn' -->
+					<div data-bind="attr: pClass(p)">
+						<b>~ <span data-bind="text: psName(val)"></span> Turn ~</b>
+					</div>
+					<!-- /ko -->
+					<!-- ko if: type === 'set' && prop === 'initiative' -->
+					<div data-bind="attr: pClass(p)">
+						<i style="font-size: 75%" data-bind="text: '🡒 ' +  pName(val)"></i>
+					</div>
+					<!-- /ko -->
+					<!-- ko if: type === 'set' && /p[01].+/.test(prop) && !prop.endsWith('waitingOn') -->
+					<div data-bind="attr: pClass(p)">
+						<span data-bind="text: psName(prop[1])"></span>
+						<span data-bind="text: propName(prop.slice(3))"></span>:
+						<span data-bind="text: valName(prop.slice(3), val)"></span>
+					</div>
+					<!-- /ko -->
+					<!-- ko if: type === 'cardSet' -->
+					<div data-bind="attr: pClass(p)">
+						<b data-bind="text: cardName(card)"></b>
+						<span data-bind="text: propName(prop)"></span>:
+						<span data-bind="text: valName(prop, val)"></span>
+					</div>
+					<!-- /ko -->
+					<!-- ko if: type.endsWith("reveal") -->
+					<div data-bind="attr: pClass(p)">
+						<span data-bind="text: type === 'reveal' ? 'Revealed' : 'Unrevealed'"></span>
+						<b data-bind="text: cardName(card)"></b>
+					</div>
+					<!-- /ko -->
+					<!-- /ko -->
+				<!-- /ko --></div></div>
 				<div class="rightClick" data-bind="foreach: rightClick()">
 					<span data-bind="click: func, text: name"></span>
 				</div>

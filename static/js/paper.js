@@ -36,6 +36,48 @@ module.exports = class {
 			return f;
 		};
 
+		self.log = ko.observableArray([]);
+
+		self.logHelpers = {
+			pClass: n => ({ class: n ^ self.n() ? "them" : "you" }),
+			psName: n => n ^ self.n() ? "Their" : "Your",
+			pName: n => n ^ self.n() ? "Them" : "You",
+			cardName: c => (self.cards[c] || { card: () => '[removed]' }).card() ? self.cards[c].card().name : '?',
+			zoneNameFull: z => (z[1] ^ self.n() ? 'Their ' : 'Your ') + self.logHelpers.zoneName(z),
+			zoneNameAnti: (z, n) => (z[1] ^ n ? "their " : "") + self.logHelpers.zoneName(z),
+			zoneName: z => ({
+				supp: 'supplemental',
+				disc: 'discard',
+			}[z.slice(3)] || z.slice(3)),
+			phaseName: p => self.phaseNames[p],
+			propName: p => ({
+				health: "Health",
+				gold: "Gold",
+				goldFaction: "Gold Alignment",
+				inBattle: "in Battle",
+				damage: "Damage",
+				counters: "Counters",
+				state: "State",
+				marked: "Marked",
+			})[p],
+			valName: (p, v) => ({
+				gold: { true: "1", false: "0" },
+				health: {},
+				goldFaction: {
+					"": "None",
+					GOOD: "Good",
+					SAGE: "Sage",
+					EVIL: "Evil",
+					WILD: "Wild",
+				},
+				inBattle: {},
+				counters: {},
+				damage: {},
+				state: {},
+				marked: {},
+			}[p][v] || v)
+		};
+
 		self.deckChoice = new function(){
 			this.done = ko.observable(false);
 			this.wrong = ko.observable(false);
@@ -185,7 +227,11 @@ module.exports = class {
 		].indexOf(self.game.phase()) : false);
 
 		"expend flip prepare".split(" ").map(n => self.moveFuncs[n] = (oa, card) => {
-			let ned = n === "flip" ? "flipped" : n + "ed";
+			let ned = {
+				expend: "expended",
+				flip: "flipped",
+				prepare: "prepared",
+			}[n];
 			card.state(ned);
 		});
 
@@ -296,9 +342,11 @@ module.exports = class {
 					c[n] = ko.computed({
 						read: o,
 						write: v => {
+							if(v !== o() && (self.vs[n] || (() => true))(v))
+								setTimeout(() =>
+									o() === v && root.ws.s("move", n, c._id, v)
+								, 500);
 							o(v);
-							if((self.vs[n] || (() => true))(v))
-								root.ws.s("move", n, c._id, v);
 						},
 					});
 				});
@@ -326,9 +374,11 @@ module.exports = class {
 					let c = ko.computed({
 						read: o,
 						write: v => {
+							if(v !== o() && self.vs[n.split(".").pop()](v))
+								setTimeout(() =>
+									o() === v && root.ws.s("move", n, v)
+								, 500);
 							o(v);
-							if(self.vs[n.split(".").pop()](v))
-								root.ws.s("move", n, v);
 						},
 					});
 					n.split(".").reduce((ob, p, i, a) => i === a.length - 1 ? ob[p] = c : ob[p], game);
@@ -392,6 +442,8 @@ module.exports = class {
 			if(type === "won") {
 				root.status("won");
 			}
+			if(type === "log")
+				self.log.push(...data);
 			(wsObservables[type] || (() => {}))(data[0]);
 		});
 

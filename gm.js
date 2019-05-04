@@ -34,7 +34,10 @@ function handle(ws, type, ...data){
 		switch(type) {
 			case "deck": {
 				if(ws.deck) break;
-				ws.deck = [].concat(...data[0].map(({ count, card }) => [...Array(count)].map(() => ({ card }))));
+				ws.deck = [].concat(...data[0].map(({ count, card }) => [...Array(count)].map(() => ({
+					card,
+					marked: false,
+				}))));
 				if(!ws.o.deck) break;
 				game.p0.zones.deck = ws.p0.deck.shuffle();
 				game.p1.zones.deck = ws.p1.deck.shuffle();
@@ -53,6 +56,7 @@ function handle(ws, type, ...data){
 					break;
 				ws.o.s("identity", id, type === "reveal" ? c.card : null);
 				c.public = true;
+				log(ws, { type, p: ws.n, card: id });
 				break;
 			}
 			case "move":
@@ -63,7 +67,7 @@ function handle(ws, type, ...data){
 				let dest = (game["p" + zone[1]] || {}).zones[zone.slice(3)];
 				if(!dest) break;
 				let c;
-				let [, source] = [].concat(...[
+				let [sourceP, sourceZone, source] = [].concat(...[
 					Object.entries(game.toJSON().p0.zones),
 					Object.entries(game.toJSON().p1.zones),
 				].map((z, i) => z.map(([n, z]) => [i, n, z]))).find(([i, n, z]) => {
@@ -76,6 +80,7 @@ function handle(ws, type, ...data){
 				if(!source) break;
 				if(c.card.packCode === "tokens" && !zone.endsWith(".play")) {
 					ws.s(...ws.o.s("delete", id));
+					log(ws, { type: "delete", card: id, p: sourceP });
 					break;
 				}
 				if(type !== "banish" || !zone.endsWith(".deck"))
@@ -89,6 +94,7 @@ function handle(ws, type, ...data){
 					c.public = true;
 				}
 				ws.o.s(type, ...data);
+				log(ws, { type, card: id, source: `p${sourceP}.${sourceZone}`, dest: zone });
 				break;
 			}
 			case "token": {
@@ -99,9 +105,10 @@ function handle(ws, type, ...data){
 				if(!card)
 					break;
 				let _id = new mongoose.Types.ObjectId();
-				let c = { _id, card, damage: 0, counters: 0 };
+				let c = { _id, card, damage: 0, counters: 0, marked: false };
 				game["p" + ws.n].zones.play.unshift(c);
 				ws.s(...ws.o.s("token", "p" + ws.n, c));
+				log(ws, { type: "move", card: _id, dest: `p${ws.n}.play` });
 				break;
 			}
 			case "inBattle":
@@ -128,6 +135,7 @@ function handle(ws, type, ...data){
 					break;
 				c[type] = val;
 				ws.o.s(type, ...data);
+				log(ws, { type: "cardSet", p: ws.n, card: id, prop: type, val });
 				break;
 			}
 			case "concede": {
@@ -144,9 +152,15 @@ function handle(ws, type, ...data){
 		) {
 			ws.o.s(type, ...data);
 			type.split(".").reduce((ob, p, i, a) => i === a.length - 1 ? ob[p] = data[0] : ob[p], game);
+			log(ws, { type: "set", prop: type, val: data[0], p: ws.n });
 		}
 		await game.save();
 	})();
+}
+
+function log(ws, ...log){
+	ws.s(...ws.o.s("log", ...log));
+	ws.game.log.push(...log);
 }
 
 function setup(ws1, ws2){
@@ -170,7 +184,9 @@ function setup(ws1, ws2){
 		turn: false,
 		phase: "start",
 		initiative: false,
+		log: [],
 	});
+	console.log(game.log);
 	ws1.game = game;
 	ws2.game = game;
 	ws1.o = ws2;
@@ -200,6 +216,7 @@ function reconnect(ws1, ws2, game){
 	ws1.n = 0;
 	ws2.s("n", 1);
 	ws2.n = 1;
+	ws1.s(...ws2.s("log", ...game.log));
 	let obj = game.toJSON();
 	[obj.p1.zones.hand, obj.p0.zones.deck, obj.p1.zones.deck].map(z => z.map(c =>
 		c.public || delete c.card

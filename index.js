@@ -13,6 +13,8 @@ const fetch = require("node-fetch");
 const gm = require("./gm");
 const Game = require("./Game");
 
+const generateCard = require("./generateCard");
+
 const b = browserify({
 	entries: [__dirname + "/static/js/index.js"],
 	cache: {},
@@ -216,6 +218,11 @@ app.use("/api", (req, res) =>
 	req.pipe(require("request")(API_BASE_URL + "api" + req.url, { headers: req.headers }).on("response", r => {
 		res.set(r.headers)
 	})).pipe(res)
+);
+app.get("/images/:id.svg", (req, res) =>
+	fetch(API_BASE_URL + `api/card:${req.params.id}/`)
+		.then(r => r.json())
+		.then(c => res.set("Content-Type", "image/svg+xml").send(generateCard(c)))
 );
 app.use("/images", (req, res) => res.redirect(API_BASE_URL + "images" + req.path));
 

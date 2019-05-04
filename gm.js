@@ -73,7 +73,6 @@ async function handle(ws, type, ...data){
 				].map((z, i) => z.map(([n, z]) => [i, n, z]))).find(([i, n, z]) => {
 					c = z.find(c => c._id.toString() === id);
 					if(!c) return false;
-					console.log(game["p" + i].zones[n]);
 					game["p" + i].zones[n].splice(z.indexOf(c), 1);
 					return true;
 				}) || [];
@@ -187,7 +186,6 @@ async function setup(ws1, ws2){
 		initiative: false,
 		log: [],
 	});
-	console.log(game.log);
 	ws1.game = game;
 	ws2.game = game;
 	ws1.o = ws2;

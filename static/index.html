@@ -71,7 +71,7 @@
 			<div class="chooseDeck" data-bind="visible: !deckChoice.done() && !started(), with: deckChoice">
 				<textarea placeholder="Deck ID or Deck List" data-bind="value: input, css: { wrong }"></textarea>
 				<button data-bind="click: submitDeck">Submit</button>
-			</div>	
+			</div>
 			<div class="waiting" data-bind="visible: deckChoice.done() && !started()">
 				Waiting for the other player...
 			</div>
@@ -157,43 +157,35 @@
 					<div class="il">
 						<div class="i">
 							<div class="o">
-								<div class="initiative o" data-bind="
-									css: { on: +game.initiative() !== n(), hideInitiative },
-									click: () => game.initiative(!game.initiative()),
-								"></div>
 								<div class="waiting o" data-bind="
 									css: { on: o.waitingOn() },
-									click: () => (o.waitingOn(!o.waitingOn()), p.waitingOn(false)),
+									click: () => o.waitingOn(true),
 								"></div>
 							</div>
 							<div class="atp">
-								<div class="arrow" data-bind="
-									attr: { class: 'arrow ' + ((
-									hideInitiative() ?
-										o.waitingOn() :
-										game.initiative() ^ n()
-									) ? 'd' : 'u') },
-									click: toggleInitWait,
+								<div class="initiative o" data-bind="
+									css: { on: +game.initiative() !== n(), hideInitiative },
 								"></div>
-								<div class="tp" data-bind="rightClick: phaseRightClick">
+								<div class="tp" data-bind="
+									click: phaseClick,
+									rightClick: phaseRightClick
+								">
 									<span class="turn" data-bind="text: game.turn() ^ n() ? 'Their turn' : 'Your turn'"></span>
 									<span class="phase" data-bind="text: phaseName()"></span>
 								</div>
-								<div class="arrow r" data-bind="click: cyclePhase"></div>
-							</div>
-							<div class="p">
 								<div class="initiative p" data-bind="
 									css: { on: +game.initiative() === n(), hideInitiative },
-									click: () => game.initiative(!game.initiative()),
 								"></div>
+							</div>
+							<div class="p">
 								<div class= "waiting p" data-bind="
 									css: { on: p.waitingOn() },
-									click: () => (p.waitingOn(!p.waitingOn()), o.waitingOn(false)),
+									click: () => p.waitingOn(!p.waitingOn()),
 								"></div>
 							</div>
 						</div>
 					</div>
-					<div class="dd p">	
+					<div class="dd p">
 						<img class="deck p" data-bind="
 							click: draw,
 							attr: { src: (pDeck()[0]||{}).src },
@@ -211,7 +203,7 @@
 					<!-- ko with: { ...$data, ...$parent.logHelpers } -->
 					<!-- ko if: type === "move" -->
 					<div data-bind="attr: pClass(($data.source || dest)[1])">
-						<b data-bind="text: cardName(card)"></b> 
+						<b data-bind="text: cardName(card)"></b>
 						to
 						<span data-bind="text: zoneNameAnti(dest, ($data.source || dest)[1])"></span>
 						<span data-bind="text: $data.source ? 'from ' + zoneName(source) : ''"></span>

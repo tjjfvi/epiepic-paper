@@ -179,7 +179,7 @@ async function setup(ws1, ws2){
 			play: [],
 			hand: [],
 		},
-		waitingOn: ws === ws1,
+		waitingOn: true,
 	});
 	let game = new Game({
 		p0: genP(ws1),

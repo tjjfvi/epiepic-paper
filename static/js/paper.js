@@ -287,7 +287,39 @@ module.exports = class {
 			n: self.n
 		};
 
+
+		self.isTurn = ko.computed(
+			() => self.started() && (+self.game.turn() === self.n())
+		);
+
+		self.hasInitiative = ko.computed(
+			() => self.started() && (+self.game.initiative() === self.n())
+		);
+
+		self.waitingForOpp = ko.computed(
+			() => self.started() && self.o.waitingOn()
+		);
+
+		self.canProceed = ko.computed(
+			() => (self.hasInitiative() || self.hideInitiative())  && !self.waitingForOpp()
+		);
+
+		self.canPass = ko.computed(
+			() => self.hasInitiative() && !self.hideInitiative()
+		);
+
+
+		self.passInitiative = () => self.game.initiative(!self.n());
+
+		self.phaseClick = self.double(
+			() => self.canProceed() && self.cyclePhase(),
+			() => self.canPass() && self.passInitiative(),
+		);
+
 		self.phaseRightClick = [{
+			name: "Next phase",
+			func: () => self.cyclePhase()
+		}, {
 			name: "Previous phase",
 			func: () => self.cyclePhaseAlt()
 		}, {
@@ -307,13 +339,13 @@ module.exports = class {
 			let phase = self.game.phase();
 			let change = {
 				start:      ["main", true, false, false],
-				main:       ["end", true, true, false],
+				main:       ["end", true, true, true],
 				"battle-0": ["battle-1", true, false, false],
-				"battle-1": ["battle-2", true, false, true],
+				"battle-1": ["battle-2", false, false, true],
 				"battle-2": ["battle-3", false, false, false],
-				"battle-3": ["battle-4", true, true, false],
+				"battle-3": ["battle-4", true, true, true],
 				"battle-4": ["main", true, false, false],
-				end:        ["start", false, false, true],
+				end:        ["start", true, true, true],
 			}[phase];
 
 			change[1] ^= !self.game.turn();

@@ -29,6 +29,10 @@ $wild = #2a2
 		-ms-user-select none
 		user-select none
 
+*:before
+*:after
+	box-sizing border-box !important
+
 body, html
 	background-color $black
 	margin 0
@@ -58,7 +62,7 @@ canvas
 	border-radius 10px
 	font-size 30px
 	transition border-color .2s
-	
+
 	&:hover
 		border-color $white
 
@@ -83,4 +87,3 @@ iframe[name="LPFrame"]
 	background-color $grey
 	border 2px solid $black
 	border-radius 100px
-

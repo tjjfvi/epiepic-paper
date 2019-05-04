@@ -13,25 +13,25 @@
 		border 2px solid $grey
 		border-radius 7.5px
 		text-align center
-	
+
 		color $lightgrey
 		font-size 15px
-	
+
 		height 300px
 		width 500px
-	
+
 		padding 3px
-	
+
 		transition color .2s, border .2s
-		
+
 		&.wrong
 			border-color: $red
 
 	& button
 		cursor pointer
-	
+
 		font-size 17.5px
-	
+
 		&:hover
 			color $white
 			border-color $lightgrey
@@ -89,12 +89,12 @@
 
 			&.hoverIntent
 				height 100px
-			
-	
+
+
 	.game
 		width 100vw
 		height 100vh
-		
+
 		display flex
 
 		.log
@@ -111,7 +111,7 @@
 			> div
 				width calc(30vw - 5px)
 				height 100vh
-				
+
 				background $black
 				color $white
 
@@ -120,7 +120,7 @@
 				display flex
 				flex-direction column
 				justify-content flex-start
-				
+
 				overflow hidden auto
 
 			.you
@@ -128,14 +128,14 @@
 
 			&.hoverIntent
 				width 30vw
-		
+
 		.supps
 			width cardWidth*2
 			flex 0 0 auto
 
 			display flex
 			flex-direction column
-			
+
 			> div
 				flex 1 0
 
@@ -147,7 +147,7 @@
 
 				.user
 					height cardHeight
-					
+
 					display flex
 					flex-direction column
 					align-items center
@@ -155,10 +155,10 @@
 
 					.avatarGroup
 						position relative
-						
+
 						display flex
 						justify-content center
-						
+
 						width 178px
 						max-width cardWidth
 
@@ -187,7 +187,7 @@
 							color $yellow
 
 							transition border-color .2s, color .2s
-							
+
 							&[data-g="0"]
 								border-color $grey
 								color $grey
@@ -219,7 +219,7 @@
 				flex 0 0 auto
 
 				height cardHeight
-					
+
 			.play
 				flex 1 0
 
@@ -235,13 +235,13 @@
 
 		.right
 			width 2*cardWidth
-			
+
 			display flex
 			flex-direction column
 
 			.dd
 				display flex
-				
+
 				min-height cardHeight
 				max-height cardHeight
 
@@ -254,20 +254,21 @@
 
 			.il
 				flex 1 0 auto
-				
+
 				display flex
-				
-				> div
-					flex 1 0 0
+				flex-direction row
+				justify-content flex-start
 
 				.i
 					display flex
 					flex-direction column
 
+					width 50%
+					justify-content space-between
+
 					> .o
 					> .p
 						flex 0 0 auto
-						height 200px
 
 						display flex
 						flex-direction column
@@ -277,57 +278,83 @@
 						&.o
 							flex-direction column-reverse
 
-						.initiative
-						.waiting
-							width 100%
-							height 75px
+					.initiative
+					.waiting
+						display flex
+						justify-content center
+						align-items center
 
-							display flex
-							justify-content center
-							align-items center
+						&:before
+							content ""
+							transition border-color .2s, background .2s
 
-							cursor pointer
+					.initiative
+						width 6em
+						height ( @width / 2 )
+						overflow hidden
 
-							&:before
-								content ""
-								transition border-color .2s, background .2s
-
-						.initiative:before
+						&:before
+							box-sizing content-box !important
+							width @width
+							height @width
 							border-radius 100%
-							border 5px solid $grey
-							width 50px
-							height 50px
+							border-width ( @width / 2 ) 0
+							background $grey
 
-						.initiative.on:before
-							border-color $blue
-							background $blue
+						&:not(.on):before
+						&.hideInitiative:before
+							content none
+						&.p
+							justify-content flex-end
+							&:before
+								border-top-width 0
+								border-color $blue
+								background $blue
+								margin-top -( @width / 2 )
+						&.o
+							justify-content flex-start
+							&:before
+								border-bottom-width 0
+								margin-bottom -( @width / 2 )
+
+						&.p.on:before
 							animation pulse 3s infinite
 
-						.initiative.hideInitiative
+						&.hideInitiative
 							pointer-events none
-							
+
 							&:before
 								animation none
 								opacity: 0
 
-						.waiting:before
-							width 35px
-							height 35px
-							border 5px solid $grey
+					.waiting
+						cursor pointer
+						animation pulse 1s infinite
+						margin 3ex
+						&:before
+							width 3ex
+							height 3ex
+							border .25ex solid $grey
 							transform rotate(45deg)
+							box-sizing border-box
 
-						.waiting.on:before
-							border-color $yellow
+						&.on:before
+							border-width 0
 							background-color $yellow
 
-						.waiting:not(.on)
+						&.o.on:before
+							background-color $white
+
+						&:not(.on)
+						&.o
 							animation none
 
 					.atp
 						flex 1 0
 
 						display flex
-						justify-content space-evenly
+						flex-direction column
+						justify-content center
 						align-items center
 
 						.tp
@@ -337,13 +364,17 @@
 							display flex
 							flex-direction column
 							align-items center
-							justify-content center
+							justify-content space-between
+
+							margin 1ex 0
+
+							cursor pointer
 
 							span
 								color $white
 								font-size 35px
 								font-weight 100
-	
+
 								&.phase
 									margin-top -5px
 									font-size 20px
@@ -352,7 +383,7 @@
 							width 30px
 							height 30px
 							flex 0 0 auto
-							
+
 							border 5px solid $grey
 
 							transform rotate(45deg)
@@ -363,7 +394,7 @@
 
 							&:hover
 								border-color $white
-							
+
 							&.r
 								border-left-color transparent
 								border-bottom-color transparent
@@ -504,7 +535,7 @@
 
 	.rightClick
 		position absolute
-		
+
 		display flex
 		flex-direction column
 
@@ -554,5 +585,3 @@
 		&.hide
 			opacity 0
 			pointer-events none
-
-

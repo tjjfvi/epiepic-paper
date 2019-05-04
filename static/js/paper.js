@@ -221,6 +221,11 @@ module.exports = class {
 		self.moveFuncs.toggleDeploying = (oa, card) =>
 			card.deploying(true);
 
+		self.moveFuncs.transform = (oa, card) => {
+			self.moveFuncs.banish(oa, card);
+			root.ws.s("move", "token", "tokens-wolf_token", (oa.z[0] === "o") ^ self.n());
+		}
+
 		self.moveFuncNames = {
 			play: "In-Play",
 			disc: "Discard",
@@ -236,6 +241,7 @@ module.exports = class {
 			break: "evil",
 			banish: "good",
 			hand: "sage",
+			transform: "wild",
 		}
 
 		self.phaseNames = {

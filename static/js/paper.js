@@ -231,6 +231,13 @@ module.exports = class {
 			playCardGold: "Auto-Play",
 		};
 
+		self.moveFuncClasses = {
+			disc: "evil",
+			break: "evil",
+			banish: "good",
+			hand: "sage",
+		}
+
 		self.phaseNames = {
 			start: "Start Phase",
 			main: "Main Phase",
@@ -523,6 +530,7 @@ module.exports = class {
 				this.rightClick = c => alt.trim().split(/\s+/g).map(n => ({
 					name: self.moveFuncNames[n] || (n[0].toUpperCase() + n.slice(1)).split(/(?=[A-Z][a-z]+)/g).join(" "),
 					func: () => self.moveFuncs[n](cards, c),
+					class: self.moveFuncClasses[n] || "",
 				}));
 				this.click = c => c.click || (c.click = self.double(
 					() => (!self.hideInitiative() || main !== "playCard") && this.main(cards, c),

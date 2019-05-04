@@ -107,15 +107,17 @@ module.exports = class {
 		"Deck Disc Supp Play Hand".split(" ").map(n => {
 			self["p" + n] = ko.observableArray([]);
 			self["o" + n] = ko.observableArray([]);
+			self["p" + n].z = "p" + n;
+			self["o" + n].z = "o" + n;
 		});
 
-		self.tokens = ko.observable([]);
+		self.tokens = ko.observable(() => []);
 
-		fetch(`/api/card/.json`).then(r => r.json()).then(cs => self.tokens(cs
+		fetch(`/api/card/.json`).then(r => r.json()).then(cs => self.tokens(n => cs
 			.filter(c => c.packCode === "tokens")
 			.map(c => ({
 				name: c.name,
-				func: () => root.ws.s("move", "token", c._id),
+				func: () => root.ws.s("move", "token", c._id, n),
 			}))
 		));
 
@@ -137,29 +139,45 @@ module.exports = class {
 
 		self.moveFuncs = { "": () => {} };
 
-		"Deck Disc Supp Play Hand".split(" ").map(n => self.moveFuncs[n.toLowerCase()] = (oa, card) => {
-			root.ws.s("move", "move", card._id, `p${self.n()}.${n.toLowerCase()}`);
-			oa.remove(card);
-			self["p" + n].unshift(card);
-			card.damage(0);
-			card.counters(0);
-			card.state("prepared");
-			card.marked(false);
-			delete card.click;
+		"Deck Disc Supp Play Hand".split(" ").map(n => {
+			["p", "o"].map((p, i) => self.moveFuncs[p + n] = (oa, card) => {
+				root.ws.s("move", "move", card._id, `p${i ^ self.n()}.${n.toLowerCase()}`);
+				oa.remove(card);
+				self[p + n].unshift(card);
+				if(n !== "Play") {
+					card.damage(0);
+					card.counters(0);
+					card.state("prepared");
+				}
+				card.marked(false);
+				delete card.click;
+			});
+			self.moveFuncs[n.toLowerCase()] = (oa, card) => {
+				let f = oa.z;
+				if(n === "Play" || n === "Supp")
+					return self.moveFuncs[f[0] + n](oa, card);
+				self.moveFuncs[(card.owner ^ self.n() ? "o" : "p") + n](oa, card);
+			}
 		});
 
-		self.moveFuncs.playCard = (oa, card) => {
+		self.moveFuncs.changeControl = (oa, card) =>
+			self.moveFuncs[(oa.z[0] === "o" ? "p" : "o") + (card.card().type[0] === "C" ? "Play" : "Supp")](oa, card);
+
+		self.moveFuncs.playCardGold = (oa, card) => {
 			if(card.card().cost && !(self.p.gold() && (
 				!self.p.goldFaction() ||
 					self.p.goldFaction() === card.card().factionCode.toUpperCase()
 			))) return
-			self.moveFuncs[card.card().type === "CHAMPION" ? "play" : "supp"](oa, card);
+			self.moveFuncs.playCard(oa, card);
 			if(!card.card().cost)
 				return;
 			self.p.gold(false);
 			self.p.goldFaction(false);
 		}
 
+		self.moveFuncs.playCard = (oa, card) => {
+			self.moveFuncs[card.card().type === "CHAMPION" ? "play" : "supp"](oa, card);
+		}
 
 		self.moveFuncs.battle = (oa, card) => {
 			if(card.inBattle())
@@ -203,6 +221,8 @@ module.exports = class {
 			supp: "Supplemental",
 			deck: "Top of Deck",
 			unrevealO: "Unreveal",
+			playCard: "Play",
+			playCardGold: "Auto-Play",
 		};
 
 		self.phaseNames = {
@@ -424,9 +444,11 @@ module.exports = class {
 						if(c) z.remove(c);
 						return !!c;
 					});
-				c.counters(0);
-				c.damage(0);
-				c.state("prepared");
+				if(!zoneName.endsWith("play")) {
+					c.counters(0);
+					c.damage(0);
+					c.state("prepared");
+				}
 				if(type === "banish")
 					zone.push(c);
 				else if(type === "move")

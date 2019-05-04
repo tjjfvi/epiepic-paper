@@ -4,6 +4,7 @@ let cSchema = new mongoose.Schema({
 	card: {},
 	marked: Boolean,
 	public: Boolean,
+	owner: Boolean,
 });
 
 let pSchema = new mongoose.Schema({
@@ -21,6 +22,7 @@ let pSchema = new mongoose.Schema({
 			state: { type: String, enum: ["prepared", "flipped", "expended"] },
 			marked: Boolean,
 			public: Boolean,
+			owner: Boolean,
 		}],
 		disc: [cSchema],
 	},

@@ -37,6 +37,7 @@ async function handle(ws, type, ...data){
 				ws.deck = [].concat(...data[0].map(({ count, card }) => [...Array(count)].map(() => ({
 					card,
 					marked: false,
+					owner: !!ws.n,
 				}))));
 				if(!ws.o.deck) break;
 				game.p0.zones.deck = ws.p0.deck.shuffle();
@@ -97,16 +98,16 @@ async function handle(ws, type, ...data){
 				break;
 			}
 			case "token": {
-				let [cardId] = data;
+				let [cardId, n] = data;
 				let card = await fetch(process.env.API_BASE_URL + `api/card:${cardId}/`)
 					.then(r => r.json())
 					.catch(() => {});
 				if(!card)
 					break;
 				let _id = new mongoose.Types.ObjectId();
-				let c = { _id, card, damage: 0, counters: 0, marked: false };
-				game["p" + ws.n].zones.play.unshift(c);
-				ws.s(...ws.o.s("token", "p" + ws.n, c));
+				let c = { _id, card, damage: 0, counters: 0, marked: false, owner: !!n };
+				game["p" + n].zones.play.unshift(c);
+				ws.s(...ws.o.s("token", "p" + n, c));
 				log(ws, { type: "move", card: _id, dest: `p${ws.n}.play` });
 				break;
 			}

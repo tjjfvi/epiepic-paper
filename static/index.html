@@ -94,10 +94,18 @@
 							</div>
 							<span class="username" data-bind="text: `@${oUser().username}#${oUser().discriminator}`"></span>
 						</div>
-						<div class="supp o" data-bind="cards: oSupp, main: 'mark'"></div>
+						<div class="supp o" data-bind="
+							cards: oSupp,
+							main: 'mark',
+							alt: 'disc play changeControl hand banish',
+						"></div>
 					</div>
 					<div>
-						<div class="supp p" data-bind="cards: pSupp, main: 'disc', alt: 'disc play hand banish'"></div>
+						<div class="supp p" data-bind="
+							cards: pSupp,
+							main: 'disc',
+							alt: 'disc play changeControl hand banish'
+						"></div>
 						<div class="user p" data-bind="if: pUser">
 							<div class="avatarGroup">
 								<div class="gold badge" data-bind="
@@ -117,15 +125,24 @@
 					</div>
 				</div>
 				<div class="main">
-					<div class="hand o" data-bind="cards: oHand, main: 'mark', alt: 'unrevealO'"></div>
-					<div class="play o" data-bind="cards: oPlay, main: 'mark'"></div>
+					<div class="hand o" data-bind="
+						cards: oHand,
+						main: 'mark',
+						alt: 'unrevealO'
+					"></div>
+					<div class="play o" data-bind="
+						cards: oPlay,
+						main: 'mark',
+						alt: 'prepare expend flip changeControl break hand supp banish',
+						rightClick: tokens()(+!n())
+					"></div>
 					<div class="play p" data-bind="
 						cards: pPlay,
 						main: 'battle',
-						alt: 'prepare expend flip break hand supp banish',
-						rightClick: tokens(),
+						alt: 'prepare expend flip changeControl break hand supp banish',
+						rightClick: tokens()(n()),
 					"></div>
-					<div class="hand p" data-bind="cards: pHand, main: 'playCard', alt: 'playCard reveal unreveal disc supp play deck banish'"></div>
+					<div class="hand p" data-bind="cards: pHand, main: 'playCardGold', alt: 'playCardGold reveal unreveal disc supp play deck banish'"></div>
 				</div>
 				<div class="right">
 					<div class="dd o">
@@ -133,7 +150,7 @@
 						<div class="disc o" data-bind="
 							cards: oDisc,
 							main: 'hand',
-							alt: 'hand playCard banish',
+							alt: 'banish changeControl hand',
 							attr: { class: 'disc o n' + Math.ceil(Math.sqrt(oDisc().length)) },
 						"></div>
 					</div>

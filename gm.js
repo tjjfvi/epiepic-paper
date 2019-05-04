@@ -105,13 +105,14 @@ async function handle(ws, type, ...data){
 				if(!card)
 					break;
 				let _id = new mongoose.Types.ObjectId();
-				let c = { _id, card, damage: 0, counters: 0, marked: false, owner: !!n };
+				let c = { _id, card, damage: 0, counters: 0, marked: false, owner: !!n, deploying: true };
 				game["p" + n].zones.play.unshift(c);
 				ws.s(...ws.o.s("token", "p" + n, c));
 				log(ws, { type: "move", card: _id, dest: `p${ws.n}.play` });
 				break;
 			}
 			case "inBattle":
+			case "deploying":
 			case "marked":
 			case "notes":
 			case "damage":
@@ -131,6 +132,7 @@ async function handle(ws, type, ...data){
 					damage: [vs.nnInt(val) ? val : NaN],
 					counters: [vs.nnInt(val) ? val : NaN],
 					marked: [true, false],
+					deploying: [true, false],
 				}[type]).indexOf(val))
 					break;
 				c[type] = val;

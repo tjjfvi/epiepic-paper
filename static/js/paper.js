@@ -59,6 +59,7 @@ module.exports = class {
 				counters: "Counters",
 				state: "State",
 				marked: "Marked",
+				deploying: "Deploying",
 			})[p],
 			valName: (p, v) => ({
 				gold: { true: "1", false: "0" },
@@ -75,6 +76,7 @@ module.exports = class {
 				damage: {},
 				state: {},
 				marked: {},
+				deploying: {},
 			}[p][v] || v)
 		};
 
@@ -149,6 +151,7 @@ module.exports = class {
 					card.counters(0);
 					card.state("prepared");
 				}
+				card.deploying(true);
 				card.marked(false);
 				delete card.click;
 			});
@@ -214,6 +217,9 @@ module.exports = class {
 			card.card(null);
 
 		self.moveFuncs.break = self.moveFuncs.disc;
+
+		self.moveFuncs.toggleDeploying = (oa, card) =>
+			card.deploying(true);
 
 		self.moveFuncNames = {
 			play: "In-Play",
@@ -304,8 +310,10 @@ module.exports = class {
 
 			if(phase === "start")
 				self[(self.game.turn() ^ self.n() ? "o" : "p") + "Play"]()
-					.filter(c => c.state() !== "prepared")
-					.map(c => c.state("prepared"));
+					.map(c => {
+						c.state("prepared");
+						c.deploying(false);
+					});
 			else if(phase === "end") {
 				self.o.gold(true);
 				self.o.goldFaction("");
@@ -355,7 +363,7 @@ module.exports = class {
 
 		self.newCard = c => {
 			c.card = ko.observable(c.card);
-			"inBattle state marked notes counters damage"
+			"inBattle state marked notes counters damage deploying"
 				.split(" ")
 				.map(n => {
 					let o = c["_" + n] = ko.observable(c[n]);
@@ -531,6 +539,7 @@ module.exports = class {
 				">
 					<img class="_" src="/314x314.jpg"/>
 					<img data-bind="attr: { src }"/>
+					<div class="deploying badge" data-bind="css: { show: deploying() && $parent.cards.z.endsWith('Play') }"></div>
 					<div class="damage number badge" data-bind="css: { show: +damage() }, click: $parent.stop">
 						<span class="a" data-bind="click: $parent.inc(damage)">+</span>
 						<input data-bind="value: damage, css: { show: damage }"/>

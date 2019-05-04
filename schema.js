@@ -23,6 +23,7 @@ let pSchema = new mongoose.Schema({
 			marked: Boolean,
 			public: Boolean,
 			owner: Boolean,
+			deploying: Boolean,
 		}],
 		disc: [cSchema],
 	},

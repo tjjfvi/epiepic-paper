@@ -262,11 +262,12 @@ module.exports = class {
 		});
 
 		self.goldRightClick = p => [{
-			name: "No alignment",
+			name: "Any",
 			func: () => p.goldFaction(""),
 		}, ...["Good", "Sage", "Evil", "Wild"].map(a => ({
 			name: a,
 			func: () => (p.gold(true), p.goldFaction(a.toUpperCase())),
+			class: a.toLowerCase(),
 		}))];
 
 		let wsObservables = {

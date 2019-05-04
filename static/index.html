@@ -265,7 +265,7 @@
 					<!-- /ko -->
 				<!-- /ko --></div></div>
 				<div class="rightClick" data-bind="foreach: rightClick()">
-					<span data-bind="click: func, text: name"></span>
+					<span data-bind="click: func, text: name, attr: { class: $data.class }"></span>
 				</div>
 				<div class="popup cardPopup" data-bind="
 					css: { hide: !cardPopup() },

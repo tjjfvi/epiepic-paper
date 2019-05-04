@@ -424,7 +424,7 @@ module.exports = class {
 						},
 					});
 				});
-			c.src = ko.computed(() => `/images/${c.card() ? c.card()._id : "back"}.jpg`);
+			c.src = ko.computed(() => `/images/${c.card() ? c.card()._id + ".svg" : "back.jpg"}`);
 			self.cards[c._id] = c;
 			return c;
 		}
@@ -585,7 +585,7 @@ module.exports = class {
 					rightClick: $parent.rightClick($data),
 				">
 					<img class="_" src="/314x314.jpg"/>
-					<img data-bind="attr: { src }"/>
+					<img data-bind="attr: { src }" style="width: 225px; height: 314px"/>
 					<div class="deploying badge" data-bind="css: { show: deploying() && $parent.cards.z.endsWith('Play') }"></div>
 					<div class="damage number badge" data-bind="css: { show: +damage() }, click: $parent.stop">
 						<span class="a" data-bind="click: $parent.inc(damage)">+</span>

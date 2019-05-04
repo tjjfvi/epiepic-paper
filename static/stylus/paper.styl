@@ -437,13 +437,13 @@
 
 				transform translate(0, -50%);
 
-				^[-2] .play .card.hoverIntent
+				^[-2] .play .card.rightClicked
 					.counters
 					.damage
 						pointer-events auto
 						opacity 1
 				&.show
-				&:focus
+				&:focus-within
 					pointer-events auto
 					opacity 1
 

@@ -463,6 +463,7 @@ module.exports = class {
 		ko.bindingHandlers.rightClick = {
 			init: (el, valAcc) => {
 				$(el).on("contextmenu", e => {
+					$(el).addClass("rightClicked");
 					let items = ko.unwrap(valAcc());
 					let y = e.originalEvent.clientY;
 					let height = 30 * items.length + 1;
@@ -477,7 +478,10 @@ module.exports = class {
 			},
 		}
 
-		$("*").on("click contextmenu", () => self.rightClick([]));
+		$("*").on("click contextmenu", () => {
+			$(".rightClicked").removeClass("rightClicked");
+			self.rightClick([])
+		});
 
 		ko.components.register("cards", {
 			viewModel: function({ cards, main = "", alt = main }){
@@ -495,6 +499,7 @@ module.exports = class {
 				));
 				this.inc = self.inc;
 				this.dec = self.dec;
+				this.stop = (_, e) => e.stopPropagation();
 			},
 			template: `<!-- ko foreach: cards -->
 				<div class="card" data-bind="
@@ -504,12 +509,12 @@ module.exports = class {
 				">
 					<img class="_" src="/314x314.jpg"/>
 					<img data-bind="attr: { src }"/>
-					<div class="damage number badge" data-bind="css: { show: +damage() }">
+					<div class="damage number badge" data-bind="css: { show: +damage() }, click: $parent.stop">
 						<span class="a" data-bind="click: $parent.inc(damage)">+</span>
 						<input data-bind="value: damage, css: { show: damage }"/>
 						<span class="a" data-bind="click: $parent.dec(damage, true)">–</span>
 					</div>
-					<div class="counters number badge" data-bind="css: { show: +counters() }">
+					<div class="counters number badge" data-bind="css: { show: +counters() }, click: $parent.stop">
 						<span class="a" data-bind="click: $parent.inc(counters)">+</span>
 						<input data-bind="value: counters"/>
 						<span class="a" data-bind="click: $parent.dec(counters, true)">–</span>

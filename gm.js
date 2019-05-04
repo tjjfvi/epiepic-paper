@@ -26,9 +26,9 @@ let vs = {
 	nnInt: n => !isNaN(+n) && +n === Math.floor(+n) && +n >= 0,
 };
 
-function handle(ws, type, ...data){
+async function handle(ws, type, ...data){
 	let { sp } = ws;
-	ws.sp = ws.o.sp = (async () => {
+	await (ws.sp = ws.o.sp = (async () => {
 		await sp;
 		let { game } = ws;
 		switch(type) {
@@ -140,6 +140,7 @@ function handle(ws, type, ...data){
 			}
 			case "concede": {
 				game.remove();
+				ws.o.s("won");
 				break;
 			}
 		}
@@ -155,7 +156,7 @@ function handle(ws, type, ...data){
 			log(ws, { type: "set", prop: type, val: data[0], p: ws.n });
 		}
 		await game.save();
-	})();
+	})());
 }
 
 function log(ws, ...log){
@@ -163,7 +164,7 @@ function log(ws, ...log){
 	ws.game.log.push(...log);
 }
 
-function setup(ws1, ws2){
+async function setup(ws1, ws2){
 	let genP = ws => ({
 		user: ws.user,
 		health: 30,
@@ -201,7 +202,7 @@ function setup(ws1, ws2){
 	ws2.n = 1;
 }
 
-function reconnect(ws1, ws2, game){
+async function reconnect(ws1, ws2, game){
 	if(ws1.user._id !== game.p0.user._id)
 		[ws2, ws1] = [ws1, ws2];
 	ws1.game = game;

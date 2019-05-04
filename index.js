@@ -106,7 +106,7 @@ app.ws("/ws", async (ws, req) => {
 				if(ws.status !== "playing")
 					return;
 
-				gm.handle(ws, ...data);
+				gm.handle(ws, ...data).catch(gmError(ws));
 
 				break;
 			}
@@ -132,7 +132,7 @@ app.ws("/ws", async (ws, req) => {
 				ws.status = ws2.status = "playing";
 				sendStatus(ws, ws2);
 
-				gm.setup(ws2, ws);
+				gm.setup(ws2, ws).catch(gmError(ws));
 
 				break;
 			}
@@ -179,7 +179,7 @@ app.ws("/ws", async (ws, req) => {
 				if(ws2) {
 					ws.status = ws2.status = "playing";
 					sendStatus(ws, ws2);
-					return gm.reconnect(ws, ws2, game);
+					return gm.reconnect(ws, ws2, game).catch(gmError(ws));
 				}
 
 				ws.status = "reconnectWait";
@@ -237,4 +237,12 @@ function sendStatus(...wss){
 
 function genId(){
 	return crypto.randomBytes(4).toString("hex");
+}
+
+function gmError(ws){
+	return e => {
+		ws.status = ws.o.status = "error";
+		sendStatus(ws, ws.o);
+		console.error(ws.game._id, e);
+	}
 }

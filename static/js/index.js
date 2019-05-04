@@ -49,7 +49,12 @@ require("jquery")($ => {
 					}
 				})
 
-				ws.addEventListener("close", () => self.user() && self.status("disconnected"));
+				ws.addEventListener("close", () => {
+					if(self.status() === "won" || self.status() === "error")
+						return;
+					if(self.user())
+						self.status("disconnected")
+				});
 
 				return ws;
 			}

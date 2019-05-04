@@ -59,6 +59,10 @@
 			Disconnected; refresh to reconnect.
 		</div>
 
+		<div class="waiting" data-bind="visible: status() === 'error'">
+			Server error; report to @T6 or @vjjft.
+		</div>
+
 		<div class="waiting" data-bind="visible: status() === 'won'" style="animation: none">
 			You won!
 		</div>

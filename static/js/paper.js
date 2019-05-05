@@ -514,7 +514,7 @@ module.exports = class {
 				let [p, c] = data;
 				self[(p[1] ^ self.n() ? "o" : "p") + "Play"].push(self.newCard(c));
 			}
-			if(~"inBattle state marked notes counters damage".split(" ").indexOf(type))
+			if(~"deploying inBattle state marked notes counters damage".split(" ").indexOf(type))
 				self.cards[data[0]]["_" + type](data[1]);
 			if(type === "won") {
 				root.status("won");

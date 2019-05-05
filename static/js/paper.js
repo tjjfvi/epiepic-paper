@@ -521,8 +521,13 @@ module.exports = class {
 			if(type === "won") {
 				root.status("won");
 			}
-			if(type === "log")
+			if(type === "log") {
 				self.log.push(...data);
+				setTimeout(() => {
+					if(!$(".log").is(":hover"))
+						$(".log div").scrollTop($(".log div")[0].scrollHeight);
+				}, 0);
+			}
 			(wsObservables[type] || (() => {}))(data[0]);
 		});
 

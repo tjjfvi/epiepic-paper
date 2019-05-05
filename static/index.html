@@ -208,7 +208,10 @@
 						"></div>
 					</div>
 				</div>
-				<div class="log"><div><!-- ko foreach: log -->
+				<div class="log" data-bind="
+					rightClick: [{ name: 'Pin', func: () => logPinned(!logPinned()) }],
+					css: { pinned: logPinned },
+				"><div><!-- ko foreach: log -->
 					<!-- ko with: { ...$data, ...$parent.logHelpers } -->
 					<!-- ko if: type === "move" -->
 					<div data-bind="attr: pClass(($data.source || dest)[1])">

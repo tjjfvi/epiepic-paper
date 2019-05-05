@@ -37,6 +37,7 @@ module.exports = class {
 		};
 
 		self.log = ko.observableArray([]);
+		self.logPinned = ko.observable(false);
 
 		self.logHelpers = {
 			pClass: n => ({ class: n ^ self.n() ? "them" : "you" }),

@@ -585,7 +585,7 @@ module.exports = class {
 					rightClick: $parent.rightClick($data),
 				">
 					<img class="_" src="/314x314.jpg"/>
-					<img data-bind="attr: { src }" style="width: 225px; height: 314px"/>
+					<img data-bind="attr: { src }" style=""/>
 					<div class="deploying badge" data-bind="css: { show: deploying() && $parent.cards.z.endsWith('Play') }"></div>
 					<div class="damage number badge" data-bind="css: { show: +damage() }, click: $parent.stop">
 						<span class="a" data-bind="click: $parent.inc(damage)">+</span>

@@ -349,6 +349,7 @@ module.exports = class {
 			}[phase];
 
 			change[1] ^= !self.game.turn();
+			change[1] = !!change[1];
 			if(self.game.turn())
 				[change[2], change[3]] = [change[3], change[2]];
 			[self.game.phase, self.game.initiative, self.game.p0.waitingOn, self.game.p1.waitingOn]

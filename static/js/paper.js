@@ -498,6 +498,7 @@ module.exports = class {
 						if(c) z.remove(c);
 						return !!c;
 					});
+				delete c.click;
 				if(!zoneName.endsWith("play")) {
 					c.counters(0);
 					c.damage(0);

@@ -424,7 +424,7 @@ module.exports = class {
 						},
 					});
 				});
-			c.src = ko.computed(() => `/images/${c.card() ? c.card()._id + ".svg" : "back.jpg"}`);
+			c.src = ko.computed(() => `/images/${c.card() ? c.card()._id : "back"}`);
 			self.cards[c._id] = c;
 			return c;
 		}

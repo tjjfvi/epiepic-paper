@@ -11,6 +11,15 @@
 
 		<a class="login" href="/login" data-bind="visible: !user()">Login (via Discord)</a>
 
+		<label class="upload" data-bind="
+			visible: status() === 'waiting' && showUpload(),
+			css: { done: uploadDone },
+			rightClick: [{ name: 'Wipe Images', func: resetImages, class: 'evil' }],
+		">
+			<input type="file" multiple="" data-bind="event: { change: upload }" accept=".jpg"/>
+			Apply Images
+		</label>
+
 		<div class="intro" data-bind="visible: status() === 'waiting' && user(), with: intro">
 			<div class="join">
 				<h1>Join an existing game</h1>
@@ -256,17 +265,18 @@
 					<!-- /ko -->
 					<!-- /ko -->
 				<!-- /ko --></div></div>
-				<div class="rightClick" data-bind="foreach: rightClick()">
-					<span data-bind="click: func, text: name, attr: { class: $data.class }"></span>
-				</div>
 				<div class="popup cardPopup" data-bind="
 					css: { hide: !cardPopup() },
 					click: () => cardPopup(null),
 					with: cardPopup,
 				">
-					<img data-bind="attr: { src }" style="width: 225px; height: 314px"/>
+					<img data-bind="attr: { src }" style="width: 225px"/>
 				</div>
 			</div>
+		</div>
+		
+		<div class="rightClick" data-bind="foreach: paper.rightClick()">
+			<span data-bind="click: func, text: name, attr: { class: $data.class }"></span>
 		</div>
 
 	</body>

@@ -224,7 +224,7 @@ app.get("/images/:id.svg", (req, res) =>
 		.then(r => r.json())
 		.then(c => res.set("Content-Type", "image/svg+xml").send(generateCard(c)))
 );
-app.use("/images", (req, res) => res.redirect(API_BASE_URL + "images" + req.path));
+app.get("/images/:id", (req, res) => res.redirect(302, BASE_URL + req.path.slice(1) + ".svg"));
 
 const port = process.env.PORT || 22563;
 

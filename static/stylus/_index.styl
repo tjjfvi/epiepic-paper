@@ -70,6 +70,40 @@ iframe[name="LPFrame"]
 	opacity 0
 	pointer-events none
 
+.upload
+	position absolute
+	top 5px
+	left 5px
+
+	display flex
+	align-items center
+	justify-content center
+
+	width 200px
+	height 75px
+
+	border 2px solid $grey
+	border-radius 20px
+
+	color white
+	font-size 25px
+	font-weight 100
+
+	cursor pointer
+
+	transition border-color .2s
+
+	input
+		position absolute
+		left -100vw
+		top -100vh
+
+	&:hover
+		border-color $white
+
+	&.done
+		border-color $green
+
 ::-webkit-scrollbar
 	width 10px
 	background-color $black

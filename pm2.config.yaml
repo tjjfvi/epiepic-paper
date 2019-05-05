@@ -1,0 +1,18 @@
+apps:
+  - name: paper
+    script: index.js
+    log_date_format: MM-DD HH:mm
+    restart_delay: 1000
+    min_uptime: 5000
+    max_restarts: 4
+  - name: paper-dev
+    script: index.js
+    log_date_format: MM-DD HH:mm
+    restart_delay: 5000
+    min_uptime: 10000
+    max_restarts: 1
+    watch: true
+    ignore_watch:
+      - .git
+      - node_modules
+      - static

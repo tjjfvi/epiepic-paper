@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "cd static/js && npm i"
+    "install": "cd static/js && npm i",
+    "start": "pm2 start pm2.config.yaml --only",
+    "stop": "pm2 stop pm2.config.yaml --only",
+    "restart": "pm2 restart pm2.config.yaml --only",
+    "delete": "pm2 delete pm2.config.yaml --only"
   },
   "author": "",
   "dependencies": {

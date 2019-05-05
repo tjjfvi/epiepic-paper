@@ -29,8 +29,6 @@ require("jquery")($ => {
 			self.intro = new (require("./intro"))(root);
 			self.paper = new (require("./paper"))(root);
 
-			return self;
-
 			function initWs(ws){
 				ws.s = function(type, ...data){
 					console.log("Sending", type, ...data);
@@ -58,6 +56,26 @@ require("jquery")($ => {
 
 				return ws;
 			}
+
+			self.showUpload = ko.observable(false);
+			self.uploadDone = ko.observable(false);
+			self.upload = (_, e) => {
+				self.uploadDone(false);
+				let { files } = e.target;
+				Promise.all([...files].map(file => fetch(`/upload/${file.name}`, {
+					method: "POST",
+					body: file,
+				}))).then(() => self.uploadDone(true));
+			}
+
+			self.resetImages = () => fetch(`/resetImages`);
+
+			if("serviceWorker" in navigator)
+				navigator.serviceWorker.register("/sw.js").then(reg => {
+					console.log("SW Registered", reg)
+					self.showUpload(true);
+				}).catch(console.error);
+
 		}
 
 	}

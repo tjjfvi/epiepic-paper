@@ -258,6 +258,34 @@
 					width cardWidth
 					flex 0 0 auto
 
+				div.deck
+					position relative
+					display flex
+					flex-direction column
+					align-items center
+
+					img.deck
+						max-height 100%
+
+					font-size 16pt
+					$v = 1ex
+					$h = 1em
+					.cardCount
+						color $lightgrey
+						position absolute
+						&.countDeck
+							margin-top $v
+						&.countHand
+							left 0
+							margin-left $h
+						&.countDisc
+							right 0
+							margin-right $h
+						&.countHand
+						&.countDisc
+							top 50%
+							transform translate( 0%, -50% )
+
 			.il
 				flex 1 0 auto
 

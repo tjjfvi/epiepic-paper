@@ -155,7 +155,12 @@
 				</div>
 				<div class="right">
 					<div class="dd o">
-						<img class="deck o" data-bind="attr: { src: (oDeck()[0]||{}).src }"/>
+						<div class="deck o">
+							<div class="cardCount countDeck" data-bind="text: oDeck().length "></div>
+							<div class="cardCount countHand" data-bind="text: oHand().length "></div>
+							<div class="cardCount countDisc" data-bind="text: oDisc().length "></div>
+							<img class="deck o" data-bind="attr: { src: (oDeck()[0]||{}).src }"/>
+						</div>
 						<div class="disc o" data-bind="
 							cards: oDisc,
 							main: 'hand',
@@ -195,11 +200,16 @@
 						</div>
 					</div>
 					<div class="dd p">
-						<img class="deck p" data-bind="
-							click: draw,
-							attr: { src: (pDeck()[0]||{}).src },
-							rightClick: [{ name: 'Unbanish', func: () => moveFuncs.unbanish(pDeck) }],
-						"/>
+						<div class="deck p"/>
+							<div class="cardCount countDeck" data-bind="text: pDeck().length "></div>
+							<div class="cardCount countHand" data-bind="text: pHand().length "></div>
+							<div class="cardCount countDisc" data-bind="text: pDisc().length "></div>
+							<img class="deck p" data-bind="
+								click: draw,
+								attr: { src: (pDeck()[0]||{}).src },
+								rightClick: [{ name: 'Unbanish', func: () => moveFuncs.unbanish(pDeck) }],
+							"/>
+						</div>
 						<div class="disc p" data-bind="
 							cards: pDisc,
 							main: 'hand',
@@ -277,7 +287,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="rightClick" data-bind="foreach: paper.rightClick()">
 			<span data-bind="click: func, text: name, attr: { class: $data.class }"></span>
 		</div>

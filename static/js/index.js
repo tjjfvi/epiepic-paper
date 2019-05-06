@@ -31,13 +31,14 @@ require("jquery")($ => {
 
 			function initWs(ws){
 				ws.s = function(type, ...data){
-					console.log("Sending", type, ...data);
+					console.log("→", type, ...data);
 					this.send(JSON.stringify([type, ...data]));
 				}
 
 				ws.addEventListener("message", ({ data: message }) => {
+					console.log("←", ...JSON.parse(message));
+
 					let [type, ...data] = JSON.parse(message);
-					console.log(type, ...data);
 					self.emit("ws", { type, data });
 
 					switch(type) {

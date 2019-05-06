@@ -178,7 +178,7 @@ app.ws("/ws", async (ws, req) => {
 				if(ws2 === ws)
 					return;
 
-				if(ws2) {
+				if(ws2 && ws2.readyState < 2) {
 					ws.status = ws2.status = "playing";
 					sendStatus(ws, ws2);
 					return gm.reconnect(ws, ws2, game).catch(gmError(ws));

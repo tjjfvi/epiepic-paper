@@ -84,7 +84,13 @@
 			<div class="waiting" data-bind="visible: deckChoice.done() && !started()">
 				Waiting for the other player...
 			</div>
-			<div class="game" data-bind="if: started(), visible: started()">
+			<div data-bind="
+				if: started(),
+				visible: started(),
+				attr: { class: started() && `game ${
+					isTurn() ? 'p' : 'o'
+				}Turn ${hideInitiative() || `${hasInitiative() ? 'p' : 'o'}Initiative`}` },
+			">
 				<div class="supps">
 					<div>
 						<div class="user o" data-bind="user: oUser">

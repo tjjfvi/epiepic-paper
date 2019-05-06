@@ -457,8 +457,30 @@
 			justify-content center
 			align-items center
 
+			background $black
+
+			transition background .2s, border-radius .2s
+
 			&.o
 				flex-direction row
+
+		&.oTurn .o.play
+		&.oTurn .o.supp
+		&.oInitiative .o.hand
+		&.oInitiative .o.user
+		&.pTurn .p.play
+		&.pTurn .p.supp
+		&.pInitiative .p.hand
+		&.pInitiative .p.user
+			background $darkgrey
+
+		.play
+			border-radius 0 20px 20px 0
+
+		&.pInitiative .p.play
+			border-radius 0 10px 0px 0
+		&.oInitiative .o.play
+			border-radius 0 0px 20px 0
 
 		.disc
 			align-content center

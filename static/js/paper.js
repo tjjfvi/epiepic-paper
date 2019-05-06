@@ -43,7 +43,7 @@ module.exports = class {
 			pClass: n => ({ class: n ^ self.n() ? "them" : "you" }),
 			psName: n => n ^ self.n() ? "Their" : "Your",
 			pName: n => n ^ self.n() ? "Them" : "You",
-			cardName: c => (self.cards[c] || { card: () => '[removed]' }).card() ? self.cards[c].card().name : '?',
+			cardName: c => (self.cards[c] || { card: () => false }).card() ? self.cards[c].card().name : '?',
 			zoneNameFull: z => (z[1] ^ self.n() ? 'Their ' : 'Your ') + self.logHelpers.zoneName(z),
 			zoneNameAnti: (z, n) => (z[1] ^ n ? "their " : "") + self.logHelpers.zoneName(z),
 			zoneName: z => ({

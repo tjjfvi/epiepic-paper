@@ -411,7 +411,7 @@ module.exports = class {
 
 		self.newCard = c => {
 			c.card = ko.observable(c.card);
-			"inBattle state marked notes counters damage deploying"
+			"inBattle state marked notes counters damage deploying public"
 				.split(" ")
 				.map(n => {
 					let o = c["_" + n] = ko.observable(c[n]);
@@ -516,7 +516,7 @@ module.exports = class {
 				let [p, c] = data;
 				self[(p[1] ^ self.n() ? "o" : "p") + "Play"].push(self.newCard(c));
 			}
-			if(~"deploying inBattle state marked notes counters damage".split(" ").indexOf(type))
+			if(~"public deploying inBattle state marked notes counters damage".split(" ").indexOf(type))
 				self.cards[data[0]]["_" + type](data[1]);
 			if(type === "won") {
 				root.status("won");
@@ -605,6 +605,7 @@ module.exports = class {
 						<input data-bind="value: counters"/>
 						<span class="a" data-bind="click: $parent.dec(counters, true)">–</span>
 					</div>
+					<div class="revealed badge" data-bind="css: { show: public() && $parent.cards.z === 'pHand' }"></div>
 				</div>
 			<!-- /ko -->`,
 		});

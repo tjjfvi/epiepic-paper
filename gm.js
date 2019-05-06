@@ -56,7 +56,8 @@ async function handle(ws, type, ...data){
 				if(!c)
 					break;
 				ws.o.s("identity", id, type === "reveal" ? c.card : null);
-				c.public = true;
+				c.public = type === "reveal";
+				ws.s(...ws.o.s("public", id, c.public));
 				log(ws, { type, p: ws.n, card: id });
 				break;
 			}
@@ -92,6 +93,7 @@ async function handle(ws, type, ...data){
 				else if(!zone.endsWith(".deck")) {
 					ws.s(...ws.o.s("identity", id, c.card));
 					c.public = true;
+					ws.s(...ws.o.s("public", id, c.public));
 				}
 				ws.o.s(type, ...data);
 				log(ws, { type, card: id, source: `p${sourceP}.${sourceZone}`, dest: zone });

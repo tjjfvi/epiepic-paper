@@ -121,6 +121,7 @@ module.exports = class {
 			.map(c => ({
 				name: c.name,
 				func: () => root.ws.s("move", "token", c._id, n),
+				class: c.faction.toLowerCase(),
 			}))
 		));
 

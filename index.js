@@ -99,7 +99,10 @@ app.ws("/ws", async (ws, req) => {
 
 	ws.user = user;
 
-	ws.reconnectGames = Game.find({ $or: [{ "p0.user._id": user._id }, { "p1.user._id": user._id }] }).then(games => {
+	ws.reconnectGames = Game.find({
+		$or: [{ "p0.user._id": user._id }, { "p1.user._id": user._id }],
+		finished: { $ne: true },
+	}).then(games => {
 		ws.s("reconnectGames", games.map(game => {
 			let oUser = game.p0.user._id === user._id ? game.p1.user : game.p0.user;
 			return { oUser, _id: game._id };

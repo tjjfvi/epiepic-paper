@@ -52,4 +52,5 @@ module.exports = new mongoose.Schema({
 	},
 	initiative: Boolean,
 	log: [{}],
+	finished: Boolean,
 })

@@ -5,25 +5,26 @@ const express = require("express");
 const browserify = require("browserify");
 const watchify = require("watchify");
 const crypto = require("crypto");
-const fs = require("fs");
+const fs = require("fs-extra");
 const stylus = require("stylus");
 const { promisify } = require("util");
 const fetch = require("node-fetch");
+const watch = require("node-watch");
 
 const gm = require("./gm");
 const Game = require("./Game");
 
 const generateCard = require("./generateCard");
 
+const { BASE_URL, API_BASE_URL, DEBUG } = process.env;
+
 const b = browserify({
 	entries: [__dirname + "/static/js/index.js"],
 	cache: {},
 	packageCache: {},
-	debug: !!process.env.DEBUG,
+	debug: !!DEBUG,
 	plugin: [watchify],
 })
-
-const { BASE_URL, API_BASE_URL } = process.env;
 
 b.on("update", bundle)
 bundle()
@@ -35,6 +36,33 @@ function bundle(){
 		.on("error", console.error)
 		.pipe(fs.createWriteStream(__dirname + "/static/bundle.js"))
 }
+
+let wss = { all: [] };
+
+async function bundleStylus(){
+	console.log("Bundling stylus");
+	let css = await promisify(stylus.render)(
+		`@import '${__dirname + "/static/stylus/"}*'`,
+		{
+			filename: "_.styl",
+			sourcemap: {
+				comment: false,
+				inline: !!DEBUG,
+				basePath: __dirname + "/static/",
+			},
+		},
+	);
+	await fs.writeFile(__dirname + "/static/bundle.css", css);
+	console.log("Bundled stylus");
+	wss.all.map(ws => ws.s("styleReload", css));
+}
+
+bundleStylus();
+
+if(DEBUG) watch(__dirname + "/static/stylus/", {
+	persistent: false,
+	recursive: true,
+}, bundleStylus);
 
 const app = express();
 require("express-ws")(app);
@@ -48,16 +76,19 @@ app.get("/bundle.css", async (req, res) => {
 	));
 });
 
-let wss = {
+wss = {
 	waiting: [],
 	hosting: [],
 	reconnecting: {},
 	byId:    {},
+	all:     [],
 }
 
 app.use(require("cookie-parser")());
 
 app.ws("/ws", async (ws, req) => {
+
+	wss.all.push(ws);
 
 	let token = req.cookies.token;
 

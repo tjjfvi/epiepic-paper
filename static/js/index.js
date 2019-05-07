@@ -45,6 +45,11 @@ require("jquery")($ => {
 						case "status":
 							self.status(data[0]);
 							break;
+						case "styleReload": {
+							$(".__style").remove();
+							$("<style>").addClass("__style").text(data[0]).appendTo("body");
+							break;
+						}
 					}
 				})
 

@@ -279,7 +279,7 @@ module.exports = class {
 
 		self.goldRightClick = p => [{
 			name: "Any",
-			func: () => p.goldFaction(""),
+			func: () => (p.gold(true), p.goldFaction("")),
 		}, ...["Good", "Sage", "Evil", "Wild"].map(a => ({
 			name: a,
 			func: () => (p.gold(true), p.goldFaction(a.toUpperCase())),

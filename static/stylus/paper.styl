@@ -89,6 +89,7 @@
 
 			&.hoverIntent
 				height 100px
+				z-index 2
 
 
 	.game
@@ -537,23 +538,28 @@
 					opacity 1
 
 			.counters
-				top calc(50% + 35px)
-				border-color $blue
-				color $blue
+				top 50%
+				border-color $white
+				color $white
+				background-color #4f2b60
+				input
+					background-color @background-color
 
 			.damage
-				top calc(50% - 35px)
-				border-color $red
-				color $red
+				top 22%
+				color $lightgrey
+				border-color @color
+
 
 			.deploying
 				position absolute
-				top 24px
+				top 31%
 
 				width 20px
 				height 20px
 
-				border-color $white
+				background $lightgrey
+				border-color $black
 				border-width 1px
 
 				opacity 0

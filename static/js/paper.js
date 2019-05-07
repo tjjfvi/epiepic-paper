@@ -126,8 +126,8 @@ module.exports = class {
 			}))
 		));
 
-		self.inc = o => (_, e) => (o(+o() + 1), e.stopPropagation());
-		self.dec = (o, m) => (_, e) => (o(Math.max(+o() - 1, m ? 0 : -Infinity)), e.stopPropagation());
+		self.inc = o => (_, e) => (o(+(o() || 0) + 1), e.stopPropagation());
+		self.dec = (o, m) => (_, e) => (o(Math.max(+(o() || 0) - 1, m ? 0 : -Infinity)), e.stopPropagation());
 
 		self.cards = {};
 

@@ -2,6 +2,7 @@ module.exports = class {
 
 	constructor(root){
 		let self = this;
+		self.self = self;
 		const { ko, $ } = root.globals;
 
 		const phases = [

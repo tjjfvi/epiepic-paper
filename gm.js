@@ -26,6 +26,8 @@ let vs = {
 	nnInt: n => !isNaN(+n) && +n === Math.floor(+n) && +n >= 0,
 };
 
+const games = {};
+
 async function handle(ws, type, ...data){
 	let { sp } = ws;
 	await (ws.sp = ws.o.sp = (async () => {
@@ -47,6 +49,7 @@ async function handle(ws, type, ...data){
 					delete c.card
 				});
 				ws.s(...ws.o.s("game", obj));
+				ws.s(...ws.o.s("oActive", true));
 				break;
 			}
 			case "unreveal":
@@ -205,32 +208,24 @@ async function setup(ws1, ws2){
 	ws2.n = 1;
 }
 
-async function reconnect(ws1, ws2, game){
-	if(ws1.user._id !== game.p0.user._id)
-		[ws2, ws1] = [ws1, ws2];
-	ws1.game = game;
-	ws2.game = game;
-	ws1.o = ws2;
-	ws2.o = ws1;
-	ws1.p0 = ws1;
-	ws2.p0 = ws1;
-	ws1.p1 = ws2;
-	ws2.p1 = ws2;
-	ws1.s("n", 0);
-	ws1.n = 0;
-	ws2.s("n", 1);
-	ws2.n = 1;
-	ws1.s(...ws2.s("log", ...game.log));
+async function reconnect(ws, game){
+	games[game._id.toString()] = game = games[game._id.toString()] || game;
+	ws.n = +(ws.user._id !== game.p0.user._id || !!game.p0.ws);
+	game["p" + ws.n].ws = ws;
+	ws.game = game;
+	ws.o = game["p" + +!ws.n].ws || { s: (...a) => a, fake: true };
+	ws.o.o = ws;
+	ws.p0 = ws.n ? ws.o : ws;
+	ws.p1 = ws.n ? ws : ws.o;
+	ws.s("n", ws.n);
+	ws.s("log", ...game.log);
 	let obj = game.toJSON();
-	[obj.p1.zones.hand, obj.p0.zones.deck, obj.p1.zones.deck].map(z => z.map(c =>
+	[obj["p" + +!ws.n].zones.hand, obj.p0.zones.deck, obj.p1.zones.deck].map(z => z.map(c =>
 		c.public || delete c.card
 	));
-	ws1.s("game", obj);
-	obj = game.toJSON();
-	[obj.p0.zones.hand, obj.p0.zones.deck, obj.p1.zones.deck].map(z => z.map(c =>
-		c.public || delete c.card
-	));
-	ws2.s("game", obj);
+	ws.s("game", obj);
+	ws.s("oActive", !ws.o.fake);
+	ws.o.s("oActive", true);
 }
 
 module.exports = { setup, handle, reconnect };

@@ -79,7 +79,6 @@ app.get("/bundle.css", async (req, res) => {
 wss = {
 	waiting: [],
 	hosting: [],
-	reconnecting: {},
 	byId:    {},
 	all:     [],
 }
@@ -103,8 +102,7 @@ app.ws("/ws", async (ws, req) => {
 	ws.reconnectGames = Game.find({ $or: [{ "p0.user._id": user._id }, { "p1.user._id": user._id }] }).then(games => {
 		ws.s("reconnectGames", games.map(game => {
 			let oUser = game.p0.user._id === user._id ? game.p1.user : game.p0.user;
-			let oConnected = !!wss.reconnecting[game];
-			return { oUser, oConnected, _id: game._id };
+			return { oUser, _id: game._id };
 		}))
 		return games;
 	});
@@ -198,27 +196,14 @@ app.ws("/ws", async (ws, req) => {
 				let [id] = data;
 
 				let games = await ws.reconnectGames;
-				console.log(games);
 				let game = games.find(g => g._id.toString() === id);
 
 				if(!game)
 					return;
 
-				let ws2 = wss.reconnecting[id];
-
-				if(ws2 === ws)
-					return;
-
-				if(ws2 && ws2.readyState < 2) {
-					ws.status = ws2.status = "playing";
-					sendStatus(ws, ws2);
-					return gm.reconnect(ws, ws2, game).catch(gmError(ws));
-				}
-
-				ws.status = "reconnectWait";
+				ws.status = "playing";
 				sendStatus(ws);
-
-				wss.reconnecting[id] = ws;
+				gm.reconnect(ws, game).catch(gmError(ws));
 
 				break;
 			}
@@ -237,8 +222,8 @@ app.ws("/ws", async (ws, req) => {
 				break;
 
 			case "playing":
-				ws.o.s("close");
-				ws.o.close();
+				ws.o.s("oActive", false);
+				delete ws.game["p" + ws.n].ws;
 		}
 	})
 

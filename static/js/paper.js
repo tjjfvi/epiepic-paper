@@ -477,6 +477,7 @@ module.exports = class {
 					p0.health p1.health
 					p0.waitingOn p1.waitingOn
 					turn phase initiative
+					oActive
 				`
 					.trim().split(/\s+/g).map(f);
 				self.oUser(game.o.user);

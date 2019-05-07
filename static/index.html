@@ -24,7 +24,7 @@
 			<div class="join">
 				<h1>Join an existing game</h1>
 				<!-- ko foreach: reconnectGames -->
-				<div class="game" data-bind="css: { oConnected }">
+				<div class="game">
 					<span>
 						<span data-bind="text: `@${oUser.username}#${oUser.discriminator}`"></span>
 					</span>
@@ -60,10 +60,6 @@
 			Waiting for someone to join...
 		</div>
 
-		<div class="waiting" data-bind="visible: status() === 'reconnectWait'">
-			Waiting for opponent to reconnect...
-		</div>
-
 		<div class="waiting" data-bind="visible: status() === 'disconnected'">
 			Disconnected; refresh to reconnect.
 		</div>
@@ -93,7 +89,7 @@
 			">
 				<div class="supps">
 					<div>
-						<div class="user o" data-bind="user: oUser">
+						<div class="user o" data-bind="user: oUser, css: { inactive: !game.oActive() }">
 							<div class="avatarGroup">
 								<div class="gold badge" data-bind="
 									attr: { 'data-g': +o.gold(), 'data-f': o.goldFaction()[0] },

@@ -303,8 +303,16 @@ module.exports = class {
 			() => self.started() && self.o.waitingOn()
 		);
 
+		self.waitingForP = ko.computed(
+			() => self.started() && self.p.waitingOn()
+		);
+
 		self.canProceed = ko.computed(
 			() => (self.hasInitiative() || self.hideInitiative())  && !self.waitingForOpp()
+		);
+
+		self.shouldProceed = ko.computed(
+			() => self.canProceed() && self.hideInitiative() && !self.waitingForP()
 		);
 
 		self.canPass = ko.computed(

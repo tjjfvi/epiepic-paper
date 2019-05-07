@@ -394,7 +394,7 @@
 						align-items center
 
 						.tp
-							width 155px
+							width 100%
 							flex 0 0 auto
 
 							display flex
@@ -402,17 +402,35 @@
 							align-items center
 							justify-content space-between
 
+							padding 1ex 1em
 							margin 1ex 0
 
 							cursor pointer
 
-							span
-								color $white
-								font-size 35px
+							color $lightgrey
+							border 2px solid @color
+							border-radius 2ex
+
+							text-align center
+
+							&.canProceed
+								color $blue
+								border-color @color
+							&.shouldProceed
+								animation pulse 2s infinite
+
+								~/ .game.pTurn ^[2..-1]
+									color $green
+									border-color @color
+
+							.turn
 								font-weight 100
+								font-size 25px
+
+							span
+								font-size 35px
 
 								&.phase
-									margin-top -5px
 									font-size 20px
 						.arrow
 							display inline-block

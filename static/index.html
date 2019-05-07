@@ -267,6 +267,7 @@
 						<span data-bind="text: psName(prop[1])"></span>
 						<span data-bind="text: propName(prop.slice(3))"></span>:
 						<span data-bind="text: valName(prop.slice(3), val)"></span>
+						<span data-bind="visible: typeof val === 'number', text: ` (${plus(val-from)})`"></span>
 					</div>
 					<!-- /ko -->
 					<!-- ko if: type === 'cardSet' -->
@@ -274,6 +275,7 @@
 						<b data-bind="text: cardName(card)"></b>
 						<span data-bind="text: propName(prop)"></span>:
 						<span data-bind="text: valName(prop, val)"></span>
+						<span data-bind="visible: typeof val === 'number', text: ` (${plus(val-from)})`"></span>
 					</div>
 					<!-- /ko -->
 					<!-- ko if: type.endsWith("reveal") -->

@@ -140,9 +140,10 @@ async function handle(ws, type, ...data){
 					deploying: [true, false],
 				}[type]).indexOf(val))
 					break;
+				let from = c[type];
 				c[type] = val;
 				ws.o.s(type, ...data);
-				log(ws, { type: "cardSet", p: ws.n, card: id, prop: type, val });
+				log(ws, { type: "cardSet", p: ws.n, card: id, prop: type, val, from });
 				break;
 			}
 			case "concede": {
@@ -160,9 +161,12 @@ async function handle(ws, type, ...data){
 		vs[last] &&
 		vs[last](data[0])
 		) {
+			let from;
 			ws.o.s(type, ...data);
-			type.split(".").reduce((ob, p, i, a) => i === a.length - 1 ? ob[p] = data[0] : ob[p], game);
-			log(ws, { type: "set", prop: type, val: data[0], p: ws.n });
+			type.split(".").reduce((ob, p, i, a) =>
+				i === a.length - 1 ? (from = ob[p], ob[p] = data[0]) : ob[p]
+			, game);
+			log(ws, { type: "set", prop: type, val: data[0], p: ws.n, from });
 		}
 		await game.save();
 	})());

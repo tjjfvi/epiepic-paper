@@ -79,7 +79,8 @@ module.exports = class {
 				state: {},
 				marked: {},
 				deploying: {},
-			}[p][v] || v)
+			}[p][v] || v),
+			plus: n => n > 0 ? `+${n}` : n,
 		};
 
 		self.deckChoice = new function(){

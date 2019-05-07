@@ -13,10 +13,10 @@ module.exports = card => `<?xml version="1.0" encoding="utf-8"?>
 	.st4{font-family:'Verdana';}
 	.st5{font-size:12px;}
 	.st6{fill:${cardColor(card)};stroke:#000000;stroke-miterlimit:10;}
-	.st12{fill:#d33;stroke:#000000;stroke-miterlimit:10;}
+	.st12{fill:#8c1c1b;stroke:#000000;stroke-miterlimit:10;}
 	.st7{fill:${card.cost ? '#F1C40F' : '#ddd'};stroke:#000000;stroke-miterlimit:10;}
 	.st8{fill:#CCCCCC;}
-	.st9{fill:#6666FF;stroke:#000000;stroke-miterlimit:10;}
+	.st9{fill:#2e3385;stroke:#000000;stroke-miterlimit:10;}
 	.st10{font-size:15px;}
 	.st11{font-size:10px;letter-spacing: -.4pt;font-variant:small-caps}
 	.st13{font-size:12px;font-family:"Verdana";font-variant:normal}

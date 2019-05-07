@@ -149,7 +149,7 @@ async function handle(ws, type, ...data){
 				game.finished = true;
 				ws.o.s("won");
 				ws.close();
-				ws.o.close();
+				if(ws.o.close) ws.o.close();
 				break;
 			}
 		}

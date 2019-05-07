@@ -17,17 +17,20 @@ $sage = #66f
 $evil = #d33
 $wild = #2a2
 
+prefix(prop)
+	-webkit-{prop} slice(arguments, 1)
+	-moz-{prop} slice(arguments, 1)
+	-ms-{prop} slice(arguments, 1)
+	{prop} slice(arguments, 1)
+
 *
 	box-sizing border-box !important
 
 	&:focus
 		outline 0
 
-	&:not(input):not(.log div)
-		-moz-user-select none
-		-webkit-user-select none
-		-ms-user-select none
-		user-select none
+	&:not(input)
+		prefix user-select none
 
 *:before
 *:after

@@ -174,6 +174,8 @@ function log(ws, ...log){
 }
 
 async function setup(ws1, ws2){
+	if(Math.random() > .5)
+		[ws1, ws2] = [ws2, ws1];
 	let genP = ws => ({
 		user: ws.user,
 		health: 30,

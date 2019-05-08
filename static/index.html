@@ -97,11 +97,7 @@
 									rightClick: goldRightClick(o),
 								"></div>
 								<img class="avatar" data-bind="attr: { src: `/api/user:${oUser()._id}/avatar` }"/>
-								<div class="health number badge">
-									<span class="a" data-bind="click: inc(o.health)">+</span>
-									<input data-bind="value: o.health, css: { wrong: !vs.health(o.health()) }"/>
-									<span class="a" data-bind="click: dec(o.health)">–</span>
-								</div>
+								<div class="health number badge" data-bind="numberBadge: o.health"></div>
 							</div>
 							<span class="username" data-bind="text: `@${oUser().username}#${oUser().discriminator}`"></span>
 						</div>
@@ -125,11 +121,7 @@
 									rightClick: goldRightClick(p),
 								"></div>
 								<img class="avatar" data-bind="attr: { src: `/api/user:${pUser()._id}/avatar` }, rightClick: [concede]"/>
-								<div class="health number badge">
-									<span class="a" data-bind="click: inc(p.health)">+</span>
-									<input data-bind="value: p.health, css: { wrong: !vs.health(p.health()) }"/>
-									<span class="a" data-bind="click: dec(p.health)">–</span>
-								</div>
+								<div class="health number badge" data-bind="numberBadge: p.health"></div>
 							</div>
 							<span class="username" data-bind="text: `@${pUser().username}#${pUser().discriminator}`"></span>
 						</div>

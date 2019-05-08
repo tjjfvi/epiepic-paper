@@ -576,6 +576,19 @@ module.exports = class {
 			),
 		}
 
+		ko.bindingHandlers.numberBadge = {
+			init: (el, valAcc, allBinds, vm, bindCtx) => ko.bindingHandlers.component.init(
+				el,
+				() => ({
+					name: "numberBadge",
+					params: { ...allBinds(), o: valAcc() },
+				}),
+				allBinds,
+				vm,
+				bindCtx,
+			),
+		};
+
 		ko.bindingHandlers.rightClick = {
 			init: (el, valAcc) => {
 				$(el).on("contextmenu", e => {
@@ -627,19 +640,28 @@ module.exports = class {
 					<img class="_" src="/314x314.jpg"/>
 					<img data-bind="attr: { src }" style=""/>
 					<div class="deploying badge" data-bind="css: { show: deploying() && $parent.cards.z.endsWith('Play') }"></div>
-					<div class="damage number badge" data-bind="css: { show: +damage() }, click: $parent.stop">
-						<span class="a" data-bind="click: $parent.inc(damage)">+</span>
-						<input data-bind="value: damage, css: { show: damage }"/>
-						<span class="a" data-bind="click: $parent.dec(damage, true)">–</span>
-					</div>
-					<div class="counters number badge" data-bind="css: { show: +counters() }, click: $parent.stop">
-						<span class="a" data-bind="click: $parent.inc(counters)">+</span>
-						<input data-bind="value: counters"/>
-						<span class="a" data-bind="click: $parent.dec(counters, true)">–</span>
-					</div>
+					<div class="damage number badge" data-bind="
+						numberBadge: damage, positive: true, css: { show: +damage() }
+					"></div>
+					<div class="counters number badge" data-bind="
+						numberBadge: counters, positive: true, css: { show: +damage() }
+					"></div>
 					<div class="revealed badge" data-bind="css: { show: public() && $parent.cards.z === 'pHand' }"></div>
 				</div>
 			<!-- /ko -->`,
+		});
+
+		ko.components.register("numberBadge", {
+			viewModel: function({ o, positive = false }){
+				this.o = o;
+				this.positive = positive;
+				this.self = self;
+			},
+			template: `
+				<span class="a" data-bind="click: self.inc(o)">+</span>
+				<input data-bind="value: o"/>
+				<span class="a" data-bind="click: self.dec(o, positive)">–</span>
+			`,
 		});
 
 		self.draw = self.double(() => self.moveFuncs.hand(self.pDeck, self.pDeck()[0]), () => {});

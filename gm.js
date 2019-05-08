@@ -23,6 +23,7 @@ let vs = {
 	phase: p => ~phases.indexOf(p),
 	initiative: isBool,
 	waitingOn: isBool,
+	attention: isBool,
 	nnInt: n => !isNaN(+n) && +n === Math.floor(+n) && +n >= 0,
 };
 
@@ -156,7 +157,7 @@ async function handle(ws, type, ...data){
 		}
 		let last = type.split(".").reverse()[0];
 		if(
-			~"p0.waitingOn p1.waitingOn p0.gold p0.goldFaction p1.gold p1.goldFaction p0.health p1.health turn phase initiative"
+			~"p0.waitingOn p1.waitingOn p0.attention p1.attention p0.gold p0.goldFaction p1.gold p1.goldFaction p0.health p1.health turn phase initiative"
 				.split(" ").indexOf(type) &&
 		vs[last] &&
 		vs[last](data[0])

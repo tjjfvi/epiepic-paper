@@ -173,29 +173,35 @@
 					<div class="il">
 						<div class="i">
 							<div class="o">
-								<div class="waiting o" data-bind="
+								<div class="waitingOn o" data-bind="
 									css: { on: o.waitingOn() },
 									click: () => o.waitingOn(true),
 								"></div>
-							</div>
-							<div class="atp">
+								<div class= "attention o" data-bind="
+									css: { on: o.attention() },
+									click: () => o.attention(!o.attention()),
+								"></div>
 								<div class="initiative o" data-bind="
 									css: { on: +game.initiative() !== n(), hideInitiative },
 								"></div>
-								<div class="tp" data-bind="
-									click: phaseClick,
-									rightClick: phaseRightClick,
-									css: { canProceed, shouldProceed, },
-								">
-									<span class="turn" data-bind="text: game.turn() ^ n() ? 'Their turn' : 'Your turn'"></span>
-									<span class="phase" data-bind="html: phaseName().replace( / (?!Phase)/, '<br>' )"></span>
-								</div>
+							</div>
+							<div class="tp" data-bind="
+								click: phaseClick,
+								rightClick: phaseRightClick,
+								css: { canProceed, shouldProceed, },
+							">
+								<span class="turn" data-bind="text: game.turn() ^ n() ? 'Their turn' : 'Your turn'"></span>
+								<span class="phase" data-bind="html: phaseName().replace( / (?!Phase)/, '<br>' )"></span>
+							</div>
+							<div class="p">
 								<div class="initiative p" data-bind="
 									css: { on: +game.initiative() === n(), hideInitiative },
 								"></div>
-							</div>
-							<div class="p">
-								<div class= "waiting p" data-bind="
+								<div class= "attention p" data-bind="
+									css: { on: p.attention() },
+									click: () => p.attention(false),
+								"></div>
+								<div class= "waitingOn p" data-bind="
 									css: { on: p.waitingOn() },
 									click: () => p.waitingOn(!p.waitingOn()),
 								"></div>

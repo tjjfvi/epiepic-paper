@@ -79,6 +79,8 @@ module.exports = class {
 				state: {},
 				marked: {},
 				deploying: {},
+				waitingOn: {},
+				attention: {},
 			}[p][v] || v),
 			plus: n => n > 0 ? `+${n}` : n,
 		};
@@ -141,6 +143,7 @@ module.exports = class {
 			phase: p => ~phases.indexOf(p),
 			initiative: isBool,
 			waitingOn: isBool,
+			attention: isBool,
 		};
 
 		self.moveFuncs = { "": () => {} };
@@ -309,7 +312,11 @@ module.exports = class {
 		);
 
 		self.canProceed = ko.computed(
-			() => (self.hasInitiative() || self.hideInitiative())  && !self.waitingForOpp()
+			() => true &&
+				(self.hasInitiative() || self.hideInitiative()) &&
+				!self.waitingForOpp() &&
+				!self.p.attention() &&
+				!self.o.attention()
 		);
 
 		self.shouldProceed = ko.computed(
@@ -364,7 +371,7 @@ module.exports = class {
 			change[1] = !!change[1];
 			if(self.game.turn())
 				[change[2], change[3]] = [change[3], change[2]];
-			[self.game.phase, self.game.initiative, self.game.p0.waitingOn, self.game.p1.waitingOn]
+			[self.game.phase, self.game.initiative, self.game.p0.waitingOn, self.game.p1.waitingOn, self.game.p0.attention, self.game.p1.attention ]
 				.map((o, i) => o(change[i]));
 
 			if(phase === "start")
@@ -477,6 +484,7 @@ module.exports = class {
 					p1.gold p1.goldFaction
 					p0.health p1.health
 					p0.waitingOn p1.waitingOn
+					p0.attention p1.attention
 					turn phase initiative
 					oActive
 				`

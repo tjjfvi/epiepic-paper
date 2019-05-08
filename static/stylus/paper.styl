@@ -310,25 +310,17 @@
 
 					> .o
 					> .p
-						flex 0 0 auto
+						flex 1 0 auto
 
 						display flex
 						flex-direction column
-						justify-content space-around
+						justify-content space-between
 						align-items center
 
 						&.o
-							flex-direction column-reverse
-
-					.initiative
-					.waiting
-						display flex
-						justify-content center
-						align-items center
-
-						&:before
-							content ""
-							transition border-color .2s, background .2s
+							padding-top 3ex
+						&.p
+							padding-bottom 3ex
 
 					.initiative
 						width 6em
@@ -344,7 +336,8 @@
 							background $grey
 
 						&.hideInitiative
-							display none
+							pointer-events none
+							opacity 0
 						&.p
 							transform rotate(180deg)
 							&.on
@@ -356,26 +349,35 @@
 								border-bottom-width 0
 								margin-bottom -( @width / 2 )
 
-						&.p.on:before
-							animation pulse 3s infinite
+					.attention
+						cursor pointer
+						width 5ex
+						height @width
+						border 3px solid $darkgrey
+						box-sizing border-box
+						transform rotate(45deg)
 
-						&.hideInitiative
+						&.on
+							display auto
+							border-width 0
+							background-color $yellow
+
+							&.p
+								animation pulse 1s infinite
+
+						&.p:not(.on)
+							opacity 0
 							pointer-events none
 
-							&:before
-								animation none
-								opacity: 0
 
-					.waiting
+					.waitingOn
 						cursor pointer
 						animation pulse 1s infinite
-						width 3ex
+						width 5ex
 						height @width
 						border 3px solid $grey
 						box-sizing border-box
 						border-radius @width
-						margin-block-end @width
-						margin-block-start @width
 
 						&.on
 							border-width 0
@@ -385,85 +387,45 @@
 						&.o
 							animation none
 
-					.atp
-						flex 1 0
+					.tp
+						width 100%
+						flex 0 1 auto
 
 						display flex
 						flex-direction column
-						justify-content center
 						align-items center
+						justify-content space-between
 
-						.tp
-							width 100%
-							flex 0 0 auto
+						padding 1ex 1em
+						margin 1ex 0
 
-							display flex
-							flex-direction column
-							align-items center
-							justify-content space-between
+						cursor pointer
 
-							padding 1ex 1em
-							margin 1ex 0
+						color $lightgrey
+						border 3px solid $grey
+						border-radius 2ex
 
-							cursor pointer
+						text-align center
 
-							color $lightgrey
-							border 3px solid $grey
-							border-radius 2ex
+						&.canProceed
+							color $blue
+							border-color @color
+						&.shouldProceed
 
-							text-align center
-
-							&.canProceed
-								color $blue
+							~/ .game.pTurn ^[2..-1]
+								color $green
 								border-color @color
-							&.shouldProceed
+								animation pulse 2s infinite
 
-								~/ .game.pTurn ^[2..-1]
-									color $green
-									border-color @color
-									animation pulse 2s infinite
+						.turn
+							font-weight 100
+							font-size 25px
 
-							.turn
-								font-weight 100
-								font-size 25px
+						span
+							font-size 35px
 
-							span
-								font-size 35px
-
-								&.phase
-									font-size 20px
-						.arrow
-							display inline-block
-							width 30px
-							height 30px
-							flex 0 0 auto
-
-							border 5px solid $grey
-
-							transform rotate(45deg)
-
-							cursor pointer
-
-							transition border-color .2s
-
-							&:hover
-								border-color $white
-
-							&.r
-								border-left-color transparent
-								border-bottom-color transparent
-
-								margin-left -(15px * math(2, 'sqrt')/2)
-								margin-right (15px * math(2, 'sqrt')/2)
-
-							&.u
-								border-bottom-color transparent
-								border-right-color transparent
-
-							&.d
-								border-top-color transparent
-								border-left-color transparent
-
+							&.phase
+								font-size 20px
 
 
 

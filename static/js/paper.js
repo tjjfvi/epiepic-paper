@@ -21,7 +21,7 @@ module.exports = class {
 
 		let clickTarget;
 		let clickTimeout;
-		self.double = (a, b) => {
+		self.double = (a, b = a) => {
 			let f = () => {
 				clearTimeout(clickTimeout);
 				if(clickTimeout && clickTarget === f) {
@@ -327,13 +327,23 @@ module.exports = class {
 			() => self.hasInitiative() && !self.hideInitiative()
 		);
 
+		self.willPass = ko.computed(() =>
+			(self.log()
+				.slice()
+				.reverse()
+				.find(l =>
+					!/.*(waitingOn|attention)$/.test(l)
+				) || {})
+				.prop !== "initiative"
+		)
 
 		self.passInitiative = () => self.game.initiative(!self.n());
 
-		self.phaseClick = self.double(
-			() => self.canProceed() && self.cyclePhase(),
-			() => self.canPass() && self.passInitiative(),
-		);
+		self.phaseClick = self.double(() => !self.o.waitingOn() && (
+			self.hideInitiative() || !self.willPass() ?
+				self.cyclePhase() :
+				self.canPass() && self.passInitiative()
+		));
 
 		self.phaseRightClick = [{
 			name: "Next phase",
@@ -371,8 +381,10 @@ module.exports = class {
 			change[1] = !!change[1];
 			if(self.game.turn())
 				[change[2], change[3]] = [change[3], change[2]];
-			[self.game.phase, self.game.initiative, self.game.p0.waitingOn, self.game.p1.waitingOn, self.game.p0.attention, self.game.p1.attention ]
-				.map((o, i) => o(change[i]));
+
+			[self.game.initiative, self.game.p0.waitingOn, self.game.p1.waitingOn, self.game.p0.attention, self.game.p1.attention ]
+				.map((o, i) => o(change[i + 1]));
+			self.game.phase(change[0]);
 
 			if(phase === "start")
 				self[(self.game.turn() ^ self.n() ? "o" : "p") + "Play"]()

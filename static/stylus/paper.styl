@@ -335,24 +335,21 @@
 						height ( @width / 2 )
 						overflow hidden
 
-						&:before
-							box-sizing content-box !important
-							width @width
-							height @width
-							border-radius 100%
-							border-width ( @width / 2 ) 0
+						$borderRadius = @width/2
+						border-top-left-radius $borderRadius
+						border-top-right-radius $borderRadius
+						border 3px solid $grey
+
+						&.on
 							background $grey
 
-						&:not(.on):before
-						&.hideInitiative:before
-							content none
+						&.hideInitiative
+							display none
 						&.p
-							justify-content flex-end
-							&:before
-								border-top-width 0
+							transform rotate(180deg)
+							&.on
 								border-color $blue
 								background $blue
-								margin-top -( @width / 2 )
 						&.o
 							justify-content flex-start
 							&:before
@@ -372,19 +369,16 @@
 					.waiting
 						cursor pointer
 						animation pulse 1s infinite
-						margin 3ex
-						&:before
-							width 3ex
-							height 3ex
-							border .25ex solid $grey
-							transform rotate(45deg)
-							box-sizing border-box
+						width 3ex
+						height @width
+						border 3px solid $grey
+						box-sizing border-box
+						border-radius @width
+						margin-block-end @width
+						margin-block-start @width
 
-						&.on:before
+						&.on
 							border-width 0
-							background-color $yellow
-
-						&.o.on:before
 							background-color $white
 
 						&:not(.on)
@@ -414,7 +408,7 @@
 							cursor pointer
 
 							color $lightgrey
-							border 2px solid @color
+							border 3px solid $grey
 							border-radius 2ex
 
 							text-align center
@@ -423,11 +417,11 @@
 								color $blue
 								border-color @color
 							&.shouldProceed
-								animation pulse 2s infinite
 
 								~/ .game.pTurn ^[2..-1]
 									color $green
 									border-color @color
+									animation pulse 2s infinite
 
 							.turn
 								font-weight 100

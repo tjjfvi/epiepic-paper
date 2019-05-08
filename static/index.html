@@ -268,7 +268,7 @@
 						<i style="font-size: 75%" data-bind="text: '🡒 ' +  pName(val)"></i>
 					</div>
 					<!-- /ko -->
-					<!-- ko if: type === 'set' && /p[01].+/.test(prop) && !prop.endsWith('waitingOn') -->
+					<!-- ko if: type === 'set' && /p[01].+/.test(prop) && !/.*waitingOn$|.*attention$/.test(prop) -->
 					<div data-bind="attr: pClass(p)">
 						<span data-bind="text: psName(prop[1])"></span>
 						<span data-bind="text: propName(prop.slice(3))"></span>:

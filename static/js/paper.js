@@ -5,6 +5,9 @@ module.exports = class {
 		self.self = self;
 		const { ko, $ } = root.globals;
 
+		let queue = [];
+		let s = (...data) => queue.push(data);
+
 		const phases = [
 			"start",
 			"main",
@@ -95,7 +98,7 @@ module.exports = class {
 				if(/^[0-9a-f]+$/.test(this.input()))
 					fetch(`/api/deck:${this.input()}/`)
 						.then(r => r.json()).then(d => d.cards)
-						.then(cards => root.ws.s("move", "deck", cards))
+						.then(cards => s("deck", cards))
 						.then(() => this.done(true))
 						.catch(() => this.wrong(true))
 				else
@@ -104,7 +107,7 @@ module.exports = class {
 						body: this.input(),
 					})
 						.then(r => r.json())
-						.then(cards => root.ws.s("move", "deck", cards))
+						.then(cards => s("deck", cards))
 						.then(() => this.done(true))
 						.catch(() => this.wrong(true))
 			};
@@ -126,7 +129,7 @@ module.exports = class {
 			.filter(c => c.packCode === "tokens")
 			.map(c => ({
 				name: c.name,
-				func: () => root.ws.s("move", "token", c._id, n),
+				func: () => s("token", c._id, n),
 				class: c.faction.toLowerCase(),
 			}))
 		));
@@ -152,7 +155,7 @@ module.exports = class {
 
 		"Deck Disc Supp Play Hand".split(" ").map(n => {
 			["p", "o"].map((p, i) => self.moveFuncs[p + n] = (oa, card) => {
-				root.ws.s("move", "move", card._id, `p${i ^ self.n()}.${n.toLowerCase()}`);
+				s("move", card._id, `p${i ^ self.n()}.${n.toLowerCase()}`);
 				oa.remove(card);
 				self[p + n].unshift(card);
 				if(n !== "Play") {
@@ -210,19 +213,19 @@ module.exports = class {
 		self.moveFuncs.mark = (oa, card) => card.marked(!card.marked());
 
 		self.moveFuncs.banish = (oa, card) => {
-			root.ws.s("move", "banish", card._id, `p${self.n()}.deck`);
+			s("banish", card._id, `p${self.n()}.deck`);
 			self.pDeck.push(card);
 			oa.remove(card);
 		}
 
 		self.moveFuncs.reveal = (oa, card) =>
-			root.ws.s("move", "reveal", card._id);
+			s("reveal", card._id);
 
 		self.moveFuncs.unbanish = oa =>
 			self.moveFuncs.supp(oa, oa()[oa().length - 1]);
 
 		self.moveFuncs.unreveal = (oa, card) =>
-			root.ws.s("move", "unreveal", card._id);
+			s("unreveal", card._id);
 
 		self.moveFuncs.unrevealO = (oa, card) =>
 			card.card(null);
@@ -234,7 +237,7 @@ module.exports = class {
 
 		self.moveFuncs.transform = (oa, card) => {
 			self.moveFuncs.banish(oa, card);
-			root.ws.s("move", "token", "tokens-wolf_token", (oa.z[0] === "o") ^ self.n());
+			s("token", "tokens-wolf_token", (oa.z[0] === "o") ^ self.n());
 		}
 
 		self.moveFuncNames = {
@@ -461,7 +464,7 @@ module.exports = class {
 						write: v => {
 							if(v !== o() && (self.vs[n] || (() => true))(v))
 								setTimeout(() =>
-									o() === v && root.ws.s("move", n, c._id, v)
+									o() === v && s(n, c._id, v)
 								, 500);
 							o(v);
 						},
@@ -475,7 +478,7 @@ module.exports = class {
 		self.concede = {
 			name: "Concede",
 			func: () => {
-				root.ws.s("move", "concede");
+				s("concede");
 				history.go(0);
 			},
 		};
@@ -493,7 +496,7 @@ module.exports = class {
 						write: v => {
 							if(v !== o() && self.vs[n.split(".").pop()](v))
 								setTimeout(() =>
-									o() === v && root.ws.s("move", n, v)
+									o() === v && s(n, v)
 								, 500);
 							o(v);
 						},
@@ -572,6 +575,11 @@ module.exports = class {
 					if(!$(".log").is(":hover"))
 						$(".log div").scrollTop($(".log div")[0].scrollHeight);
 				}, 0);
+			}
+			if(type === "ping") {
+				if(queue.length)
+					root.ws.s("move", "batch", ...queue);
+				queue = [];
 			}
 			(wsObservables[type] || (() => {}))(data[0]);
 		});

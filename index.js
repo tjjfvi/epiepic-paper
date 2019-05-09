@@ -125,7 +125,7 @@ app.ws("/ws", async (ws, req) => {
 
 	sendGames([ws]);
 
-	setInterval(() => ws.s("ping"), 1000);
+	setInterval(() => ws.s("ping"), 500);
 
 	ws.on("message", async message => {
 		let type, data;

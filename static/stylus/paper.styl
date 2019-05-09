@@ -490,7 +490,7 @@
 
 			cursor pointer
 
-			transition border-color .2s
+			transition filter .2s
 
 			img
 				max-width 100%
@@ -638,6 +638,9 @@
 
 			&.marked
 				animation 1.4s pulse infinite
+
+			&.selected
+				filter brightness(1.5) contrast(.5)
 
 		.hand
 		.user

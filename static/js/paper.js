@@ -25,16 +25,16 @@ module.exports = class {
 		let clickTarget;
 		let clickTimeout;
 		self.double = (a, b = a) => {
-			let f = () => {
+			let f = (_, e) => {
 				clearTimeout(clickTimeout);
 				if(clickTimeout && clickTarget === f) {
 					clickTimeout = null;
-					return a();
+					return a(e);
 				}
 				clickTarget = f;
 				clickTimeout = setTimeout(() => {
 					clickTimeout = null;
-					b();
+					b(e);
 				}, 250);
 			};
 			return f;
@@ -122,6 +122,8 @@ module.exports = class {
 			self["p" + n].z = "p" + n;
 			self["o" + n].z = "o" + n;
 		});
+
+		self.selected = ko.observableArray([]);
 
 		self.tokens = ko.observable(() => []);
 
@@ -286,6 +288,11 @@ module.exports = class {
 				prepare: "prepared",
 			}[n];
 			card.state(ned);
+		});
+
+		self.selectAll = oa => ({
+			name: "Select All",
+			func: () => (self.selected.removeAll(oa()), self.selected.push(...oa())),
 		});
 
 		self.goldRightClick = p => [{
@@ -585,16 +592,20 @@ module.exports = class {
 		});
 
 		ko.bindingHandlers.cards = {
-			init: (el, valAcc, allBinds, vm, bindCtx) => ko.bindingHandlers.component.init(
-				el,
-				ko.computed(() => ({
-					name: "cards",
-					params: { ...allBinds(), cards: valAcc() },
-				})),
-				allBinds,
-				vm,
-				bindCtx,
-			),
+			init: (el, valAcc, allBinds, vm, bindCtx) => {
+				ko.bindingHandlers.component.init(
+					el,
+					ko.computed(() => ({
+						name: "cards",
+						params: { ...allBinds(), cards: valAcc() },
+					})),
+					allBinds,
+					vm,
+					bindCtx,
+				);
+				if(!allBinds().rightClick)
+					ko.bindingHandlers.rightClick.init(el, () => [self.selectAll(valAcc())]);
+			}
 		}
 
 		ko.bindingHandlers.numberBadge = {
@@ -645,12 +656,25 @@ module.exports = class {
 				this.main = self.moveFuncs[main];
 				this.rightClick = c => alt.trim().split(/\s+/g).map(n => ({
 					name: self.moveFuncNames[n] || (n[0].toUpperCase() + n.slice(1)).split(/(?=[A-Z][a-z]+)/g).join(" "),
-					func: () => self.moveFuncs[n](cards, c),
+					func: () => {
+						let s = self.selected();
+						s.push(c);
+						s = s.filter((c, i, a) => a.indexOf(c) === i);
+						s.map(c => self.moveFuncs[n](c.oa || cards, c))
+						self.selected([]);
+					},
 					class: self.moveFuncClasses[n] || "",
 				}));
 				this.click = c => c.click || (c.click = self.double(
 					() => (!self.hideInitiative() || main !== "playCard") && this.main(cards, c),
-					() => c.card() && !$("input:focus").length && self.cardPopup(c),
+					e => {
+						c.oa = cards;
+						if(e.ctrlKey) {
+							if(!self.selected.remove(c).length)
+								self.selected.push(c);
+						} else if(c.card() && !$("input:focus").length)
+							self.cardPopup(c);
+					},
 				));
 				this.inc = self.inc;
 				this.dec = self.dec;
@@ -662,7 +686,13 @@ module.exports = class {
 			},
 			template: `<!-- ko foreach: cards -->
 				<div class="card" data-bind="
-					css: { battle: inBattle(), marked, expended: state() === 'expended', flipped: state() === 'flipped' },
+					css: {
+						battle: inBattle(),
+						marked,
+						expended: state() === 'expended',
+						flipped: state() === 'flipped',
+						selected: $root.paper.selected().includes($data),
+					},
 					click: $parent.click($data),
 					rightClick: $parent.rightClick($data),
 				">

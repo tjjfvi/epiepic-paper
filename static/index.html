@@ -137,13 +137,13 @@
 						cards: oPlay,
 						main: 'mark',
 						alt: 'prepare expend flip battle changeControl supp banish hand break transform',
-						rightClick: tokens()(+!n())
+						rightClick: [selectAll(oPlay), ...tokens()(+!n())],
 					"></div>
 					<div class="play p" data-bind="
 						cards: pPlay,
 						main: 'battle',
 						alt: 'prepare expend flip battle changeControl supp banish hand break transform',
-						rightClick: tokens()(n()),
+						rightClick: [selectAll(pPlay), ...tokens()(n())],
 					"></div>
 					<div class="hand p" data-bind="cards: pHand, main: 'playCardGold', alt: 'playCardGold reveal unreveal disc supp play deck banish'"></div>
 				</div>

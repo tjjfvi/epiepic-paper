@@ -607,13 +607,17 @@ module.exports = class {
 				$(el).on("contextmenu", e => {
 					$(el).addClass("rightClicked");
 					let items = ko.unwrap(valAcc());
-					let y = e.originalEvent.clientY;
 					let height = 30 * items.length + 1;
 					let vh = $("body").height()
 					self.rightClick(items);
+					let $target = $(e.originalEvent.currentTarget);
+					let targetRight = $target.offset().left + $target.width()
+					let targetTop = $target.offset().top;
+					let left = $target.is('.play .card') ? targetRight : e.originalEvent.clientX;
+					let top = $target.is('.play .card') ? targetTop : e.originalEvent.clientY;
 					$(".rightClick").offset({
-						left: e.originalEvent.clientX + 1,
-						top: Math.min(y, vh - height),
+						left,
+						top: Math.min(top, vh - height),
 					});
 					return false;
 				});

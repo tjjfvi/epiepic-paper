@@ -180,7 +180,7 @@
 							<div class="tp" data-bind="
 								click: phaseClick,
 								rightClick: phaseRightClick,
-								css: { canProceed, shouldProceed, },
+								css: { canProceed, shouldProceed, willProceed, hasInitiative },
 							">
 								<span class="turn" data-bind="text: game.turn() ^ n() ? 'Their turn' : 'Your turn'"></span>
 								<span class="phase" data-bind="html: phaseName().replace( / (?!Phase)/, '<br>' )"></span>

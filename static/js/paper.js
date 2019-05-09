@@ -339,6 +339,10 @@ module.exports = class {
 				.prop !== "initiative"
 		)
 
+		self.willProceed = ko.computed(
+			() => self.canPass() && !self.willPass()
+		)
+
 		self.passInitiative = () => self.game.initiative(!self.n());
 
 		self.phaseClick = self.double(() => !self.o.waitingOn() && (

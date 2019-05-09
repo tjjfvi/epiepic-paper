@@ -410,8 +410,10 @@
 						&.canProceed
 							color $blue
 							border-color @color
+						&.willProceed
+							color $green
+							border-color @color
 						&.shouldProceed
-
 							~/ .game.pTurn ^[2..-1]
 								color $green
 								border-color @color

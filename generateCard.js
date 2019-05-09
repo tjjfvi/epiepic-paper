@@ -11,7 +11,7 @@ module.exports = card => `<?xml version="1.0" encoding="utf-8"?>
 	.st2{fill:#FFFFFF;}
 	.st3{fill:none;}
 	.st4{font-family:'Verdana';}
-	.st5{font-size:12px;}
+	.st5{font-size:12px;font-weight:bold}
 	.st6{fill:${cardColor(card)};stroke:#000000;stroke-miterlimit:10;}
 	.st12{fill:#8c1c1b;stroke:#000000;stroke-miterlimit:10;}
 	.st7{fill:${card.cost ? '#F1C40F' : '#ddd'};stroke:#000000;stroke-miterlimit:10;}
@@ -89,4 +89,3 @@ function cardColor(c){
 		WILD: "#2a2",
 	}[c.faction];
 }
-

@@ -19,7 +19,7 @@ module.exports = card => `<?xml version="1.0" encoding="utf-8"?>
 	.st9{fill:#2e3385;stroke:#000000;stroke-miterlimit:10;}
 	.st10{font-size:15px;}
 	.st11{font-size:10px;letter-spacing: -.4pt;font-variant:small-caps}
-	.st13{font-size:12px;font-family:"Verdana";font-variant:normal}
+	.st13{font-size:10px;font-family:"Verdana";font-variant:normal}
 	.hide{display:none;}
 </style>
 <g id="Background">

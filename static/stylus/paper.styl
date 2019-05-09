@@ -500,6 +500,15 @@
 			img._
 				display none
 
+			.badges
+				position absolute
+				
+				display flex
+				justify-content center
+
+				width 100%
+				height 100%
+
 			.number.badge
 				position absolute
 
@@ -609,8 +618,23 @@
 					width auto
 					height 314px
 
-			&.flipped img
-				transform rotate(180deg)
+				.badges
+					transform rotate(-90deg)
+
+					width (225/314*100%)
+
+					.number.badge
+						transform translate(0, -50%) rotate(90deg)
+
+			&.flipped
+				img
+					transform rotate(180deg)
+
+				.badges
+					transform rotate(180deg)
+
+					.number.badge
+						transform translate(0, -50%) rotate(-180deg)
 
 			&.marked
 				animation 1.4s pulse infinite

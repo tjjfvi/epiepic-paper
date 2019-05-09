@@ -652,24 +652,26 @@ module.exports = class {
 				">
 					<img class="_" src="/314x314.jpg"/>
 					<img data-bind="attr: { src }" style=""/>
-					<div class="deploying badge" data-bind="css: { show: deploying() && $parent.cards.z.endsWith('Play') }"></div>
-					<div class="damage number badge" data-bind="
-						numberBadge: damage, positive: true, css: { show: +damage() }
-					"></div>
-					<div class="counters number badge" data-bind="
-						numberBadge: counters, positive: true, css: { show: +counters() }
-					"></div>
-					<div class="off number badge" data-bind="
-						numberBadge: $parent.adjust($data, 'off'),
-						css: { show: +offAdjust() || +counters() },
-					"></div>
-					<div class="def number badge" data-bind="
-						numberBadge: $parent.adjust($data, 'def'),
-						css: { show: +defAdjust() || +counters() },
-					"></div>
-					<div class="offAdjust number badge" data-bind="numberBadge: offAdjust"></div>
-					<div class="defAdjust number badge" data-bind="numberBadge: defAdjust"></div>
-					<div class="revealed badge" data-bind="css: { show: public() && $parent.cards.z === 'pHand' }"></div>
+					<div class="badges">
+						<div class="deploying badge" data-bind="css: { show: deploying() && $parent.cards.z.endsWith('Play') }"></div>
+						<div class="damage number badge" data-bind="
+							numberBadge: damage, positive: true, css: { show: +damage() }
+						"></div>
+						<div class="counters number badge" data-bind="
+							numberBadge: counters, positive: true, css: { show: +counters() }
+						"></div>
+						<div class="off number badge" data-bind="
+							numberBadge: $parent.adjust($data, 'off'),
+							css: { show: +offAdjust() || +counters() },
+						"></div>
+						<div class="def number badge" data-bind="
+							numberBadge: $parent.adjust($data, 'def'),
+							css: { show: +defAdjust() || +counters() },
+						"></div>
+						<div class="offAdjust number badge" data-bind="numberBadge: offAdjust"></div>
+						<div class="defAdjust number badge" data-bind="numberBadge: defAdjust"></div>
+						<div class="revealed badge" data-bind="css: { show: public() && $parent.cards.z === 'pHand' }"></div>
+					</div>
 				</div>
 			<!-- /ko -->`,
 		});

@@ -215,8 +215,8 @@ module.exports = class {
 		self.moveFuncs.mark = (oa, card) => card.marked(!card.marked());
 
 		self.moveFuncs.banish = (oa, card) => {
-			s("banish", card._id, `p${self.n()}.deck`);
-			self.pDeck.push(card);
+			s("banish", card._id, `p${+card.owner}.deck`);
+			self[(card.owner ^ self.n() ? "o" : "p") + "Deck"].push(card);
 			oa.remove(card);
 		}
 

@@ -684,7 +684,7 @@ module.exports = class {
 			},
 			template: `
 				<span class="a" data-bind="click: self.inc(o)">+</span>
-				<input data-bind="value: o"/>
+				<input data-bind="value: o" data-lpignore="true"/>
 				<span class="a" data-bind="click: self.dec(o, positive)">–</span>
 			`,
 		});

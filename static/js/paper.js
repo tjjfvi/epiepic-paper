@@ -485,7 +485,7 @@ module.exports = class {
 		self.concede = {
 			name: "Concede",
 			func: () => {
-				s("concede");
+				root.ws.s("move", "concede");
 				history.go(0);
 			},
 		};

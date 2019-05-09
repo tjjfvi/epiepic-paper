@@ -352,6 +352,9 @@ module.exports = class {
 		));
 
 		self.phaseRightClick = [{
+			name: "Pass",
+			func: () => self.canPass() && self.passInitiative()
+		}, {
 			name: "Next phase",
 			func: () => self.cyclePhase()
 		}, {

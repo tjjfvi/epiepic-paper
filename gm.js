@@ -15,16 +15,25 @@ const phases = [
 	"end",
 ];
 let isBool = b => ~[true, false].indexOf(b);
+let int = n => !isNaN(+n) && +n === Math.floor(+n);
+let nnInt = n => int(n) && +n >= 0
 let vs = {
 	goldFaction: f => ~["", "GOLD", "SAGE", "EVIL", "WILD"].indexOf(f),
 	gold: isBool,
-	health: n => !isNaN(+n) && +n === Math.floor(+n),
+	health: int,
 	turn: isBool,
 	phase: p => ~phases.indexOf(p),
 	initiative: isBool,
 	waitingOn: isBool,
 	attention: isBool,
-	nnInt: n => !isNaN(+n) && +n === Math.floor(+n) && +n >= 0,
+	inBattle: isBool,
+	marked: isBool,
+	deploying: isBool,
+	damage: nnInt,
+	counters: nnInt,
+	offAdjust: nnInt,
+	defAdjust: nnInt,
+	state: s => ~["prepared", "expended", "flipped"].indexOf(s),
 };
 
 const games = {};
@@ -123,6 +132,8 @@ async function handle(ws, type, ...data){
 			case "notes":
 			case "damage":
 			case "counters":
+			case "offAdjust":
+			case "defAdjust":
 			case "state": {
 				let [id, val] = data;
 				let c = type === "marked" ?
@@ -131,15 +142,7 @@ async function handle(ws, type, ...data){
 					game.p0.zones.play.find(c => c._id.toString() === id) ||
 					game.p1.zones.play.find(c => c._id.toString() === id);
 				if(!c) break;
-				if(!~({
-					state: ["prepared", "flipped", "expended"],
-					inBattle: [true, false],
-					notes: [val === val.toString() ? val : NaN],
-					damage: [vs.nnInt(val) ? val : NaN],
-					counters: [vs.nnInt(val) ? val : NaN],
-					marked: [true, false],
-					deploying: [true, false],
-				}[type]).indexOf(val))
+				if(!vs[type](val))
 					break;
 				let from = c[type];
 				c[type] = val;

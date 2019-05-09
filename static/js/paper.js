@@ -58,6 +58,8 @@ module.exports = class {
 				goldFaction: "Gold Alignment",
 				inBattle: "in Battle",
 				damage: "Damage",
+				offAdjust: "Offense Adjustment",
+				defAdjust: "Defense Adjustemnt",
 				counters: "Counters",
 				state: "State",
 				marked: "Marked",
@@ -79,8 +81,8 @@ module.exports = class {
 				state: {},
 				marked: {},
 				deploying: {},
-				waitingOn: {},
-				attention: {},
+				offAdjust: {},
+				defAdjust: {},
 			}[p][v] || v),
 			plus: n => n > 0 ? `+${n}` : n,
 		};
@@ -441,7 +443,7 @@ module.exports = class {
 
 		self.newCard = c => {
 			c.card = ko.observable(c.card);
-			"inBattle state marked notes counters damage deploying public"
+			"inBattle state marked notes counters damage offAdjust defAdjust deploying public"
 				.split(" ")
 				.map(n => {
 					let o = c["_" + n] = ko.observable(c[n]);
@@ -548,7 +550,7 @@ module.exports = class {
 				let [p, c] = data;
 				self[(p[1] ^ self.n() ? "o" : "p") + "Play"].push(self.newCard(c));
 			}
-			if(~"public deploying inBattle state marked notes counters damage".split(" ").indexOf(type))
+			if(~"public deploying inBattle state marked notes counters damage offAdjust defAdjust".split(" ").indexOf(type))
 				self.cards[data[0]]["_" + type](data[1]);
 			if(type === "won") {
 				root.status("won");
@@ -630,6 +632,10 @@ module.exports = class {
 				this.inc = self.inc;
 				this.dec = self.dec;
 				this.stop = (_, e) => e.stopPropagation();
+				this.adjust = (card, adj) => ko.computed({
+					read: () => (card.card() || {})[adj + "ense"] + card[adj + "Adjust"]() + card.counters(),
+					write: v => card[adj + "Adjust"](+v - card.card()[adj + "ense"] - card.counters()),
+				});
 			},
 			template: `<!-- ko foreach: cards -->
 				<div class="card" data-bind="
@@ -644,8 +650,18 @@ module.exports = class {
 						numberBadge: damage, positive: true, css: { show: +damage() }
 					"></div>
 					<div class="counters number badge" data-bind="
-						numberBadge: counters, positive: true, css: { show: +damage() }
+						numberBadge: counters, positive: true, css: { show: +counters() }
 					"></div>
+					<div class="off number badge" data-bind="
+						numberBadge: $parent.adjust($data, 'off'),
+						css: { show: +offAdjust() || +counters() },
+					"></div>
+					<div class="def number badge" data-bind="
+						numberBadge: $parent.adjust($data, 'def'),
+						css: { show: +defAdjust() || +counters() },
+					"></div>
+					<div class="offAdjust number badge" data-bind="numberBadge: offAdjust"></div>
+					<div class="defAdjust number badge" data-bind="numberBadge: defAdjust"></div>
 					<div class="revealed badge" data-bind="css: { show: public() && $parent.cards.z === 'pHand' }"></div>
 				</div>
 			<!-- /ko -->`,

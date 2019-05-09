@@ -498,8 +498,7 @@
 			img._
 				display none
 
-			.counters
-			.damage
+			.number.badge
 				position absolute
 
 				pointer-events none
@@ -507,29 +506,56 @@
 
 				transform translate(0, -50%);
 
-				^[-2] .play .card.rightClicked
-					.counters
-					.damage
-						pointer-events auto
-						opacity 1
 				&.show
 				&:focus-within
 					pointer-events auto
 					opacity 1
 
+				^[-2] .play .card.rightClicked .number.badge
+					pointer-events auto
+					opacity 1
+
+					&.off
+					&.def
+						opacity 0
+
 			.counters
 				top 50%
-				border-color $white
-				color $white
-				background-color #4f2b60
+				border-color white
+				color white
+				background-color #a6387a
+
 				input
 					background-color @background-color
 
 			.damage
 				top 22%
-				color $lightgrey
+				color $white
 				border-color @color
 
+			.off
+			.offAdjust
+				left 4%
+				top 70%
+				
+				color white
+				border-color white
+				background-color $offense
+
+				input
+					background-color @background-color
+				
+			.def
+			.defAdjust
+				right 4%
+				top 70%
+
+				color white
+				border-color white
+				background-color $defense
+
+				input
+					background-color @background-color
 
 			.deploying
 				position absolute

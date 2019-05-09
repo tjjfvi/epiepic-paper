@@ -120,7 +120,7 @@ async function handle(ws, type, ...data){
 				if(!card)
 					break;
 				let _id = new mongoose.Types.ObjectId();
-				let c = { _id, card, damage: 0, counters: 0, marked: false, owner: !!n, deploying: true };
+				let c = { _id, card, damage: 0, counters: 0, offAdjust: 0, defAdjust: 0, marked: false, owner: !!n, deploying: true };
 				game["p" + n].zones.play.unshift(c);
 				ws.s(...ws.o.s("token", "p" + n, c));
 				log(ws, { type: "move", card: _id, dest: `p${ws.n}.play` });

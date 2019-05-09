@@ -158,6 +158,8 @@ module.exports = class {
 				if(n !== "Play") {
 					card.damage(0);
 					card.counters(0);
+					card.offAdjust(0);
+					card.defAdjust(0);
 					card.state("prepared");
 				}
 				card.deploying(true);
@@ -545,6 +547,8 @@ module.exports = class {
 				if(!zoneName.endsWith("play")) {
 					c.counters(0);
 					c.damage(0);
+					c.offAdjust(0);
+					c.defAdjust(0);
 					c.state("prepared");
 				}
 				if(type === "banish")

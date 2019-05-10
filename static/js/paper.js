@@ -238,6 +238,9 @@ module.exports = class {
 		self.moveFuncs.unrevealO = (oa, card) =>
 			card.card(null);
 
+		self.moveFuncs.draw5 = oa =>
+			self.pHand().length || [...Array(5)].map(() => self.moveFuncs.hand(oa, oa()[0]))
+
 		self.moveFuncs.break = self.moveFuncs.disc;
 
 		self.moveFuncs.toggleDeploying = (oa, card) =>

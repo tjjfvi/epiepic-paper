@@ -150,7 +150,8 @@ async function handle(ws, _type, ..._data){
 					let from = c[type];
 					c[type] = val;
 					ws.o.s(type, ...data);
-					log(ws, { type: "cardSet", p: ws.n, card: id, prop: type, val, from });
+					if(val !== from)
+						log(ws, { type: "cardSet", p: ws.n, card: id, prop: type, val, from });
 					break;
 				}
 				case "concede": {

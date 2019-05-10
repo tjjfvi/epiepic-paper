@@ -377,6 +377,12 @@ module.exports = class {
 			name: "Pass",
 			func: () => self.canPass() && self.passInitiative()
 		}, {
+			name: "Blocking Pass",
+			func: () => !self.isTurn() &&
+				/battle-[123]/.test(self.game.phase()) &&
+				self.canProceed() &&
+				(self.game.phase("battle-3"), self.passInitiative())
+		}, {
 			name: "Next phase",
 			func: () => self.cyclePhase()
 		}, {

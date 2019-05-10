@@ -85,7 +85,9 @@
 				visible: started(),
 				attr: { class: started() && `game ${
 					isTurn() ? 'p' : 'o'
-				}Turn ${hideInitiative() || `${hasInitiative() ? 'p' : 'o'}Initiative`}` },
+				}Turn ${hideInitiative() || `${hasInitiative() ? 'p' : 'o'}Initiative`} ${
+					['p', 'o'].filter(p => $data[p].gold()).map(p => p + 'Gold').join(' ')
+				}` },
 			">
 				<div class="supps">
 					<div>

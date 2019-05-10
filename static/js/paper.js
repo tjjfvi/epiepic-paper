@@ -246,6 +246,12 @@ module.exports = class {
 			s("token", "tokens-wolf_token", (oa.z[0] === "o") ^ self.n());
 		}
 
+		self.moveFuncs.clearBuffs = (oa, card) => {
+			card.offAdjust(0);
+			card.defAdjust(0);
+			card.counters(0);
+		}
+
 		self.moveFuncNames = {
 			play: "In-Play",
 			disc: "Discard",

@@ -169,8 +169,8 @@ module.exports = class {
 					card.offAdjust(0);
 					card.defAdjust(0);
 					card.state("prepared");
-				}
-				card.deploying(true);
+				} else
+					card.deploying(true);
 				card.marked(false);
 				delete card.click;
 				delete card.oa;

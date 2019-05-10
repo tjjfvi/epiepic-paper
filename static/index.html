@@ -225,7 +225,7 @@
 					</div>
 				</div>
 				<div class="log" data-bind="
-					rightClick: [{ name: 'Pin', func: () => logPinned(!logPinned()) }],
+					rightClick: [{ name: 'Toggle Hide', func: () => logPinned(!logPinned()) }],
 					css: { pinned: logPinned },
 				"><div><!-- ko foreach: log -->
 					<!-- ko with: { ...$data, ...$parent.logHelpers } -->

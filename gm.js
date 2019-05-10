@@ -213,6 +213,9 @@ async function setup(ws1, ws2){
 		initiative: false,
 		log: [],
 	});
+	games[game._id.toString()] = game;
+	game.p0.ws = ws1;
+	game.p1.ws = ws2;
 	ws1.game = game;
 	ws2.game = game;
 	ws1.o = ws2;

@@ -170,6 +170,7 @@ module.exports = class {
 				card.deploying(true);
 				card.marked(false);
 				delete card.click;
+				delete card.oa;
 			});
 			self.moveFuncs[n.toLowerCase()] = (oa, card) => {
 				let f = oa.z;

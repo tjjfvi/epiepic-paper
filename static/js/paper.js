@@ -555,7 +555,7 @@ module.exports = class {
 						return !!c;
 					});
 				delete c.click;
-				if(!zoneName.endsWith("play")) {
+				if(!zoneName.startsWith("play")) {
 					c.counters(0);
 					c.damage(0);
 					c.offAdjust(0);

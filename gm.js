@@ -232,7 +232,7 @@ async function setup(ws1, ws2){
 
 async function reconnect(ws, game){
 	games[game._id.toString()] = game = games[game._id.toString()] || game;
-	ws.n = +(ws.user._id !== game.p0.user._id || !!game.p0.ws);
+	ws.n = +(ws.user._id !== game.p0.user._id || (game.p0.ws || { readyState: -1 }).readyState === 1);
 	game["p" + ws.n].ws = ws;
 	ws.game = game;
 	ws.o = game["p" + +!ws.n].ws || { s: (...a) => a, fake: true };

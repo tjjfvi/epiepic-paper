@@ -229,6 +229,10 @@ async function setup(ws1, ws2){
 	ws1.n = 0;
 	ws2.s("n", 1);
 	ws2.n = 1;
+	ws1.s("pUser", game.p0.user);
+	ws1.s("oUser", game.p1.user);
+	ws2.s("pUser", game.p1.user);
+	ws2.s("oUser", game.p0.user);
 }
 
 async function reconnect(ws, game){

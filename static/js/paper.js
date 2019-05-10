@@ -117,8 +117,8 @@ module.exports = class {
 		}();
 		self.started = ko.observable(false);
 		self.n = ko.observable(0);
-		self.oUser = ko.observable();
-		self.pUser = ko.observable();
+		self.oUser = ko.observable({});
+		self.pUser = ko.observable({});
 		"Deck Disc Supp Play Hand".split(" ").map(n => {
 			self["p" + n] = ko.observableArray([]);
 			self["o" + n] = ko.observableArray([]);
@@ -320,9 +320,10 @@ module.exports = class {
 		}))];
 
 		let wsObservables = {
-			n: self.n
+			n: self.n,
+			pUser: self.pUser,
+			oUser: self.oUser,
 		};
-
 
 		self.isTurn = ko.computed(
 			() => self.started() && (+self.game.turn() === self.n())

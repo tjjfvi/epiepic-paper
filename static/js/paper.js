@@ -187,6 +187,8 @@ module.exports = class {
 			self.moveFuncs[(oa.z[0] === "o" ? "p" : "o") + (card.card().type[0] === "C" ? "Play" : "Supp")](oa, card);
 
 		self.moveFuncs.playCardGold = (oa, card) => {
+			if(self.hideInitiative() || !self.hasInitiative())
+				return;
 			if(card.card().cost && !(self.p.gold() && (
 				!self.p.goldFaction() ||
 					self.p.goldFaction() === card.card().factionCode.toUpperCase()

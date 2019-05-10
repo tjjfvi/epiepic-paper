@@ -726,12 +726,16 @@ module.exports = class {
 		ko.components.register("numberBadge", {
 			viewModel: function({ o, positive = false }){
 				this.o = o;
+				this.c = ko.computed({
+					read: o,
+					write: v => o(+v),
+				});
 				this.positive = positive;
 				this.self = self;
 			},
 			template: `
 				<span class="a" data-bind="click: self.inc(o)">+</span>
-				<input data-bind="value: o" data-lpignore="true"/>
+				<input data-bind="value: c" data-lpignore="true"/>
 				<span class="a" data-bind="click: self.dec(o, positive)">–</span>
 			`,
 		});

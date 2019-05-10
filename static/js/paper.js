@@ -95,8 +95,11 @@ module.exports = class {
 			this.wrong = ko.observable(false);
 			this.input = ko.observable("");
 			this.submitDeck = () => {
-				if(/^[0-9a-f]+$/.test(this.input()))
-					fetch(`/api/deck:${this.input()}/`)
+				const re = /^(?:http.*id=)?([0-9a-f]+)(?:&.*)?$/;
+				let input = this.input().trim()
+				let [ , deckId ] = input.match(re) || [];
+				if(deckId)
+					fetch(`/api/deck:${deckId}/`)
 						.then(r => r.json()).then(d => d.cards)
 						.then(cards => s("deck", cards))
 						.then(() => this.done(true))
@@ -104,7 +107,7 @@ module.exports = class {
 				else
 					fetch(`/api/deck/parseList`, {
 						method: "POST",
-						body: this.input(),
+						body: input,
 					})
 						.then(r => r.json())
 						.then(cards => s("deck", cards))

@@ -112,7 +112,7 @@ app.ws("/ws", async (ws, req) => {
 
 	ws.s = function(...data){
 		if(this.readyState !== 1)
-			return;
+			return data;
 
 		this.send(JSON.stringify(data));
 

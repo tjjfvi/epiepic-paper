@@ -576,6 +576,7 @@ module.exports = class {
 						return !!c;
 					});
 				delete c.click;
+				delete c.oa;
 				if(!zoneName.startsWith("play")) {
 					c.counters(0);
 					c.damage(0);

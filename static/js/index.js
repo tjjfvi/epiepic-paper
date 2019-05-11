@@ -93,6 +93,7 @@ require("jquery")($ => {
 			.parents()
 			.addBack()
 			.filter($(":hover"))
+			.filter(":not(.spectate .number.badge)")
 			.addClass("hoverIntent")
 	, 200)).on("mouseout", () => $(".hoverIntent:not(:hover)").removeClass("hoverIntent"));
 

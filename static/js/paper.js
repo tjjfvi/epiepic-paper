@@ -125,6 +125,7 @@ module.exports = class {
 			self["p" + n].z = "p" + n;
 			self["o" + n].z = "o" + n;
 		});
+		self.spectate = ko.observable(false);
 
 		self.selected = ko.observableArray([]);
 
@@ -323,6 +324,7 @@ module.exports = class {
 			n: self.n,
 			pUser: self.pUser,
 			oUser: self.oUser,
+			spectate: self.spectate,
 		};
 
 		self.isTurn = ko.computed(
@@ -373,7 +375,7 @@ module.exports = class {
 
 		self.passInitiative = () => self.game.initiative(!self.n());
 
-		self.phaseClick = self.double(() => !self.o.waitingOn() && (
+		self.phaseClick = self.double(() => !self.o.waitingOn() && !self.spectate() && (
 			self.hideInitiative() || !self.willPass() ?
 				self.cyclePhase() :
 				self.canPass() && self.passInitiative()
@@ -647,6 +649,8 @@ module.exports = class {
 		ko.bindingHandlers.rightClick = {
 			init: (el, valAcc) => {
 				$(el).on("contextmenu", e => {
+					if(self.spectate() && !$(el).is(".log"))
+						return false;
 					$(el).addClass("rightClicked");
 					let items = ko.unwrap(valAcc());
 					let height = 30 * items.length + 1;
@@ -689,7 +693,7 @@ module.exports = class {
 					class: self.moveFuncClasses[n] || "",
 				}));
 				this.click = c => c.click || (c.click = self.double(
-					() => (!self.hideInitiative() || main !== "playCard") && this.main(cards, c),
+					() => !self.spectate() && this.main(cards, c),
 					e => {
 						c.oa = cards;
 						if(e.ctrlKey) {
@@ -757,7 +761,7 @@ module.exports = class {
 			},
 			template: `
 				<span class="a" data-bind="click: self.inc(o)">+</span>
-				<input data-bind="value: c" data-lpignore="true"/>
+				<input data-bind="value: c, disable: $root.paper.spectate()" data-lpignore="true"/>
 				<span class="a" data-bind="click: self.dec(o, positive)">–</span>
 			`,
 		});

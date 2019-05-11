@@ -85,6 +85,30 @@ wss = {
 
 app.use(require("cookie-parser")());
 
+let spectateGames = [];
+
+Game.find({ finished: { $ne: true } }).then(games => games.map(g => ({
+	id: g._id,
+	p0: g.p0.user,
+	p1: g.p1.user,
+	pswd: !!g.password,
+}))).then(gs => spectateGames.push(...gs));
+
+gm.pushGame = game => {
+	spectateGames.push({
+		id: game._id,
+		p0: game.p0.user,
+		p1: game.p1.user,
+		pswd: !!game.password,
+	});
+	sendSpectateGames();
+};
+
+gm.popGame = game => {
+	spectateGames.splice(spectateGames.findIndex(g => g.id.toString() === game._id.toString()), 1);
+	sendSpectateGames();
+};
+
 app.ws("/ws", async (ws, req) => {
 
 	wss.all.push(ws);
@@ -122,6 +146,8 @@ app.ws("/ws", async (ws, req) => {
 	ws.status = "waiting";
 
 	wss.waiting.push(ws);
+
+	ws.s("spectateGames", spectateGames);
 
 	sendGames([ws]);
 
@@ -166,7 +192,7 @@ app.ws("/ws", async (ws, req) => {
 				ws.status = ws2.status = "playing";
 				sendStatus(ws, ws2);
 
-				gm.setup(ws2, ws).catch(gmError(ws));
+				gm.setup(ws2, ws, ws2.pswd).catch(gmError(ws));
 
 				break;
 			}
@@ -210,6 +236,16 @@ app.ws("/ws", async (ws, req) => {
 
 				break;
 			}
+			case "spectate": {
+				if(ws.status !== "waiting")
+					return;
+				let [id, pswd] = data;
+				let game = spectateGames.find(g => g.id.toString() === id);
+				if(!game)
+					break;
+				gm.spectate(ws, game.id, pswd).catch(gmError(ws));
+				break;
+			}
 		}
 	})
 
@@ -225,6 +261,7 @@ app.ws("/ws", async (ws, req) => {
 				break;
 
 			case "playing":
+				if(!ws.o) return;
 				ws.o.s("oActive", false);
 				delete ws.game["p" + ws.n].ws;
 		}
@@ -257,6 +294,10 @@ function sendGames(ws_ = wss.waiting){
 	}))));
 }
 
+function sendSpectateGames(ws_ = wss.waiting){
+	ws_.map(ws => ws.s("spectateGames", spectateGames));
+}
+
 function sendStatus(...wss){
 	wss.map(ws => ws.s("status", ws.status));
 }
@@ -267,8 +308,8 @@ function genId(){
 
 function gmError(ws){
 	return e => {
-		ws.status = ws.o.status = "error";
-		sendStatus(ws, ws.o);
-		console.error(ws.game._id, e);
+		ws.status = (ws.o || {}).status = "error";
+		sendStatus(ws, ws.o || { s: () => {} });
+		console.error((ws.game || {})._id, e);
 	}
 }

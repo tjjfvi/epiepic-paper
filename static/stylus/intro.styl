@@ -47,6 +47,12 @@
 				&:not(.pswd) input
 					display none
 
+				span span
+					white-space pre
+
+				div
+					display flex
+					flex-direction column
 
 				& input
 				& button
@@ -59,9 +65,10 @@
 					font-size 15px
 
 					height 30px
-					width 125px
+					width 100px
 
 					padding 3px
+					margin 1px
 
 					transition color .2s, border .2s
 
@@ -69,7 +76,6 @@
 						border-color: $red
 
 				& button
-					width 100px
 					cursor pointer
 
 					font-size 17.5px

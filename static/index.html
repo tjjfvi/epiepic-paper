@@ -44,6 +44,17 @@
 					</div>
 				</div>
 				<!-- /ko -->
+				<!-- ko foreach: spectateGames -->
+				<div class="game" data-bind="css: { pswd: pswdReq }">
+					<span>
+						<span data-bind="text: name || '[unnamed]'"></span>
+					</span>
+					<div>
+						<input type="password" data-lpignore="true" placeholder="Password" data-bind="value: pswd, css: { wrong }"/>
+						<button data-bind="click: join">Spectate</button>
+					</div>
+				</div>
+				<!-- /ko -->
 			</div>
 
 			<div class="host" data-bind="with: host">
@@ -88,7 +99,7 @@
 					isTurn() ? 'p' : 'o'
 				}Turn ${hideInitiative() || `${hasInitiative() ? 'p' : 'o'}Initiative`} ${
 					['p', 'o'].filter(p => $data[p].gold()).map(p => p + 'Gold').join(' ')
-				}` },
+				} ${spectate() ? 'spectate' : ''}` },
 			">
 				<div class="supps">
 					<div>
@@ -96,7 +107,7 @@
 							<div class="avatarGroup">
 								<div class="gold badge" data-bind="
 									attr: { 'data-g': +o.gold(), 'data-f': o.goldFaction()[0] },
-									click: () => (o.gold(!o.gold()), o.goldFaction('')),
+									click: () => !spectate() && (o.gold(!o.gold()), o.goldFaction('')),
 									rightClick: goldRightClick(o),
 								"></div>
 								<img class="avatar" data-bind="attr: { src: `/api/user:${oUser()._id}/avatar` }"/>
@@ -120,7 +131,7 @@
 							<div class="avatarGroup">
 								<div class="gold badge" data-bind="
 									attr: { 'data-g': +p.gold(), 'data-f': p.goldFaction()[0] },
-									click: () => (p.gold(!p.gold()), p.goldFaction('')),
+									click: () => !spectate() && (p.gold(!p.gold()), p.goldFaction('')),
 									rightClick: goldRightClick(p),
 								"></div>
 								<img class="avatar" data-bind="attr: { src: `/api/user:${pUser()._id}/avatar` }, rightClick: [concede]"/>
@@ -170,11 +181,11 @@
 							<div class="o">
 								<div class="waitingOn o" data-bind="
 									css: { on: o.waitingOn() },
-									click: () => o.waitingOn(true),
+									click: () => !spectate() && o.waitingOn(true),
 								"></div>
 								<div class= "attention o" data-bind="
 									css: { on: o.attention() },
-									click: () => o.attention(!o.attention()),
+									click: () => !spectate() && o.attention(!o.attention()),
 								"></div>
 								<div class="initiative o" data-bind="
 									css: { on: +game.initiative() !== n(), hideInitiative },
@@ -194,11 +205,11 @@
 								"></div>
 								<div class= "attention p" data-bind="
 									css: { on: p.attention() },
-									click: () => p.attention(false),
+									click: () => !spectate() && p.attention(false),
 								"></div>
 								<div class= "waitingOn p" data-bind="
 									css: { on: p.waitingOn() },
-									click: () => p.waitingOn(!p.waitingOn()),
+									click: () => !spectate() && p.waitingOn(!p.waitingOn()),
 								"></div>
 							</div>
 						</div>

@@ -231,6 +231,8 @@ module.exports = class {
 			oa.remove(card);
 		}
 
+		self.moveFuncs.isPublic = (oa, card) => card.public()
+
 		self.moveFuncs.reveal = (oa, card) =>
 			s("reveal", card._id);
 
@@ -696,17 +698,27 @@ module.exports = class {
 					alt = "mark " + alt;
 				this.cards = cards;
 				this.main = self.moveFuncs[main];
-				this.rightClick = c => alt.trim().split(/\s+/g).map(n => ({
-					name: self.moveFuncNames[n] || (n[0].toUpperCase() + n.slice(1)).split(/(?=[A-Z][a-z]+)/g).join(" "),
-					func: () => {
-						let s = self.selected();
-						s.push(c);
-						s = s.filter((c, i, a) => a.indexOf(c) === i);
-						s.map(c => self.moveFuncs[n](c.oa || cards, c))
-						self.selected([]);
-					},
-					class: self.moveFuncClasses[n] || "",
-				}));
+				this.rightClick = c =>
+					alt
+						.trim()
+						.split(/\s+/g)
+						.map(n => n.match(/^(?:(\w*)\?)?(\w+)$/))
+						.map(([, t, n]) => (
+							t && !self.moveFuncs[t](c.oa || cards, c) ?
+								null :
+								{
+									name: self.moveFuncNames[n] || (n[0].toUpperCase() + n.slice(1)).split(/(?=[A-Z][a-z]+)/g).join(" "),
+									func: () => {
+										let s = self.selected();
+										s.push(c);
+										s = s.filter((c, i, a) => a.indexOf(c) === i);
+										s.map(c => self.moveFuncs[n](c.oa || cards, c))
+										self.selected([]);
+									},
+									class: self.moveFuncClasses[n] || "",
+								}
+						))
+						.filter(x => x);
 				this.click = c => c.click || (c.click = self.double(
 					() => !self.spectate() && this.main(cards, c),
 					e => {

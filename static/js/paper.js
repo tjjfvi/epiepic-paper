@@ -514,6 +514,11 @@ module.exports = class {
 			},
 		};
 
+		self.accessHand = {
+			name: "Enable hand access",
+			func: () => s("accessHand"),
+		}
+
 		root.on("ws", ({ type, data }) => {
 			if(type === "game") {
 				let [game] = data;

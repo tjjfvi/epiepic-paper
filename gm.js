@@ -106,9 +106,11 @@ async function handle(ws, _type, ..._data){
 						dest.unshift(c);
 					else
 						dest.push(c);
-					if(zone.endsWith(".hand"))
+					if(zone.endsWith(".hand")) {
 						ws[zone.slice(0, 2)].s("identity", id, c.card);
-					else if(!zone.endsWith(".deck")) {
+						if(game[zone.slice(0, 2)].accessHand)
+							allS(() => game.ss)("identity", id, c.card);
+					} else if(!zone.endsWith(".deck")) {
 						ws.allS("identity", id, c.card);
 						c.public = true;
 						ws.allS("public", id, c.public);
@@ -163,6 +165,11 @@ async function handle(ws, _type, ..._data){
 					if(ws.o.close) ws.o.close();
 					module.exports.popGame(game);
 					break;
+				}
+				case "accessHand": {
+					game["p" + ws.n].accessHand = true;
+					let s = allS(() => game.ss);
+					game["p" + ws.n].zones.hand.map(c => s("identity", c._id, c.card));
 				}
 				default: {
 					console.log(type, data);
@@ -272,7 +279,12 @@ async function spectate(ws, id, pswd){
 	ws.ss = true;
 	ws.s("spectate", true);
 	let obj = game.toJSON();
-	[obj.p0.zones.deck, obj.p1.zones.deck, obj.p0.zones.hand, obj.p1.zones.hand].map(z => z.map(c =>
+	[
+		obj.p0.zones.deck,
+		obj.p1.zones.deck,
+		obj.p0.accessHand ? [] : obj.p0.zones.hand,
+		obj.p1.accessHand ? [] : obj.p1.zones.hand,
+	].map(z => z.map(c =>
 		c.public || delete c.card
 	));
 	ws.s("game", obj);

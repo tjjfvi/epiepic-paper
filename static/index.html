@@ -134,7 +134,10 @@
 									click: () => !spectate() && (p.gold(!p.gold()), p.goldFaction('')),
 									rightClick: goldRightClick(p),
 								"></div>
-								<img class="avatar" data-bind="attr: { src: `/api/user:${pUser()._id}/avatar` }, rightClick: [concede]"/>
+								<img class="avatar" data-bind="
+									attr: { src: `/api/user:${pUser()._id}/avatar` },
+									rightClick: [concede, accessHand],
+								"/>
 								<div class="health number badge" data-bind="numberBadge: p.health"></div>
 							</div>
 							<span class="username" data-bind="text: `@${pUser().username}#${pUser().discriminator}`"></span>

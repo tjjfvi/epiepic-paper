@@ -34,6 +34,7 @@ let pSchema = new mongoose.Schema({
 	goldFaction: { type: String, enum: ["GOOD", "SAGE", "EVIL", "WILD", ""] },
 	waitingOn: Boolean,
 	attention: Boolean,
+	accessHand: Boolean,
 });
 
 module.exports = new mongoose.Schema({

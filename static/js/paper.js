@@ -362,7 +362,7 @@ module.exports = class {
 				.slice()
 				.reverse()
 				.find(l =>
-					!/.*(waitingOn|attention)$/.test(l)
+					!/.*(waitingOn|attention)$/.test(l.prop)
 				) || {})
 				.prop !== "initiative"
 		)

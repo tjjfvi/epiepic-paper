@@ -74,6 +74,7 @@ async function handle(ws, _type, ..._data){
 					if(!c)
 						break;
 					ws.allS("identity", id, type === "reveal" ? c.card : null);
+					ws.s("identity", id, c.card)
 					c.public = type === "reveal";
 					ws.allS("public", id, c.public);
 					log(ws, { type, p: ws.n, card: id });

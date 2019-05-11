@@ -419,7 +419,7 @@ module.exports = class {
 				"battle-2": ["battle-3", false, false, false],
 				"battle-3": ["battle-4", true, true, true],
 				"battle-4": ["main", true, false, false],
-				end:        ["start", true, true, true],
+				end:        ["start", true, false, true],
 			}[phase];
 
 			change[1] ^= !self.game.turn();

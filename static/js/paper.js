@@ -381,7 +381,7 @@ module.exports = class {
 				!self.o.waitingOn() && !self.spectate() &&
 					(
 						self.hideInitiative() || !self.willPass() ?
-							self.cyclePhase() :
+							self.canProceed() && self.cyclePhase() :
 							self.canPass() && self.passInitiative()
 					);
 			}

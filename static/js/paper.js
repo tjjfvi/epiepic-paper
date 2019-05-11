@@ -399,7 +399,7 @@ module.exports = class {
 			func: () => !self.isTurn() &&
 				/battle-[123]/.test(self.game.phase()) &&
 				self.canProceed() &&
-				(self.game.phase("battle-3"), self.passInitiative())
+				(self.game.phase("battle-3"), self.p.waitingOn(false), self.passInitiative())
 		}, {
 			name: "Next phase",
 			func: () => self.cyclePhase()

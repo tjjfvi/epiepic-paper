@@ -205,7 +205,7 @@ module.exports = class {
 			self.moveFuncs[card.card().type === "CHAMPION" ? "play" : "supp"](oa, card);
 		}
 
-		self.moveFuncs.battle = (oa, card) => {
+		self.moveFuncs.autoBattle = (oa, card) => {
 			if(card.inBattle())
 				return card.inBattle(false);
 			let attacking = +self.game.turn() === +self.n();
@@ -216,6 +216,10 @@ module.exports = class {
 			}
 			if(self.game.phase() !== (attacking ? "battle-0" : "battle-2"))
 				return;
+			card.inBattle(!card.inBattle());
+		};
+
+		self.moveFuncs.battle = (oa, card) => {
 			card.inBattle(!card.inBattle());
 		};
 

@@ -375,11 +375,17 @@ module.exports = class {
 
 		self.passInitiative = () => self.game.initiative(!self.n());
 
-		self.phaseClick = self.double(() => !self.o.waitingOn() && !self.spectate() && (
-			self.hideInitiative() || !self.willPass() ?
-				self.cyclePhase() :
-				self.canPass() && self.passInitiative()
-		));
+		self.phaseClick = self.double(
+			() => {
+				self.p.waitingOn(false);
+				!self.o.waitingOn() && !self.spectate() &&
+					(
+						self.hideInitiative() || !self.willPass() ?
+							self.cyclePhase() :
+							self.canPass() && self.passInitiative()
+					);
+			}
+		);
 
 		self.phaseRightClick = [{
 			name: "Pass",

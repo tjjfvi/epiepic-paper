@@ -47,7 +47,6 @@ module.exports = class {
 			pClass: n => ({ class: n ^ self.n() ? "them" : "you" }),
 			psName: n => n ^ self.n() ? "Their" : "Your",
 			pName: n => n ^ self.n() ? "Them" : "You",
-			cardName: c => (self.cards[c] || { card: () => false }).card() ? self.cards[c].card().name : '?',
 			zoneNameFull: z => (z[1] ^ self.n() ? 'Their ' : 'Your ') + self.logHelpers.zoneName(z),
 			zoneNameAnti: (z, n) => (z[1] ^ n ? "their " : "") + self.logHelpers.zoneName(z),
 			zoneName: z => ({
@@ -686,6 +685,22 @@ module.exports = class {
 				});
 			},
 		}
+
+		ko.bindingHandlers.cardName = {
+			init: (el, valAcc) => {
+				let card = self.cards[valAcc()] || { card: ko.observable() };
+				let id = valAcc();
+				$(el)
+					.css("cursor", "pointer")
+					.addClass(id)
+					.click(() => console.log(card) || card.card() && self.cardPopup(card))
+					.hover(() => $(`.${id}`).addClass("highlight"), () => $(`.${id}`).removeClass("highlight"));
+				let f = v =>
+					$(el).text(v ? v.name : "?")
+				f(card.card());
+				card.card.subscribe(f);
+			},
+		};
 
 		$("*").on("click contextmenu", () => {
 			$(".rightClicked").removeClass("rightClicked");

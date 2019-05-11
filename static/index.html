@@ -247,7 +247,7 @@
 					<!-- ko with: { ...$data, ...$parent.logHelpers } -->
 					<!-- ko if: type === "move" -->
 					<div data-bind="attr: pClass(($data.source || dest)[1])">
-						<b data-bind="text: cardName(card)"></b>
+						<b data-bind="cardName: card"></b>
 						to
 						<span data-bind="text: zoneNameAnti(dest, ($data.source || dest)[1])"></span>
 						<span data-bind="text: $data.source ? 'from ' + zoneName(source) : ''"></span>
@@ -255,12 +255,12 @@
 					<!-- /ko -->
 					<!-- ko if: type === "delete" -->
 					<div data-bind="attr: pClass(p)">
-						Removed <b data-bind="text: cardName(card)"></b>
+						Removed <b data-bind="cardName: card"></b>
 					</div>
 					<!-- /ko -->
 					<!-- ko if: type === 'banish' -->
 					<div data-bind="attr: pClass(dest[1])">
-						Banished <b data-bind="text: cardName(card)"></b>
+						Banished <b data-bind="cardName: card"></b>
 					</div>
 					<!-- /ko -->
 					<!-- ko if: type === 'set' && prop === 'phase' -->
@@ -288,7 +288,7 @@
 					<!-- /ko -->
 					<!-- ko if: type === 'cardSet' -->
 					<div data-bind="attr: pClass(p)">
-						<b data-bind="text: cardName(card)"></b>
+						<b data-bind="cardName: card"></b>
 						<span data-bind="text: propName(prop)"></span>:
 						<span data-bind="text: valName(prop, val)"></span>
 						<span data-bind="visible: typeof val === 'number', text: ` (${plus(val-$data.from)})`"></span>
@@ -297,7 +297,7 @@
 					<!-- ko if: type.endsWith("reveal") -->
 					<div data-bind="attr: pClass(p)">
 						<span data-bind="text: type === 'reveal' ? 'Revealed' : 'Unrevealed'"></span>
-						<b data-bind="text: cardName(card)"></b>
+						<b data-bind="cardName: card"></b>
 					</div>
 					<!-- /ko -->
 					<!-- /ko -->

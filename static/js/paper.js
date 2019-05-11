@@ -230,8 +230,6 @@ module.exports = class {
 			oa.remove(card);
 		}
 
-		self.moveFuncs.isPublic = (oa, card) => card.public()
-
 		self.moveFuncs.reveal = (oa, card) =>
 			s("reveal", card._id);
 
@@ -310,14 +308,6 @@ module.exports = class {
 			}[n];
 			card.state(ned);
 		});
-
-		self.moveFuncs.isExpended = (oa, card) => card.state() === "expended";
-		self.moveFuncs.isFlipped = (oa, card) => card.state() === "flipped";
-		self.moveFuncs.isPrepared = (oa, card) => card.state() === "prepared";
-
-		self.moveFuncs.notExpended = (oa, card) => !self.moveFuncs.isExpended(oa, card);
-		self.moveFuncs.notFlipped = (oa, card) => !self.moveFuncs.isFlipped(oa, card);
-		self.moveFuncs.notPrepared = (oa, card) => !self.moveFuncs.isPrepared(oa, card);
 
 		self.selectAll = oa => ({
 			name: "Select All",
@@ -521,6 +511,8 @@ module.exports = class {
 					});
 				});
 			c.src = ko.computed(() => `/images/${c.card() ? c.card()._id : "back"}`);
+			["expended", "flipped", "prepared"].map(n => c[n] = ko.computed(() => c.state() === n));
+
 			self.cards[c._id] = c;
 			return c;
 		}
@@ -725,9 +717,9 @@ module.exports = class {
 					alt
 						.trim()
 						.split(/\s+/g)
-						.map(n => n.match(/^(?:(\w*)\?)?(\w+)$/))
-						.map(([, t, n]) => (
-							t && !self.moveFuncs[t](c.oa || cards, c) ?
+						.map(n => n.match(/^(?:(!?)(\w*)\?)?(\w+)$/))
+						.map(([, b, t, n]) => (
+							t && c[t]() ^ !b ?
 								null :
 								{
 									name: self.moveFuncNames[n] || (n[0].toUpperCase() + n.slice(1)).split(/(?=[A-Z][a-z]+)/g).join(" "),

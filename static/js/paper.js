@@ -311,6 +311,14 @@ module.exports = class {
 			card.state(ned);
 		});
 
+		self.moveFuncs.isExpended = (oa, card) => card.state() === "expended";
+		self.moveFuncs.isFlipped = (oa, card) => card.state() === "flipped";
+		self.moveFuncs.isPrepared = (oa, card) => card.state() === "prepared";
+
+		self.moveFuncs.notExpended = (oa, card) => !self.moveFuncs.isExpended(oa, card);
+		self.moveFuncs.notFlipped = (oa, card) => !self.moveFuncs.isFlipped(oa, card);
+		self.moveFuncs.notPrepared = (oa, card) => !self.moveFuncs.isPrepared(oa, card);
+
 		self.selectAll = oa => ({
 			name: "Select All",
 			func: () => (self.selected.removeAll(oa()), self.selected.push(...oa())),

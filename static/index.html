@@ -153,13 +153,13 @@
 					<div class="play o" data-bind="
 						cards: oPlay,
 						main: 'mark',
-						alt: 'prepare expend flip battle changeControl clearBuffs supp banish hand break transform',
+						alt: 'notPrepared?prepare notExpended?expend notFlipped?flip battle changeControl clearBuffs supp banish hand break transform',
 						rightClick: [selectAll(oPlay), ...tokens()(+!n())],
 					"></div>
 					<div class="play p" data-bind="
 						cards: pPlay,
 						main: 'autoBattle',
-						alt: 'prepare expend flip battle changeControl clearBuffs supp banish hand break transform',
+						alt: 'notPrepared?prepare notExpended?expend notFlipped?flip battle changeControl clearBuffs supp banish hand break transform',
 						rightClick: [selectAll(pPlay), ...tokens()(n())],
 					"></div>
 					<div class="hand p" data-bind="cards: pHand, main: 'playCardGold', alt: 'playCardGold reveal isPublic?unreveal disc supp play deck banish'"></div>

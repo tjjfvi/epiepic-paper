@@ -248,9 +248,9 @@
 					<!-- ko if: type === "move" -->
 					<div data-bind="attr: pClass(($data.source || dest)[1])">
 						<b data-bind="cardName: card"></b>
+						<span data-bind="text: $data.source ? 'from ' + zoneName(source) : ''"></span>
 						to
 						<span data-bind="text: zoneNameAnti(dest, ($data.source || dest)[1])"></span>
-						<span data-bind="text: $data.source ? 'from ' + zoneName(source) : ''"></span>
 					</div>
 					<!-- /ko -->
 					<!-- ko if: type === "delete" -->

@@ -460,7 +460,12 @@ module.exports = class {
 				let zone = self[(self.game.turn() ^ self.n() ? "p" : "o") + "Play"];
 				zone().filter(c => c.inBattle()).map(c => self.moveFuncs.flip(zone, c));
 			} else if(phase === "battle-4")
-				[self.oPlay, self.pPlay].map(z => z().map(c => c.inBattle() ? self.moveFuncs.battle(z, c) : {}));
+				[self.oPlay, self.pPlay].map(z => z().map(c => {
+					if(!c.inBattle()) return;
+					self.moveFuncs.battle(z, c);
+					if(c.marked())
+						self.moveFuncs.break(z, c);
+				}));
 		}
 
 		self.cyclePhaseAlt = () => {

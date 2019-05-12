@@ -313,17 +313,18 @@
 					&.hoverIntent
 					&.rightClicked
 					&.childRightClicked
-						height 100vh
-						width (100vh/aspect)
-
-						z-index 11
-
-						border-left-width 2px
-
-						&.o
-							border-bottom-width 2px
-						&.p
-							border-top-width 2px
+						&:not(.n0)
+							height 100vh
+							width (100vh/aspect)
+	
+							z-index 11
+	
+							border-left-width 2px
+	
+							&.o
+								border-bottom-width 2px
+							&.p
+								border-top-width 2px
 
 				div.deck
 					position relative

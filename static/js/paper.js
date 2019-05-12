@@ -223,6 +223,7 @@ module.exports = class {
 		};
 
 		self.moveFuncs.mark = (oa, card) => card.marked(!card.marked());
+		self.moveFuncs.unmark = self.moveFuncs.mark;
 
 		self.moveFuncs.banish = (oa, card) => {
 			s("banish", card._id, `p${+card.owner}.deck`);
@@ -713,9 +714,9 @@ module.exports = class {
 		});
 
 		ko.components.register("cards", {
-			viewModel: function({ cards, main = "", alt = main }){
+			viewModel: function({ cards, main = "", alt = "" }){
 				if(!alt.includes("mark"))
-					alt = "mark " + alt;
+					alt = "!marked?mark marked?unmark " + alt;
 				this.cards = cards;
 				this.main = self.moveFuncs[main];
 				this.rightClick = c =>

@@ -1,7 +1,8 @@
 
 .paper
+	aspect = 1.395555555
 	cardHeight = 20vh
-	cardWidth = cardHeight / 1.395555555
+	cardWidth = cardHeight / aspect
 
 	img:not([src])
 		opacity 0
@@ -275,10 +276,54 @@
 
 				flex 0 0
 
-				.deck
-				.disc
+				> div
+					position relative
+
 					width cardWidth
 					flex 0 0 auto
+
+				.deck
+					img
+						position absolute
+						left 0
+						z-index 4
+
+					> *
+						z-index 5
+					z-index 0
+
+				.disc
+					position absolute
+					right 0
+
+					width cardWidth
+					height s("calc(%s - 1px)", cardHeight)
+
+					&.p
+						bottom 0
+					&.o
+						top 0
+
+					border 0px solid $grey
+
+					transition height .5s, width .5s, border-width .2s, z-index .3s
+						
+					z-index 10
+
+					&.hoverIntent
+					&.rightClicked
+					&.childRightClicked
+						height 100vh
+						width (100vh/aspect)
+
+						z-index 11
+
+						border-left-width 2px
+
+						&.o
+							border-bottom-width 2px
+						&.p
+							border-top-width 2px
 
 				div.deck
 					position relative
@@ -485,7 +530,8 @@
 
 			for num in 1 2 3 4 5 6 7 8 9 10
 				&.n{num} .card
-					max-width (cardWidth/num)
+					max-height (100%/num)
+					max-width (100%/num)
 
 		.deck
 			cursor pointer
@@ -713,6 +759,8 @@
 
 	display flex
 	flex-direction column
+
+	z-index 1000
 
 .rightClick span
 	background $black

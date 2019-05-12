@@ -172,12 +172,12 @@
 							<div class="cardCount countDisc" data-bind="text: oDisc().length "></div>
 							<img class="deck o" data-bind="attr: { src: (oDeck()[0]||{}).src }"/>
 						</div>
-						<div class="disc o" data-bind="
+						<div><div class="disc o" data-bind="
 							cards: oDisc,
 							main: 'hand',
 							alt: 'banish changeControl hand',
 							attr: { class: 'disc o n' + Math.ceil(Math.sqrt(oDisc().length)) },
-						"></div>
+						"></div></div>
 					</div>
 					<div class="il">
 						<div class="i">
@@ -232,12 +232,12 @@
 								],
 							"/>
 						</div>
-						<div class="disc p" data-bind="
+						<div><div class="disc p" data-bind="
 							cards: pDisc,
 							main: 'hand',
 							alt: 'hand playCard banish',
 							attr: { class: 'disc p n' + Math.ceil(Math.sqrt(pDisc().length)) },
-						"></div>
+						"></div></div>
 					</div>
 				</div>
 				<div class="log" data-bind="

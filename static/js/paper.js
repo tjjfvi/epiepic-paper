@@ -667,7 +667,7 @@ module.exports = class {
 				$(el).on("contextmenu", e => {
 					if(self.spectate() && !$(el).is(".log"))
 						return false;
-					$(el).addClass("rightClicked");
+					$(el).addClass("rightClicked").parents().addClass("childRightClicked");
 					let items = ko.unwrap(valAcc());
 					let height = 30 * items.length + 1;
 					let vh = $("body").height()
@@ -703,7 +703,7 @@ module.exports = class {
 		};
 
 		$("*").on("click contextmenu", () => {
-			$(".rightClicked").removeClass("rightClicked");
+			$(".rightClicked, .childRightClicked").removeClass("rightClicked childRightClicked");
 			self.rightClick([])
 		});
 

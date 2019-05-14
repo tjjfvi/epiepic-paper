@@ -230,6 +230,10 @@
 								font-size 20px
 								margin-left -2px
 
+							for x in (('"G"' $good) ('"S"' $sage) ('"E"' $evil) ('"W"' $wild))
+								&[data-f={x[0]}]
+									color x[1]
+									border-color @color
 
 						.avatar
 							border-radius 100%

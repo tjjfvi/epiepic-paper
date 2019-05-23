@@ -9,6 +9,6 @@
   "author": "",
   "dependencies": {
     "jquery": "^3.3.1",
-    "knockout": "^3.4.2"
+    "knockout": "^3.5.0"
   }
 }
